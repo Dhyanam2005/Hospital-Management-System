@@ -1,0 +1,38 @@
+const express = require('express');
+const cors = require('cors');
+const loginRouter = require("./routes/auth")
+const userRouter = require("./routes/userRouter")
+const newUserRouter = require("./routes/createAuth")
+const profileRouter = require("./routes/profile");
+const changePassWordRouter = require("./routes/changePassWord");
+const doctorRouter = require("./routes/doctor");
+const specializationRouter = require("./routes/specialization");
+const newPatientRouter = require("./routes/createPatient");
+const cityGetRouter = require("./routes/getCities");
+const referredDoctors = require("./routes/getRefferedBy");
+
+const app = express();
+const PORT = 3000;
+
+app.use(cors());
+app.use(express.json());
+
+app.use("/", referredDoctors);
+app.use("/",cityGetRouter);
+app.use("/",newPatientRouter);
+app.use("/",specializationRouter);
+app.use('/',profileRouter);
+app.use("/",changePassWordRouter);
+app.use('/',loginRouter);
+app.use('/',newUserRouter);
+app.use('/',userRouter);
+app.use("/",doctorRouter);
+
+
+app.get('/', (req, res) => {
+  res.send('Backend is running!');
+});
+
+app.listen(PORT, () => {
+  console.log(`Server is listening on port ${PORT}`);
+});

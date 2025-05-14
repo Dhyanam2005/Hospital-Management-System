@@ -1,0 +1,23 @@
+.submit-button{
+    margin: 0 auto;
+    border: 1px solid;
+    border-radius: 0.5rem;
+    padding: 0.6rem;
+    width: 8rem;
+}
+
+.button-wrapper{
+    width: 100%;
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: center;
+}
+
+.submit-button:hover{
+    background-color: rgb(70, 232, 244);
+}
+
+.error-msg{
+    text-align: center;
+    border: 1px solid #ddd;
+}

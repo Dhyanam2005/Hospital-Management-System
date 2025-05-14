@@ -1,0 +1,88 @@
+.home-page{
+    background-color: white;
+}
+
+.navbar{
+    height: 50px;
+    width: 100%;
+    background-color: rgb(26, 255, 212);
+    display: flex;
+    flex-direction: row;
+}
+
+.profile{
+    display: flex;
+    justify-content: flex-end;
+}
+
+.size{
+    font-size: 2rem;
+    cursor: pointer;
+}
+
+.image-container{
+    background-color: white;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.homePageImg{
+    width: 40%;
+}
+
+.profile-photo{
+    cursor: pointer;
+    padding: 0.5rem;
+    margin-left: auto;
+    margin-right: 1rem;
+}
+
+.profile-photo .icon-user{
+    font-size: 20px;
+    color: #333;
+}
+
+.profile-photo:hover .icon-user{
+    color: lab(100% 0.01 -0.01);
+}
+
+.profile-links{
+    position: absolute;
+    top: 4.5rem;
+    right: 0.8rem;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+    padding: 0.8rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    width: 11rem;
+}
+
+.profile-links a {
+  display: block;
+  padding: 0.2rem 0.2rem;
+  color: #333;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.profile-links a:hover{
+    color: #007bff;
+}
+
+.navbar{
+    display: flex;
+    align-items: center;
+}
+
+.nav-links a{
+    margin-left: 2rem;
+}
+
+.nav-links a:hover{
+    color: #007bff;
+}

@@ -1,0 +1,18 @@
+.login-form{
+    background-color: white;
+    padding: 1.5rem;
+    max-width: 400px;
+    border-radius: 0.5rem;
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    margin-top: 7rem;
+}
+
+.login-button{
+    background-color: rgb(26, 255, 212);
+    border-radius: 0.5rem;
+    width: 10rem;
+    height: 2rem;
+    text-align: center;
+    margin-top: 2rem;
+}
