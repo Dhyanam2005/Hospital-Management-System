@@ -10,6 +10,9 @@ const specializationRouter = require("./routes/specialization");
 const newPatientRouter = require("./routes/createPatient");
 const cityGetRouter = require("./routes/getCities");
 const referredDoctors = require("./routes/getRefferedBy");
+const fetchPatientRouter = require("./routes/fetchPatient");
+const fetchInHouseDoctorsRouter = require("./routes/fetchInHouseDoctors");
+const registrationRouter = require("./routes/registration");
 
 const app = express();
 const PORT = 3000;
@@ -17,6 +20,9 @@ const PORT = 3000;
 app.use(cors());
 app.use(express.json());
 
+app.use("/",registrationRouter);
+app.use("/",fetchInHouseDoctorsRouter);
+app.use("/",fetchPatientRouter);
 app.use("/", referredDoctors);
 app.use("/",cityGetRouter);
 app.use("/",newPatientRouter);
