@@ -13,6 +13,8 @@ const referredDoctors = require("./routes/getRefferedBy");
 const fetchPatientRouter = require("./routes/fetchPatient");
 const fetchInHouseDoctorsRouter = require("./routes/fetchInHouseDoctors");
 const registrationRouter = require("./routes/registration");
+const fetchTestsRouter = require("./routes/fetchTests");
+const saveTestGridDataRouter = require("./routes/saveTestGridData");
 
 const app = express();
 const PORT = 3000;
@@ -20,6 +22,8 @@ const PORT = 3000;
 app.use(cors());
 app.use(express.json());
 
+app.use("/",saveTestGridDataRouter);
+app.use("/",fetchTestsRouter);
 app.use("/",cityGetRouter);
 app.use("/",registrationRouter);
 app.use("/",fetchInHouseDoctorsRouter);

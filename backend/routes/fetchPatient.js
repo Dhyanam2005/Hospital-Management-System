@@ -5,7 +5,7 @@ const router = express.Router();
 router.get("/fetchpat",(req,res) => {
     const { patientName } = req.query;
     db.query(
-        "SELECT p.patient_id,p.name,p.phone,DATE_FORMAT(p.date_of_birth, '%b, %c, %Y') date_of_birth,DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y') - DATE_FORMAT(p.date_of_birth,'%Y') age from patient p where name like ?",[`%${patientName}%`],(err,result) => {
+        "SELECT p.patient_id,p.name,r.reg_id,DATE_FORMAT(p.date_of_birth, '%b, %c, %Y') date_of_birth,DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y') - DATE_FORMAT(p.date_of_birth,'%Y') age from patient p,registration r where name like ? and p.patient_id = r.patient_id;",[`%${patientName}%`],(err,result) => {
             if(err){
                 return res.json({ message : "Error in searching patient db"});
             }

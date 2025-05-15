@@ -2,14 +2,16 @@ import NavBar from "../components/Navbar";
 import React , { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
+import TestGrid from "../components/TestGrid";
 import "./Test.css";
 
 
 function Test(){
-
     const [patientName,setPatientName] = useState('');
-    const [selectedPatientId,setSelectedPatientId] = useState('');
+    const [selectedRegId,setSelectedRegId] = useState('');
     const [patientData,setPatientData]= useState([]);
+    const [showTestGrid, setShowTestGrid] = useState(false);
+
     
     const handleSearch = async () => {
     try{
@@ -38,7 +40,7 @@ function Test(){
                     <label>Search Patient</label>
                     <input className = 'search-box' value = {patientName} onChange = {(e) => setPatientName(e.target.value)}type='text' placeholder='Enter patient Name'></input>
                     <button onClick={() => {
-                        setSelectedPatientId('');
+                        setSelectedRegId('');
                         handleSearch();
                     }}>
                         <FontAwesomeIcon icon={faMagnifyingGlass} />
@@ -51,22 +53,34 @@ function Test(){
                                 <th>Patient ID</th>
                                 <th>Name</th>
                                 <th>Age</th>
-                                <th>Phone</th>
+                                <th>Registration ID</th>
                             </tr>
                         </thead>
                         <tbody>
                             {patientData.map((patient,index) => (
                             <tr key={index}>
-                                <td>{patient.patient_id}</td>
-                                <td>{patient.name}</td>
-                                <td>{patient.age}</td>
-                                <td>{patient.phone}</td>
-                                <input value = {patient.patient_id} onChange={(e) => setSelectedPatientId(e.target.value)} type='radio' name = "select"/>
-                            </tr>
+                            <td>{patient.patient_id}</td>
+                            <td>{patient.name}</td>
+                            <td>{patient.age}</td>
+                            <td>{patient.reg_id}</td>
+  <td>
+    <input
+      type="radio"
+      name="select"
+      value={patient.reg_id}
+      onChange={() => {
+        setSelectedRegId(patient.patient_id);
+        setShowTestGrid(true);
+      }}
+    />
+  </td>
+</tr>
+
                         )) }
                         </tbody>
                     </table>
                 }
+                {showTestGrid && <TestGrid regId = {selectedRegId}/>}
         </div>
     )
 }
