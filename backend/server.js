@@ -20,11 +20,11 @@ const PORT = 3000;
 app.use(cors());
 app.use(express.json());
 
+app.use("/",cityGetRouter);
 app.use("/",registrationRouter);
 app.use("/",fetchInHouseDoctorsRouter);
 app.use("/",fetchPatientRouter);
 app.use("/", referredDoctors);
-app.use("/",cityGetRouter);
 app.use("/",newPatientRouter);
 app.use("/",specializationRouter);
 app.use('/',profileRouter);

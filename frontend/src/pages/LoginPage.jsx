@@ -22,7 +22,7 @@ function Login (){
             const data = await res.json();
 
             if(res.ok){
-                localStorage.setItem("token",data.token);
+                localStorage.setItem('token',data.token);
                 navigate('/home');
             }else{
                 setErrorMessage('Invalid credentials');

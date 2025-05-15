@@ -1,16 +1,16 @@
-import React , { useEffect, useState } from 'react';
 import NavBar from "../components/Navbar";
+import React , { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
-import "./Registration.css";
-import "../components/RegistrationForm";
-import RegistrationForm from '../components/RegistrationForm';
+import "./Test.css";
 
 
-function Registration(){
+function Test(){
+
     const [patientName,setPatientName] = useState('');
     const [selectedPatientId,setSelectedPatientId] = useState('');
     const [patientData,setPatientData]= useState([]);
+    
     const handleSearch = async () => {
     try{
         let res = await fetch(`http://localhost:3000/fetchpat?patientName=${encodeURIComponent(patientName)}`,{
@@ -33,8 +33,7 @@ function Registration(){
 
     return(
         <div>
-            <NavBar />
-            <div className="registration">
+            <NavBar/>
                 <div className="search-bar">
                     <label>Search Patient</label>
                     <input className = 'search-box' value = {patientName} onChange = {(e) => setPatientName(e.target.value)}type='text' placeholder='Enter patient Name'></input>
@@ -45,14 +44,12 @@ function Registration(){
                         <FontAwesomeIcon icon={faMagnifyingGlass} />
                     </button>
                 </div>
-
                 {patientData.length > 0 && 
                     <table className='table-container'>
                         <thead>
                             <tr>
                                 <th>Patient ID</th>
                                 <th>Name</th>
-                                <th>DOB</th>
                                 <th>Age</th>
                                 <th>Phone</th>
                             </tr>
@@ -62,7 +59,6 @@ function Registration(){
                             <tr key={index}>
                                 <td>{patient.patient_id}</td>
                                 <td>{patient.name}</td>
-                                <td>{patient.date_of_birth}</td>
                                 <td>{patient.age}</td>
                                 <td>{patient.phone}</td>
                                 <input value = {patient.patient_id} onChange={(e) => setSelectedPatientId(e.target.value)} type='radio' name = "select"/>
@@ -71,14 +67,8 @@ function Registration(){
                         </tbody>
                     </table>
                 }
-
-                {selectedPatientId && (
-                    <RegistrationForm patientId = {selectedPatientId}/>
-                )}
-            </div>
         </div>
     )
 }
 
-export default Registration;
-
+export default Test;

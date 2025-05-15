@@ -10,11 +10,14 @@ import Doctor from './pages/Doctor';
 import NewDoctorPopUp from './pages/NewDoctorPopUp';
 import NewPatient from './pages/NewPatient';
 import Registration from './pages/Registration';
+import Test from './pages/Test';
+import TestGrid from './components/TestGrid';
 
 function App() {
     return(
         <Router>
             <Routes>
+                <Route path='/' element={<TestGrid />}/>
                 <Route path='/login' element={<Login />}/>
                 <Route path='/home' element={<Home />}/>
                 <Route path='/userlist' element={<UserList />}/>
@@ -25,6 +28,7 @@ function App() {
                 <Route path='/newdoctor' element={<NewDoctorPopUp />}/>
                 <Route path='/patient' element={<NewPatient />}/>
                 <Route path='/registration' element={<Registration />}/>
+                <Route path='/test' element={<Test />}/>
             </Routes>
         </Router>
     )

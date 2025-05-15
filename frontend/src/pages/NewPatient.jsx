@@ -24,6 +24,7 @@ useEffect(() =>{
     const fetchCities = async() => {
         let res = await fetch('http://localhost:3000/cities');
         let data = await res.json();
+        console.log("Fetched data : ",data);
         if(res.ok){
             console.log("Cities added");
             setCities(data);

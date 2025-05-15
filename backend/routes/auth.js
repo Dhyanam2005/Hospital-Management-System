@@ -8,7 +8,8 @@
 
     router.post("/login",(req,res) => {
         const { username , password } = req.body;
-
+        console.log("Username is ", username);
+        console.log("Password is ",password);
         db.query("SELECT * FROM user WHERE user_name = ?", [username], (err, result) => {
             if(err){
                 return res.status(401).json({ message : "Error"});
@@ -18,7 +19,8 @@
             }
 
             const user = result[0];
-            
+            console.log("Password is ",user.password);
+
         
             if (password !== user.password) {
                 return res.status(401).json({ message: "Invalid password" });
