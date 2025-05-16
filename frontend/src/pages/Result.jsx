@@ -12,6 +12,8 @@ function Result(){
     const [showResultTable,setShowResultTable] = useState(false);
 
 
+    
+
     const handleSearch = async () => {
     try{
         let res = await fetch(`http://localhost:3000/fetchpat?patientName=${encodeURIComponent(patientName)}`,{
