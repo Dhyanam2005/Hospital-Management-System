@@ -11,6 +11,7 @@ import NewDoctorPopUp from './pages/NewDoctorPopUp';
 import NewPatient from './pages/NewPatient';
 import Registration from './pages/Registration';
 import Test from './pages/Test';
+import Result from './pages/Result';
 
 function App() {
     return(
@@ -27,6 +28,7 @@ function App() {
                 <Route path='/patient' element={<NewPatient />}/>
                 <Route path='/registration' element={<Registration />}/>
                 <Route path='/test' element={<Test />}/>
+                <Route path='/result' element={<Result />}/>
             </Routes>
         </Router>
     )
