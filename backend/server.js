@@ -17,6 +17,8 @@ const fetchTestsRouter = require("./routes/fetchTests");
 const saveTestGridDataRouter = require("./routes/saveTestGridData");
 const fetchResultsRouter = require("./routes/fetchResults");
 const postResultRouter = require("./routes/postingResults");
+const getPatientDetailsRouter = require("./routes/getPatientDetailsPDF");
+const getTestDetailRouter = require("./routes/getTestsPDF");
 
 const app = express();
 const PORT = 3000;
@@ -24,6 +26,8 @@ const PORT = 3000;
 app.use(cors());
 app.use(express.json());
 
+app.use("/",getTestDetailRouter);
+app.use("/",getPatientDetailsRouter);
 app.use("/",postResultRouter);
 app.use("/",fetchResultsRouter);
 app.use("/",saveTestGridDataRouter);
