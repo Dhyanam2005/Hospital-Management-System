@@ -91,7 +91,7 @@ function RegistrationForm({ patientId }) {
                     <div className="mt-8">
                         <label htmlFor = "patientType" className="block text-sm font-semibold text-gray-700">Doctor Type</label>
                         <select value={docId} onChange={(e) => setDocId(e.target.value)}>
-                            <option value= "" disabled hidden>Select Doctor Type</option>
+                            <option value= "" disabled hidden>Select Doctor</option>
                             {inHouseDoc.map((doctor) => (
                             <option key={doctor.doc_id} value={doctor.doc_id}>{doctor.name}</option>
                             ))}

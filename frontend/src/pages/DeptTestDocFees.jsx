@@ -5,7 +5,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { format } from "date-fns";
 import "./PatientReportStateWise.css";
 
-function PatientReportStateWise(){
+function DeptTestDocFees(){
     const [data,setData] = useState([]);
     const [filteredData, setFilteredData] = useState([]);
     const [startDate, setStartDate] = useState(null);
@@ -14,7 +14,7 @@ function PatientReportStateWise(){
     useEffect(() => {
         const fetchData = async () => {
             try{
-                let res = await fetch('http://localhost:3000/patientReportStateWise');
+                let res = await fetch('http://localhost:3000/deptTestDocFees');
                 const data = await res.json();
                 if(res.ok){
                     setData(data);
@@ -36,7 +36,7 @@ function PatientReportStateWise(){
         }
 
         const filtered = data.filter((item) => {
-            const itemDate = item.Date;
+            const itemDate = item["Test Date"];
             console.log(format(startDate, "dd MM yyyy"));
             console.log(format(endDate, "dd MM yyyy"));
             console.log(itemDate);
@@ -75,19 +75,21 @@ function PatientReportStateWise(){
                 <table className="table-auto w-full mt-5">
                     <thead>
                         <tr>
-                            <td>Month</td>
-                            <td>State</td>
-                            <td>City</td>
-                            <td>No of Patients</td>
+                            <td>Test Date</td>
+                            <td>Test Department</td>
+                            <td>Test Name</td>
+                            <td>Doctor</td>
+                            <td>Total Fee collected</td>
                         </tr>
                     </thead>
                     <tbody>
                         {filteredData.map((item,index) => (
                             <tr key={index}>
-                                <td>{item.Date}</td>
-                                <td>{item.State}</td>
-                                <td>{item.City}</td>
-                                <td>{item["No of Patients"]}</td>
+                                <td>{item["Test Date"]}</td>
+                                <td>{item["Test Department"]}</td>
+                                <td>{item["Test Name"]}</td>
+                                <td>{item["Doctor"]}</td>
+                                <td>{item["Total Fee Collected"]}</td>
                             </tr>
                         ))}
                     </tbody>
@@ -97,4 +99,4 @@ function PatientReportStateWise(){
     )
 }
 
-export default PatientReportStateWise;
+export default DeptTestDocFees;

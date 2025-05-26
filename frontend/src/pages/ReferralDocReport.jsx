@@ -5,7 +5,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import { format } from "date-fns";
 import "./PatientReportStateWise.css";
 
-function PatientReportStateWise(){
+function ReferralDocReport
+(){
     const [data,setData] = useState([]);
     const [filteredData, setFilteredData] = useState([]);
     const [startDate, setStartDate] = useState(null);
@@ -14,7 +15,7 @@ function PatientReportStateWise(){
     useEffect(() => {
         const fetchData = async () => {
             try{
-                let res = await fetch('http://localhost:3000/patientReportStateWise');
+                let res = await fetch('http://localhost:3000/referralDoc');
                 const data = await res.json();
                 if(res.ok){
                     setData(data);
@@ -36,7 +37,7 @@ function PatientReportStateWise(){
         }
 
         const filtered = data.filter((item) => {
-            const itemDate = item.Date;
+            const itemDate = item["Month"];
             console.log(format(startDate, "dd MM yyyy"));
             console.log(format(endDate, "dd MM yyyy"));
             console.log(itemDate);
@@ -51,7 +52,7 @@ function PatientReportStateWise(){
         <div>
             <NavBar />
             <div className="doctor-wise-reg-fees">
-                <h1 className="bold text-center block pt-5 text-2xl">Patient Report State Wise</h1>
+                <h1 className="bold text-center block pt-5 text-2xl">Referral Doctor Summary</h1>
                 <div className="flex items-center gap-4 mb-5">
                     <div>
                         <label>Start Date :</label>
@@ -75,19 +76,21 @@ function PatientReportStateWise(){
                 <table className="table-auto w-full mt-5">
                     <thead>
                         <tr>
-                            <td>Month</td>
-                            <td>State</td>
-                            <td>City</td>
-                            <td>No of Patients</td>
+                            <td>Date</td>
+                            <td>Doctor</td>
+                            <td>Registration Fees</td>
+                            <td>Test Fees</td>
+                            <td>Total Fees</td>
                         </tr>
                     </thead>
                     <tbody>
                         {filteredData.map((item,index) => (
                             <tr key={index}>
-                                <td>{item.Date}</td>
-                                <td>{item.State}</td>
-                                <td>{item.City}</td>
-                                <td>{item["No of Patients"]}</td>
+                                <td>{item["Month"]}</td>
+                                <td>{item["Doctor"]}</td>
+                                <td>{item["Registration Fees"]}</td>
+                                <td>{item["Test Fees"]}</td>
+                                <td>{item["Total Fees"]}</td>
                             </tr>
                         ))}
                     </tbody>
@@ -97,4 +100,5 @@ function PatientReportStateWise(){
     )
 }
 
-export default PatientReportStateWise;
+export default ReferralDocReport
+;

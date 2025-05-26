@@ -37,6 +37,9 @@ function DoctorWiseRegistration(){
 
         const filtered = data.filter((item) => {
             const itemDate = item.Date;
+            console.log(format(startDate, "dd MM yyyy"));
+            console.log(format(endDate, "dd MM yyyy"));
+            console.log(itemDate);
             return itemDate >= format(startDate, "dd MM yyyy") && itemDate <= format(endDate, "dd MM yyyy");
         })
         setFilteredData(filtered);
@@ -64,7 +67,7 @@ function DoctorWiseRegistration(){
                         <DatePicker
                             selected = {endDate}
                             onChange = {(date) => setEndDate(date)}
-                            dateFormat="yyyy-MM-dd"
+                            dateFormat="dd-MM-yyyy"
                             placeholderText="Select end date"
                         />
                     </div>

@@ -14,7 +14,10 @@ import Test from './pages/Test';
 import Result from './pages/Result';
 import PDF from './pages/PDF';
 import DoctorWiseRegistration from './pages/DoctorWiseRegistration';
-
+import PatientReportStateWise from './pages/PatientReportStateWise';
+import DeptTestDocFees from './pages/DeptTestDocFees';
+import DeptDocFees from './pages/DeptDocFees';
+import ReferralDocReport from './pages/ReferralDocReport';
 
 function App() {
     return(
@@ -34,6 +37,10 @@ function App() {
                 <Route path='/result' element={<Result />}/>
                 <Route path='/pdf' element={<PDF />}/>
                 <Route path='/dwr' element={<DoctorWiseRegistration />}/>
+                <Route path='/prsw' element={<PatientReportStateWise />}/>
+                <Route path='/dtdf' element={<DeptTestDocFees />}/>
+                <Route path='/ddf' element={<DeptDocFees />}/>
+                <Route path='/rdr' element={<ReferralDocReport />}/>
             </Routes>
         </Router>
     )
