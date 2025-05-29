@@ -21,6 +21,7 @@ function Navbar() {
                     <a href="/registration">Registration</a>
                     <a href="/test">Add Tests</a>
                     <a href="/result">Test Results</a>
+                    <a href="/docConsultation">Doctor Consultation</a>
                 </div>
                 <button className='profile-photo' onClick={() => setProfileIsOpen(!profileIsOpen)}>
                     <FontAwesomeIcon icon={faUser} className='icon-user'/>

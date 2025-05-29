@@ -6,8 +6,8 @@ function TestGrid({ regId }) {
   const [tests, setTests] = useState([]);
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [test_id,setTest_id] =useState('');
-  const [doc_id,setDoc_id] =useState('');
+  const [test_id,setTest_id] = useState('');
+  const [doc_id,setDoc_id] = useState('');
 
 
   useEffect(() => {

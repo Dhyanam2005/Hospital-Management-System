@@ -16,7 +16,7 @@ function Result(){
 
     const handleSearch = async () => {
     try{
-        let res = await fetch(`http://localhost:3000/fetchpat?patientName=${encodeURIComponent(patientName)}`,{
+        let res = await fetch(`http://localhost:3000/fetchpatreg?patientName=${encodeURIComponent(patientName)}`,{
             method : 'GET',
             headers: { 'Content-Type': 'application/json' },
         });

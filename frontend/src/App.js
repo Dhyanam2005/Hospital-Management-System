@@ -18,6 +18,7 @@ import PatientReportStateWise from './pages/PatientReportStateWise';
 import DeptTestDocFees from './pages/DeptTestDocFees';
 import DeptDocFees from './pages/DeptDocFees';
 import ReferralDocReport from './pages/ReferralDocReport';
+import DoctorConsultation from './pages/DoctorConsultation';
 
 function App() {
     return(
@@ -41,6 +42,7 @@ function App() {
                 <Route path='/dtdf' element={<DeptTestDocFees />}/>
                 <Route path='/ddf' element={<DeptDocFees />}/>
                 <Route path='/rdr' element={<ReferralDocReport />}/>
+                <Route path='/docConsultation' element={<DoctorConsultation />}/>
             </Routes>
         </Router>
     )
