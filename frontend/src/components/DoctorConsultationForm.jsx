@@ -91,15 +91,15 @@ function DoctorConsultationForm({ regId}){
       };
 
       const deleteRows = async(id,index) => {
-
+        const confirmed = window.confirm("Are you sure you want to delete this record?");
+        if(!confirmed) return;
         if(!id){
           const updatedRows = [...rows];
           updatedRows.splice(index,1);
           setRows(updatedRows);
           return;
         }
-        const confirmed = window.confirm("Are you sure you want to delete this record?");
-        if(!confirmed) return;
+
         console.log("DeleteRows is called and id is ",id);
         try{
           let res = await fetch(`http://localhost:3000/docConsultation/${id}`,{

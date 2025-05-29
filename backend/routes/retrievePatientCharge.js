@@ -18,50 +18,56 @@ function authenticateJWT(req, res, next) {
     });
 }
 
-router.get("/fetchMedicalItems",(req,res) => {
-    let { regId } = req.query;
-    console.log(regId);
+router.get("/fetchServices",(req,res) => {
     db.query(
-        `select m.medical_item_id , m.drug_id,d.drug_name as medicineName , DATE_FORMAT(m.issue_date, '%Y-%m-%d') as date , m.item_qty,m.item_price,m.item_value, "No" as update_flag
-        from drug_master d,medical_item m
-        where d.drug_id = m.drug_id
-        and reg_id = ?`,[regId],(err,result) => {
+        `SELECT * from service`,(err,result) => {
+            if(err) return res.json({ message : "Error"});
+            return res.json(result); 
+        }
+    )
+})
+
+router.get("/fetchPatientCharges",(req,res) => {
+    let { regId } = req.query;
+    db.query(
+        `SELECT s.service_name,p.service_id,DATE_FORMAT(p.service_date, '%Y-%m-%d') as service_date,p.service_amt,p.reg_id,p.doc_id,d.name,"No" as update_flag,p.charge_id
+        from service s,patient_charge p,doctor d
+        where s.service_id = p.service_id
+        and p.doc_id = d.doc_id
+        and reg_id =?`,[regId],(err,result) => {
         if(err){
-            return res.json({ message : "Error in fetching consultations "});
+            return res.json({ message : "Error in fetching medicalItemss "});
         }
         res.json(result);
     }
     )
 })
 
-router.post("/docConsultation",authenticateJWT, async (req,res) =>{
-    const userId = req.user.id;
+router.post("/patientCharges", async (req,res) =>{
     try{
-        let {regId , consultation} = req.body;
+        let {regId , patientCharges} = req.body;
         console.log(regId);
-        console.log(consultation);
-        const udpates = consultation.filter(c => c.update_flag != "No");
+        console.log(patientCharges);
+        const udpates = patientCharges.filter(c => c.update_flag != "No");
         const updatedPromises = udpates.map(c => {
         return new Promise((resolve,reject) => {
-            db.query(`UPDATE DOC_CONSULTATION
-                    SET doc_id = ?,consultation_date = ?,doc_fee = ?
-                    where doc_consultation_id = ?`,
-                [c.doc_id,c.date,c.fee,c.consultationId],(err,result) => {
+            db.query(`UPDATE patient_charge
+                    SET service_id = ?,service_date = ?,service_amt = ?,reg_id = ?,doc_id = ?
+                    where charge_id = ?`,
+                [c.service_id,c.service_date,c.service_amt,regId,c.doc_id,c.charge_id],(err,result) => {
                     if(err) reject(err);
                     resolve(result);
             })
         })
     })
-    console.log("bckhidckck")
-    const newRows = consultation.filter(c => !c.consultationId);
-    console.log("New Rows is ",newRows);
+    const newRows = patientCharges.filter(c => !c.charge_id);
     const newPromises = newRows.map(c => {
         return new Promise((resolve,reject) =>{
             db.query(
-                `INSERT INTO DOC_CONSULTATION
-                (doc_id,reg_id,consultation_date,doc_fee,created_at,user_id)
-                VALUES (?,?,?,?,NOW(),?)`,
-                [c.doc_id,regId,c.date,c.fee,userId],(err,result) => {
+                `INSERT INTO patient_charge
+                (service_id,service_date,service_amt,reg_id,doc_id)
+                VALUES (?,?,?,?,?)`,
+                [c.service_id,c.service_date,c.service_amt,regId,c.doc_id],(err,result) => {
                     if(err) reject(err);
                     resolve(result);
                 }
@@ -79,7 +85,7 @@ router.post("/docConsultation",authenticateJWT, async (req,res) =>{
     }
 })
 
-router.delete("/docConsultation/:id",(req,res) => {
+router.delete("/patientcharge/:id",(req,res) => {
     let id  = req.params.id;
     console.log(id);
     if(!id){
@@ -87,8 +93,8 @@ router.delete("/docConsultation/:id",(req,res) => {
     }else{
         console.log("Called old");
         db.query(`
-            DELETE FROM DOC_CONSULTATION
-            WHERE doc_consultation_id = ?`,
+            DELETE FROM patient_charge
+            WHERE charge_id = ?`,
             [id],(err,result) => {
                 if(err){
                     return res.json({ message : "Error in deleteion of old row"});

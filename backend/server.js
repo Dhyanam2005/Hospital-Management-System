@@ -23,6 +23,9 @@ const getReportQueriesRouter = require("./routes/reportQueries");
 const getDocConsultationRouter = require("./routes/docConsultation");
 const fetchPatientsRegistrationRouter = require("./routes/fetchPatientsRegistration");
 const retriveConsultationRouter = require("./routes/retrieveConsultation");
+const retrieveMedicalItemRouter = require("./routes/retrieveMedicalItem");
+const retrievePatientRouter = require("./routes/retrievePatientCharge");
+
 
 const app = express();
 const PORT = 3000;
@@ -30,6 +33,8 @@ const PORT = 3000;
 app.use(cors());
 app.use(express.json());
 
+app.use("/",retrievePatientRouter);
+app.use("/",retrieveMedicalItemRouter)
 app.use("/",retriveConsultationRouter);
 app.use("/",fetchPatientsRegistrationRouter);
 app.use("/",getDocConsultationRouter);

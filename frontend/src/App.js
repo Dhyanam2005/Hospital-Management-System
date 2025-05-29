@@ -19,6 +19,8 @@ import DeptTestDocFees from './pages/DeptTestDocFees';
 import DeptDocFees from './pages/DeptDocFees';
 import ReferralDocReport from './pages/ReferralDocReport';
 import DoctorConsultation from './pages/DoctorConsultation';
+import MedicalItem from './pages/MedicalItem';
+import PatientCharge from './pages/PatientCharge';
 
 function App() {
     return(
@@ -43,6 +45,8 @@ function App() {
                 <Route path='/ddf' element={<DeptDocFees />}/>
                 <Route path='/rdr' element={<ReferralDocReport />}/>
                 <Route path='/docConsultation' element={<DoctorConsultation />}/>
+                <Route path='/medicalItem' element={<MedicalItem />}/>
+                <Route path='/patientCharge' element={<PatientCharge />}/>
             </Routes>
         </Router>
     )
