@@ -4,6 +4,7 @@ import "./ResultGrid.css";
 function ResultGrid({ regId }){
 
     const [resultData , setResultData] = useState([]);
+
     useEffect(() => {
         const fetchResultData = async () => {
             try{
@@ -11,8 +12,7 @@ function ResultGrid({ regId }){
                 let data = await res.json();
                 if(res.ok){
                     console.log("Data is filled" , data);
-                    let dataWithResultEditable = data.map(row => ({...row,result : ""}));
-                    setResultData(dataWithResultEditable);
+                    setResultData(data);
                 }else{
                     console.log("Error fetching data");
                 }
@@ -80,7 +80,7 @@ function ResultGrid({ regId }){
                                 <td>{res.result_type}</td>
                                 <td>{res.reference_result || "-"}</td>
                                 <td>
-                                    <input type="text" value={res.result} onChange={(e) => handleResultChange (index,e.target.value)}/>
+                                    <input type="text" value={res.result_char || res.result_num} onChange={(e) => handleResultChange (index,e.target.value)}/>
                                 </td>
                                 <td>{res.test_date}</td>
                             </tr>

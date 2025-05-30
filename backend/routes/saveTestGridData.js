@@ -5,7 +5,7 @@ const db = require("../config/db");
 
 router.post("/saveTestGridData", async (req, res) => {
   console.log("Started saveTestGridData");
-  const { regId, rows } = req.body;
+  const { regId, rows , testDate } = req.body;
 
   if (!regId || !Array.isArray(rows) || rows.length === 0) {
     return res.status(400).json({ message: "Invalid input data" });
@@ -25,8 +25,8 @@ router.post("/saveTestGridData", async (req, res) => {
       }
 
       await query(
-        'INSERT INTO test_detail (reg_id, doc_id, test_id) VALUES (?, ?, ?)',
-        [regId, doctorId, testId]
+        'INSERT INTO test_detail (reg_id, doc_id, test_id , test_date) VALUES (?, ?, ? ,?)',
+        [regId, doctorId, testId,testDate]
       );
     }
 

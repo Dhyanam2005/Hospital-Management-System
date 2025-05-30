@@ -13,6 +13,8 @@ router.get("/resultData", (req, res) => {
             t.test_name, 
             tc.test_category_name, 
             t.result_type,
+            td.result_char,
+            td.result_num,
             IF(t.result_type = ?, 
                 CONCAT(t.reference_range_from, '-', t.reference_range_to), 
                 t.reference_value
@@ -34,5 +36,7 @@ router.get("/resultData", (req, res) => {
         }
     );
 });
+
+
 
 module.exports = router;

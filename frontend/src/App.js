@@ -23,7 +23,7 @@ import MedicalItem from './pages/MedicalItem';
 import PatientCharge from './pages/PatientCharge';
 import Admission from './pages/Admission';
 import Appointment from './pages/Appointment';
-
+import PatientsForBill from './pages/PatientsForBill';
 function App() {
     return(
         <Router>
@@ -51,6 +51,7 @@ function App() {
                 <Route path='/patientCharge' element={<PatientCharge />}/>
                 <Route path='/admission' element={<Admission />}/>
                 <Route path='/appointment' element={<Appointment />}/>
+                <Route path='/viewPatientBill' element={<PatientsForBill />}/>
             </Routes>
         </Router>
     )

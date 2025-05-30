@@ -4,6 +4,7 @@ import "./TestGrid.css";
 function TestGrid({ regId }) {
   const [inHouseDoctor, setInHouseDoctor] = useState([]);
   const [tests, setTests] = useState([]);
+  const [testDate,setTestDate] = useState([]);
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [test_id,setTest_id] = useState('');
@@ -48,7 +49,7 @@ function TestGrid({ regId }) {
       ...rows,
       {
         doctor: inHouseDoctor[0], // full doctor object
-        test: tests[0],           // full test object
+        test: tests[0],
       },
     ]);
   };
@@ -72,7 +73,7 @@ const saveData = async () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ regId, rows }),
+      body: JSON.stringify({ regId, rows ,testDate}),
     });
 
     const result = await response.json();
@@ -97,6 +98,7 @@ const saveData = async () => {
           <tr>
             <th>Doctor Name</th>
             <th>Test Name</th>
+            <th>Test Date</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -126,6 +128,13 @@ const saveData = async () => {
                     </option>
                   ))}
                 </select>
+              </td>
+              <td>
+                <input
+                  type="date"
+                  value={testDate}
+                  onChange={(e) => setTestDate(e.target.value)}
+                />
               </td>
               <td>
                 <button onClick={() => deleteRow(idx)}>Delete</button>
