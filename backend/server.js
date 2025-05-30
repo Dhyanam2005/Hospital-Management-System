@@ -25,7 +25,7 @@ const fetchPatientsRegistrationRouter = require("./routes/fetchPatientsRegistrat
 const retriveConsultationRouter = require("./routes/retrieveConsultation");
 const retrieveMedicalItemRouter = require("./routes/retrieveMedicalItem");
 const retrievePatientRouter = require("./routes/retrievePatientCharge");
-const getVacantBedsRouter = require("./routes/getBed");
+const getAdmissionRouter = require("./routes/getAdmission");
 const getAppointmentsRouter = require("./routes/getAppointments");
 
 const app = express();
@@ -35,7 +35,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/",getAppointmentsRouter);
-app.use("/",getVacantBedsRouter);
+app.use("/",getAdmissionRouter);
 app.use("/",retrievePatientRouter);
 app.use("/",retrieveMedicalItemRouter)
 app.use("/",retriveConsultationRouter);

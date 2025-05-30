@@ -8,7 +8,8 @@ router.get("/resultData", (req, res) => {
 
     db.query(
         `SELECT 
-            td.test_detail_id, 
+            td.test_detail_id,
+            DATE_FORMAT(td.test_date, '%e %M %Y') test_date,
             t.test_name, 
             tc.test_category_name, 
             t.result_type,

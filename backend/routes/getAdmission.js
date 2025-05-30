@@ -4,13 +4,6 @@ const db = require('../config/db');
 const { route } = require('./retrievePatientCharge');
 const jwt = require('jsonwebtoken');
 
-const getter = {
-    1 : "Super Delux",
-    2 : "Delux",
-    3 : "Semi Delux",
-    4 : "General"
-}
-
 function authenticateJWT(req, res, next) {
     const token = req.header('Authorization')?.split(' ')[1];
     if (!token) {
@@ -39,55 +32,26 @@ router.get("/beds",(req,res) => {
 })
 
 router.get("/fetchAdmission", (req, res) => {
-    let { regId } = req.query;
-    console.log("Fetch admission called")
-    const getter = {
-        1: "Super Delux",
-        2: "Delux",
-        3: "Semi Delux",
-        4: "General"
-    };
-
+    let {regId} = req.query;
     db.query(
-        `SELECT d.name, DATE_FORMAT(a.admission_date, '%Y-%m-%d') AS admission_date,DATE_FORMAT(a.discharge_date, '%Y-%m-%d') AS discharge_date, a.ward_charges, a.admit_reason, 
-                a.bed_id,a.admission_charges,d.doc_id
-         FROM admission a
-         JOIN doctor d ON a.doc_id = d.doc_id
-         WHERE a.reg_id = ?`,
-        [regId],
-        (err, result) => {
-            if (err) {
-                return res.json({ message: "Error in fetching db" });
-            }
-            if (result.length === 0) {
-                return res.json({ message: "No admission found for this regId" });
-            }
-
-            const admissionData = result[0];
-            db.query(
-                `SELECT bed_number FROM ward_room_bed WHERE bed_id = ?`,
-                [admissionData.bed_id],
-                (err2, bedResult) => {
-                    if (err2) {
-                        return res.json({ message: "Error fetching bed details" });
-                    }
-                    if (bedResult.length > 0) {
-                        const bedNumber = bedResult[0].bed_number;
-                        const typeCode = parseInt(bedNumber.toString()[0]);
-                        const bedType = getter[typeCode] || "Unknown";
-                        const bedDisplay = `${bedType}-${bedNumber}`;
-                        return res.json({ ...admissionData, bed: bedDisplay });
-                    } else {
-                        return res.json({ ...admissionData, bed: "Unknown" });
-                    }
-                }
-            );
-        }
-    );
+        `SELECT d.name, DATE_FORMAT(a.admission_date, '%Y-%m-%d') AS admission_date,DATE_FORMAT(a.discharge_date, '%Y-%m-%d') AS discharge_date, a.ward_charges, a.admit_reason,
+a.bed_id,a.admission_charges,d.doc_id,concat( w.ward_name ,?, r.room_number ,?, b.bed_number) as bed
+FROM admission a,doctor d,ward w,ward_room r,ward_room_bed b
+where a.doc_id = d.doc_id
+and a.reg_id = ?
+and a.bed_id = b.bed_id
+and b.ward_room_id = r.ward_room_id
+and r.ward_id =  w.ward_id
+`,['-','-',regId],(err,result) => {
+    if(err) return res.json({ message : "Error in fetching admission"});
+    res.json(result);
+}
+    )
 });
 
 
 router.post("/admission", authenticateJWT, (req, res) => {
+    console.log("Called")
     let {
         doctor,
         admissionDate,
@@ -98,7 +62,7 @@ router.post("/admission", authenticateJWT, (req, res) => {
         regId,
         admissionCharges
     } = req.body;
-    console.log(doctor , admissionDate , admitReason , selectedBed , wardCharges , dischargeDate , admissionCharges);
+    console.log("Received body:", req.body);
     const userId = req.user.id;
 
     db.query(
@@ -109,7 +73,6 @@ router.post("/admission", authenticateJWT, (req, res) => {
             doc_id = VALUES(doc_id),
             admission_date = VALUES(admission_date),
             admit_reason = VALUES(admit_reason),
-            bed_id = VALUES(bed_id),
             ward_charges = VALUES(ward_charges),
             discharge_date = VALUES(discharge_date),
             user_id = VALUES(user_id),
@@ -124,8 +87,8 @@ router.post("/admission", authenticateJWT, (req, res) => {
             admissionDate,
             admitReason,
             selectedBed,
-            wardCharges,
-            dischargeDate,
+            wardCharges || null,
+            dischargeDate || null,
             regId,
             userId,
             admissionCharges,

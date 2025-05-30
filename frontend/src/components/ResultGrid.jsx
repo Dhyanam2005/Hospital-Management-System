@@ -63,6 +63,7 @@ function ResultGrid({ regId }){
                         <td>Result Type</td>
                         <td>Range</td>
                         <td>Result</td>
+                        <td>Test Date</td>
                     </tr>
                 </thead>
                 <tbody>
@@ -81,6 +82,7 @@ function ResultGrid({ regId }){
                                 <td>
                                     <input type="text" value={res.result} onChange={(e) => handleResultChange (index,e.target.value)}/>
                                 </td>
+                                <td>{res.test_date}</td>
                             </tr>
                         ))
                     }

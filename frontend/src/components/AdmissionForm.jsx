@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 function NewAdmission({ regId }){
 
 const [doctor,setDoctor] = useState('');
+const [selectedBedDisplay, setSelectedBedDisplay] = useState('');
 const [errorMessage,setErrorMessage] = useState('');
 const [admitReason,setAdmitReason] = useState('');
 const [doctors,setDoctors] = useState([]);
@@ -14,7 +15,8 @@ const [vacantBeds,setVacantBeds] = useState([]);
 const [selectedBed,setSelectedBed] = useState('');
 const [wardCharges,setWardCharges] = useState('');
 const [admissionCharges,setAdmissionCharges] = useState('');
-const [fetchAdmission,setFetchAdmission] = useState('');
+const [selectedBedName,setSelectedBedName] = useState('');
+const [fetchAdmission,setFetchAdmission] = useState(false);
 const navigate = useNavigate();
 
 useEffect(() =>{
@@ -39,13 +41,27 @@ useEffect(() => {
         let data = await res.json();
 
         if(res.ok){
-            setAdmissionDate(data.admission_date);
-            setDischargeDate(data.discharge_date);
-            setDoctor(data.doc_id);
-            setAdmissionCharges(data.admission_charges);
-            setSelectedBed(data.bed_id);
-            setAdmitReason(data.admit_reason);
-            setWardCharges(data.ward_charges);
+            const admission = data[0];
+            if(!admission.message){
+                setAdmissionDate(admission.admission_date);
+                setDischargeDate(admission.discharge_date);
+                setDoctor(admission.doc_id);
+                setAdmissionCharges(admission.admission_charges);
+                setSelectedBed(admission.bed_id);
+                setAdmitReason(admission.admit_reason);
+                setWardCharges(admission.ward_charges);
+                setSelectedBedName(admission.bed);
+                setFetchAdmission(true);
+            }else{
+                setAdmissionDate("");
+                setDischargeDate("");
+                setDoctor("");
+                setAdmissionCharges("");
+                setSelectedBed("");
+                setAdmitReason("");
+                setWardCharges("");
+                setFetchAdmission(false);    
+            }
         }else{
             console.log("Res is not ok");
         }
@@ -133,13 +149,21 @@ const handleNewAdmissionForm = async (e) =>{
                         <input type = 'number' value={admissionCharges} onChange={(e) => setAdmissionCharges(e.target.value)}  id = "admission_charges" placeholder="Enter admisssion charges" className="w-full p-2 border-gray-300 rounded-lg placeholder-gray-400 placeholder-opacity-70 focus:outline-none focus:ring-2 focus:ring-blue-500"></input>
                     </div>
                     <div className="mt-8">
+                        {fetchAdmission ? 
+                            <div>
+                                <label> Bed : {selectedBedName}</label>
+                            </div>
+                        :
+                            <div>
                         <label className="block text-sm font-semibold text-gray-700">Select Bed</label>
                         <select value={selectedBed} onChange={(e) => setSelectedBed(e.target.value)} className="w-full p-2 mt-2 border border-gray-300 rounded-lg bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-blue-400 transition-all">
                             <option value="">Select Bed</option>
-                            {vacantBeds.map((bed) => (
-                                <option key={bed.bed_id} value={bed.bed_id}>{bed.bed}</option>
+                            {vacantBeds.map((b) => (
+                                <option key={b.bed_id} value={b.bed_id}>{b.bed}</option>
                             ))}
                         </select>
+                            </div>
+                        }
                     </div>
                     <div className="mt-8">
                         <label htmlFor="discharge_date" className="block text-sm font-semibold text-gray-700">Discharge Date</label>
