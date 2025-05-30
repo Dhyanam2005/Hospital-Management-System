@@ -3,12 +3,16 @@ const router = express.Router();
 const db = require('../config/db');
 
 router.get("/patientpdf",(req,res) => {
-    let patiendId = 4; 
+    let regId = req.query.regId;
+    console.log(req.query); 
     // For time being im conisidering constant value
 
     db.query(
-        'select patient_id,name,sex,phone,age,address from patient where patient_id = ?',
-        [patiendId],
+        `select p.patient_id,p.name,p.sex,p.phone,p.age,p.address 
+        from patient p,registration r
+        where p.patient_id = r.patient_id
+        and r.reg_id = ?`,
+        [regId],
         (err,result) => {
             if(err){
                 return res.json({ message : "Error in getting info of patient database"});

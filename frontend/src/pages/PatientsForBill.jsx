@@ -85,7 +85,7 @@ function PatientsForBill(){
                         </tbody>
                     </table>
                 }
-                {showTestGrid && <ViewPatientBill regId = {selectedRegId}/>}
+                {showTestGrid && <ViewPatientBill regId = {selectedRegId} patId = {selectedRegId}/>}
             </div>
         </div>
     )

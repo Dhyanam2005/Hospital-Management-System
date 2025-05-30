@@ -1,145 +1,88 @@
-import React, { useEffect, useState } from "react";
-import {
-  PDFDownloadLink,
-  Document,
-  Page,
-  Text,
-  View,
-  StyleSheet,
-} from "@react-pdf/renderer";
+import React, { useEffect, useState, useRef } from "react";
+import { useReactToPrint } from "react-to-print";
 import NavBar from "../components/Navbar";
 
-// PDF styles
-const styles = StyleSheet.create({
-  page: {
-    padding: 30,
-    fontSize: 12,
-    fontFamily: "Helvetica",
-  },
-  heading: {
-    fontSize: 16,
-    textAlign: "center",
-    marginBottom: 20,
-    fontWeight: "bold",
-  },
-  section: {
-    marginBottom: 20,
-  },
-  label: {
-    fontWeight: "bold",
-    marginBottom: 5,
-  },
-  value: {
-    fontWeight: "normal",
-  },
-  table: {
-    display: "table",
-    width: "auto",
-    borderStyle: "solid",
-    borderWidth: 1,
-    borderRightWidth: 0,
-    borderBottomWidth: 0,
-  },
-  tableRow: {
-    flexDirection: "row",
-  },
-  tableCell: {
-    borderStyle: "solid",
-    borderWidth: 1,
-    borderLeftWidth: 0,
-    borderTopWidth: 0,
-    padding: 5,
-    flex: 1,
-  },
-  headerCell: {
-    backgroundColor: "#f0f0f0",
-    fontWeight: "bold",
-  },
-  lastCell: {
-    textAlign: "right",
-  },
-});
-
-const MyDoc = ({ patientInfo, bill }) => {
-  // Calculate total amount safely
+function PrintableBill({ patientInfo, bill }) {
   const totalAmount = bill.reduce(
     (sum, item) => sum + Number(item.Amount || 0),
     0
   );
 
   return (
-    <Document>
-      <Page size="A4" style={styles.page}>
-        <Text style={styles.heading}>Clinical Laboratory, Lab Report</Text>
+    <div style={{ padding: "30px", fontFamily: "Arial", fontSize: "14px" }}>
+      <h2 style={{ textAlign: "center", marginBottom: "20px" }}>
+        Clinical Laboratory - Lab Report
+      </h2>
 
-        <View style={styles.section}>
-          <Text style={styles.label}>
-            Patient ID: <Text style={styles.value}>{patientInfo.patient_id}</Text>
-          </Text>
-          <Text style={styles.label}>
-            Name: <Text style={styles.value}>{patientInfo.name}</Text>
-          </Text>
-          <Text style={styles.label}>
-            Sex: <Text style={styles.value}>{patientInfo.sex}</Text>
-          </Text>
-          <Text style={styles.label}>
-            Age: <Text style={styles.value}>{patientInfo.age}</Text>
-          </Text>
-          <Text style={styles.label}>
-            Phone: <Text style={styles.value}>{patientInfo.phone}</Text>
-          </Text>
-          <Text style={styles.label}>
-            Address: <Text style={styles.value}>{patientInfo.address}</Text>
-          </Text>
-        </View>
+      <div style={{ marginBottom: "20px" }}>
+        <p><strong>Patient ID:</strong> {patientInfo.patient_id}</p>
+        <p><strong>Name:</strong> {patientInfo.name}</p>
+        <p><strong>Sex:</strong> {patientInfo.sex}</p>
+        <p><strong>Age:</strong> {patientInfo.age}</p>
+        <p><strong>Phone:</strong> {patientInfo.phone}</p>
+        <p><strong>Address:</strong> {patientInfo.address}</p>
+      </div>
 
-        <Text style={[styles.heading, { marginTop: 20 }]}>Bill Details</Text>
+      <h3 style={{ marginTop: "20px" }}>Bill Details</h3>
 
-        <View style={styles.table}>
-          {/* Table Header */}
-          <View style={styles.tableRow}>
-            <Text style={[styles.tableCell, styles.headerCell]}>Date</Text>
-            <Text style={[styles.tableCell, styles.headerCell]}>Description</Text>
-            <Text style={[styles.tableCell, styles.headerCell]}>Amount</Text>
-          </View>
-
-          {/* Table Data Rows */}
+      <table style={{ width: "100%", borderCollapse: "collapse" }}>
+        <thead>
+          <tr>
+            <th style={thStyle}>Date</th>
+            <th style={thStyle}>Description</th>
+            <th style={thStyle}>Amount</th>
+          </tr>
+        </thead>
+        <tbody>
           {bill.map((item, index) => (
-            <View style={styles.tableRow} key={index}>
-              <Text style={styles.tableCell}>{item.Date?.split("T")[0] || "N/A"}</Text>
-              <Text style={styles.tableCell}>{item.Description || "N/A"}</Text>
-              <Text style={[styles.tableCell, styles.lastCell]}>
-                {Number(item.Amount || 0).toFixed(2)}
-              </Text>
-            </View>
+            <tr key={index}>
+              <td style={tdStyle}>{item.Date?.split("T")[0] || "N/A"}</td>
+              <td style={tdStyle}>{item.Description || "N/A"}</td>
+              <td style={tdStyle}>{Number(item.Amount || 0).toFixed(2)}</td>
+            </tr>
           ))}
-
-          {/* Total Row */}
-          <View style={styles.tableRow}>
-            <Text style={[styles.tableCell, { flex: 2, fontWeight: "bold" }]}>Total</Text>
-            <Text style={[styles.tableCell, styles.lastCell, { fontWeight: "bold" }]}>
+          <tr>
+            <td style={{ ...tdStyle, fontWeight: "bold" }} colSpan={2}>
+              Total
+            </td>
+            <td style={{ ...tdStyle, fontWeight: "bold" }}>
               {totalAmount.toFixed(2)}
-            </Text>
-          </View>
-        </View>
-      </Page>
-    </Document>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   );
+}
+
+const thStyle = {
+  border: "1px solid black",
+  padding: "8px",
+  backgroundColor: "#f0f0f0",
+  textAlign: "left",
+};
+
+const tdStyle = {
+  border: "1px solid black",
+  padding: "8px",
+  textAlign: "left",
 };
 
 function ViewPatientBill({ regId }) {
   const [patientInfo, setPatientInfo] = useState({});
   const [bill, setBill] = useState([]);
+  const componentRef = useRef();
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+    documentTitle: "Patient_Bill",
+  });
 
   useEffect(() => {
     const fetchPatAndBillDetails = async () => {
+      console.log("regId received:", regId);
       try {
-        const res1 = await fetch(
-          `http://localhost:3000/patientpdf?regId=${regId}`
-        );
-        const res2 = await fetch(
-          `http://localhost:3000/patientBill?regId=${regId}`
-        );
+        const res1 = await fetch(`http://localhost:3000/patientpdf?regId=${regId}`);
+        const res2 = await fetch(`http://localhost:3000/patientBill?regId=${regId}`);
         const data = await res1.json();
         const data2 = await res2.json();
         if (res1.ok && data.length > 0 && res2.ok) {
@@ -154,17 +97,18 @@ function ViewPatientBill({ regId }) {
   }, [regId]);
 
   return (
-    <div>
-      <div className="view-patient-bill" style={{ padding: 20 }}>
-        <PDFDownloadLink
-          document={<MyDoc patientInfo={patientInfo} bill={bill} />}
-          fileName="patient_bill.pdf"
-        >
-          {({ loading }) =>
-            loading ? "Loading document..." : "Download Patient Bill PDF"
-          }
-        </PDFDownloadLink>
-      </div>
+    <div className="view-patient-bill" style={{ padding: 20 }}>
+      {Object.keys(patientInfo).length > 0 && bill.length > 0 && (
+        <>
+          <button onClick={handlePrint} style={{ marginBottom: 20 }}>
+            Download Patient Bill PDF
+          </button>
+
+          <div ref={componentRef}>
+            <PrintableBill patientInfo={patientInfo} bill={bill} />
+          </div>
+        </>
+      )}
     </div>
   );
 }
