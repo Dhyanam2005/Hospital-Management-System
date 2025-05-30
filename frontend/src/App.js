@@ -21,6 +21,7 @@ import ReferralDocReport from './pages/ReferralDocReport';
 import DoctorConsultation from './pages/DoctorConsultation';
 import MedicalItem from './pages/MedicalItem';
 import PatientCharge from './pages/PatientCharge';
+import Admission from './pages/Admission';
 
 function App() {
     return(
@@ -47,6 +48,7 @@ function App() {
                 <Route path='/docConsultation' element={<DoctorConsultation />}/>
                 <Route path='/medicalItem' element={<MedicalItem />}/>
                 <Route path='/patientCharge' element={<PatientCharge />}/>
+                <Route path='/admission' element={<Admission />}/>
             </Routes>
         </Router>
     )
