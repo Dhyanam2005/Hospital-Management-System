@@ -17,4 +17,11 @@ router.get("/fetchpat",(req,res) => {
     )
 })
 
+router.get("/fetchAllPatients",(req,res) => {
+    db.query(`SELECT * from patient`,(err,result) => {
+        if(err) return res.json({ message : "Error in fetching all patients"});
+        res.json(result);
+    })
+})
+
 module.exports = router;

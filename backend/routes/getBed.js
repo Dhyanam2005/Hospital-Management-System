@@ -98,7 +98,7 @@ router.post("/admission", authenticateJWT, (req, res) => {
         regId,
         admissionCharges
     } = req.body;
-
+    console.log(doctor , admissionDate , admitReason , selectedBed , wardCharges , dischargeDate , admissionCharges);
     const userId = req.user.id;
 
     db.query(
@@ -113,7 +113,12 @@ router.post("/admission", authenticateJWT, (req, res) => {
             ward_charges = VALUES(ward_charges),
             discharge_date = VALUES(discharge_date),
             user_id = VALUES(user_id),
-            admission_charges = VALUES(admission_charges)`,
+            admission_charges = VALUES(admission_charges);
+            
+            UPDATE ward_room_bed set bed_status = "O" where bed_id = ?;
+
+            UPDATE registration set reg_status = "A" where reg_id = ?;
+        `,
         [
             doctor,
             admissionDate,
@@ -123,7 +128,9 @@ router.post("/admission", authenticateJWT, (req, res) => {
             dischargeDate,
             regId,
             userId,
-            admissionCharges
+            admissionCharges,
+            selectedBed,
+            regId
         ],
         (err, result) => {
             if (err) return res.json({ message: "Insert/Update failed", error: err });

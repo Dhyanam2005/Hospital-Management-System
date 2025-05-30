@@ -22,6 +22,7 @@ import DoctorConsultation from './pages/DoctorConsultation';
 import MedicalItem from './pages/MedicalItem';
 import PatientCharge from './pages/PatientCharge';
 import Admission from './pages/Admission';
+import Appointment from './pages/Appointment';
 
 function App() {
     return(
@@ -49,6 +50,7 @@ function App() {
                 <Route path='/medicalItem' element={<MedicalItem />}/>
                 <Route path='/patientCharge' element={<PatientCharge />}/>
                 <Route path='/admission' element={<Admission />}/>
+                <Route path='/appointment' element={<Appointment />}/>
             </Routes>
         </Router>
     )
