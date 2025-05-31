@@ -100,8 +100,8 @@ function ViewPatientBill({ regId }) {
     <div className="view-patient-bill" style={{ padding: 20 }}>
       {Object.keys(patientInfo).length > 0 && bill.length > 0 && (
         <>
-          <button onClick={handlePrint} style={{ marginBottom: 20 }}>
-            Download Patient Bill PDF
+          <button onClick={handlePrint} style={{ marginBottom: 20}} className="block mx-auto">
+            Display Patient Bill
           </button>
 
           <div ref={componentRef}>

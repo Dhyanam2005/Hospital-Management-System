@@ -23,7 +23,10 @@ import MedicalItem from './pages/MedicalItem';
 import PatientCharge from './pages/PatientCharge';
 import Admission from './pages/Admission';
 import Appointment from './pages/Appointment';
-import PatientsForBill from './pages/PatientsForBill';
+import PayBillBefore from './pages/PayBillBefore';
+import ViewPatientBill from './pages/ViewPatientBill'
+import { View } from '@react-pdf/renderer';
+
 function App() {
     return(
         <Router>
@@ -51,7 +54,8 @@ function App() {
                 <Route path='/patientCharge' element={<PatientCharge />}/>
                 <Route path='/admission' element={<Admission />}/>
                 <Route path='/appointment' element={<Appointment />}/>
-                <Route path='/viewPatientBill' element={<PatientsForBill />}/>
+                <Route path='/viewPatientBill' element={<PayBillBefore />}/>
+                <Route path='/viewPDFBill' element={<PayBillBefore />}/>
             </Routes>
         </Router>
     )

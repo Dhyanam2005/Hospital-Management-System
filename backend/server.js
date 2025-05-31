@@ -28,6 +28,7 @@ const retrievePatientRouter = require("./routes/retrievePatientCharge");
 const getAdmissionRouter = require("./routes/getAdmission");
 const getAppointmentsRouter = require("./routes/getAppointments");
 const getPatientBillRouter = require("./routes/getPatientBill");
+const getPayBillRouter = require("./routes/payBill");
 
 const app = express();
 const PORT = 3000;
@@ -35,6 +36,7 @@ const PORT = 3000;
 app.use(cors());
 app.use(express.json());
 
+app.use("/",getPayBillRouter);
 app.use("/",getPatientBillRouter);
 app.use("/",getAppointmentsRouter);
 app.use("/",getAdmissionRouter);

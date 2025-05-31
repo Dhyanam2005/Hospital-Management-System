@@ -1,0 +1,86 @@
+import NavBar from "../components/Navbar";
+import React , { useEffect, useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
+import PayBill from "./PayBill";
+
+function PayBillBefore(){
+    const [patientName,setPatientName] = useState('');
+    const [selectedRegId,setSelectedRegId] = useState('');
+    const [patientData,setPatientData]= useState([]);
+    const [showTestGrid, setShowTestGrid] = useState(false);
+
+    
+    const handleSearch = async () => {
+    try{
+        let res = await fetch(`http://localhost:3000/fetchpatreg?patientName=${encodeURIComponent(patientName)}`,{
+            method : 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        });
+
+        let data = await res.json();
+
+        if(res.ok){
+            console.log(data);
+            setPatientData(data);
+        }else{
+            console.log("res is not ok");
+        }
+    }catch(err){
+        console.log("Error in try statement");
+    }
+}
+
+    return(
+        <div>
+            <NavBar/>
+                <div className="search-bar">
+                    <label>Search Patient</label>
+                    <input className = 'search-box' value = {patientName} onChange = {(e) => setPatientName(e.target.value)}type='text' placeholder='Enter patient Name'></input>
+                    <button onClick={() => {
+                        setSelectedRegId('');
+                        handleSearch();
+                    }}>
+                        <FontAwesomeIcon icon={faMagnifyingGlass} />
+                    </button>
+                </div>
+                {patientData.length > 0 && 
+                    <table className='table-container'>
+                        <thead>
+                            <tr>
+                                <th>Patient ID</th>
+                                <th>Name</th>
+                                <th>Age</th>
+                                <th>Registration ID</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {patientData.map((patient,index) => (
+                            <tr key={index}>
+                            <td>{patient.patient_id}</td>
+                            <td>{patient.name}</td>
+                            <td>{patient.age}</td>
+                            <td>{patient.reg_id}</td>
+  <td>
+    <input
+      type="radio"
+      name="select"
+      value={patient.reg_id}
+      onChange={() => {
+        setSelectedRegId(patient.reg_id);
+        setShowTestGrid(true);
+      }}
+    />
+  </td>
+</tr>
+
+                        )) }
+                        </tbody>
+                    </table>
+                }
+                {showTestGrid && <PayBill regId = {selectedRegId}/>}
+        </div>
+    )
+}
+
+export default PayBillBefore;
