@@ -3,7 +3,7 @@ import "./DoctorConsultation.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
 import DoctorConsultationForm from "../components/DoctorConsultationForm";
-import NavBar from "../components/Navbar";
+import NavBar from "../components/SidebarMenu";
 import NewAdmission from "../components/AdmissionForm";
 
 function DoctorConsultation(){
@@ -36,7 +36,7 @@ function DoctorConsultation(){
     return(
         <div>
             <NavBar/>
-            <div className="doctorConsultation">
+            <div className="admission ml-[20%]">
                 <h1 className="bold text-2xl block text-center pt-5">Admission</h1>
                 <div className="search-bar">
                     <label htmlFor="search">Search Patient</label>

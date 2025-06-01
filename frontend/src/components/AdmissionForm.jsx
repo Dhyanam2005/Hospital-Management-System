@@ -1,5 +1,5 @@
 import React , { useEffect, useState } from "react";
-import Navbar from "../components/Navbar";
+import Navbar from "./SidebarMenu";
 import { useNavigate } from "react-router-dom";
 
 function NewAdmission({ regId }){

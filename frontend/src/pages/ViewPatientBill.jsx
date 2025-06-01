@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useReactToPrint } from "react-to-print";
-import NavBar from "../components/Navbar";
+import NavBar from "../components/SidebarMenu";
 
 function PrintableBill({ patientInfo, bill }) {
   const totalAmount = bill.reduce(

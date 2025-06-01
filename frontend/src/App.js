@@ -24,7 +24,9 @@ import PatientCharge from './pages/PatientCharge';
 import Admission from './pages/Admission';
 import Appointment from './pages/Appointment';
 import PayBillBefore from './pages/PayBillBefore';
-import ViewPatientBill from './pages/ViewPatientBill'
+import ViewPatientBill from './pages/ViewPatientBill';
+import Charts from './pages/Charts';
+import Prescription from './pages/Presrciption';
 import { View } from '@react-pdf/renderer';
 
 function App() {
@@ -44,11 +46,11 @@ function App() {
                 <Route path='/test' element={<Test />}/>
                 <Route path='/result' element={<Result />}/>
                 <Route path='/pdf' element={<PDF />}/>
-                <Route path='/dwr' element={<DoctorWiseRegistration />}/>
-                <Route path='/prsw' element={<PatientReportStateWise />}/>
-                <Route path='/dtdf' element={<DeptTestDocFees />}/>
-                <Route path='/ddf' element={<DeptDocFees />}/>
-                <Route path='/rdr' element={<ReferralDocReport />}/>
+                <Route path='/doctor-wise-reg' element={<DoctorWiseRegistration />}/>
+                <Route path='/patient-state-wise' element={<PatientReportStateWise />}/>
+                <Route path='/dept-test-doc' element={<DeptTestDocFees />}/>
+                <Route path='/dept-doc' element={<DeptDocFees />}/>
+                <Route path='/referral-doc' element={<ReferralDocReport />}/>
                 <Route path='/docConsultation' element={<DoctorConsultation />}/>
                 <Route path='/medicalItem' element={<MedicalItem />}/>
                 <Route path='/patientCharge' element={<PatientCharge />}/>
@@ -56,6 +58,9 @@ function App() {
                 <Route path='/appointment' element={<Appointment />}/>
                 <Route path='/viewPatientBill' element={<PayBillBefore />}/>
                 <Route path='/viewPDFBill' element={<PayBillBefore />}/>
+                <Route path='/chart' element={<Charts />}/>
+                <Route path='/prescription' element={<Prescription />}/>
+                <Route path='/new-doctor' element={<NewDoctorPopUp />}/>
             </Routes>
         </Router>
     )

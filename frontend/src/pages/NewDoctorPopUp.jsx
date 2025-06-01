@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import "./NewDoctorPopUp.css";
+import Sidebar from '../components/SidebarMenu';
 
-function NewDoctorPopUp({onClose}) {
+function NewDoctorPopUp() {
   const [doctorName, setDoctorName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -60,7 +61,7 @@ function NewDoctorPopUp({onClose}) {
         const data = await res.json();
 
         if (res.ok) {
-            onClose();
+            alert("Doctor created successfully");
         } else {
             setErrorMessage(data.message || 'Something went wrong');
         }
@@ -70,14 +71,10 @@ function NewDoctorPopUp({onClose}) {
 };
 
   return (
-    <div className='max-w-md mx-auto p-6 shadow-lg rounded-lg'>
-      <button onClick={onClose} className='close-button bold text-3xl'>X</button>
-                  {errorMessage && (
-                <div className="p-3 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded w-72 text-center mb-4 mx-auto block">
-                    {errorMessage}
-                </div>
-            )}
-      <h1 className="font-bold text-3xl text-center">Create a New Doctor</h1>
+    <div>
+      <Sidebar/>
+      <div className='max-w-md mx-auto p-6 shadow-lg rounded-lg ml-[20%]'>
+        <h1 className="font-bold text-3xl text-center">Create a New Doctor</h1>
       <form onSubmit={handleDoctorFormSubmit}>
         <div className="mt-6">
           <label htmlFor="doctorName" className="block text-sm font-semibold text-gray-700">Name</label>
@@ -179,6 +176,7 @@ function NewDoctorPopUp({onClose}) {
             <button className='submit-button'>Submit</button>
         </div>
       </form>
+      </div>
     </div>
   );
 }

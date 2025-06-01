@@ -1,5 +1,5 @@
 import React , { useEffect, useState } from "react";
-import NavBar from "../components/Navbar"
+import NavBar from "../components/SidebarMenu"
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { format } from "date-fns";
@@ -51,7 +51,7 @@ function ReferralDocReport
     return(
         <div>
             <NavBar />
-            <div className="doctor-wise-reg-fees">
+            <div className="doctor-wise-reg-fees ml-[20%]">
                 <h1 className="bold text-center block pt-5 text-2xl">Referral Doctor Summary</h1>
                 <div className="flex items-center gap-4 mb-5">
                     <div>

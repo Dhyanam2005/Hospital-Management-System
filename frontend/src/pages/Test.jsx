@@ -1,4 +1,4 @@
-import NavBar from "../components/Navbar";
+import NavBar from "../components/SidebarMenu";
 import React , { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
@@ -36,6 +36,7 @@ function Test(){
     return(
         <div>
             <NavBar/>
+            <div className="test ml-[20%]">
                 <div className="search-bar">
                     <label>Search Patient</label>
                     <input className = 'search-box' value = {patientName} onChange = {(e) => setPatientName(e.target.value)}type='text' placeholder='Enter patient Name'></input>
@@ -81,6 +82,7 @@ function Test(){
                     </table>
                 }
                 {showTestGrid && <TestGrid regId = {selectedRegId}/>}
+            </div>
         </div>
     )
 }

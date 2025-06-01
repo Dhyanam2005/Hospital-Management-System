@@ -1,5 +1,5 @@
 import React , { useEffect, useState } from 'react';
-import NavBar from "../components/Navbar";
+import NavBar from "../components/SidebarMenu";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
 import "./Registration.css";
@@ -34,7 +34,7 @@ function Registration(){
     return(
         <div>
             <NavBar />
-            <div className="registration">
+            <div className="registration ml-[20%]">
                 <div className="search-bar">
                     <label>Search Patient</label>
                     <input className = 'search-box' value = {patientName} onChange = {(e) => setPatientName(e.target.value)}type='text' placeholder='Enter patient Name'></input>

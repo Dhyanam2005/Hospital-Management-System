@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import "./UserList.css"
-import Navbar from '../components/Navbar';
+import Navbar from '../components/SidebarMenu';
 
 
 function UserList() {

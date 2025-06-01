@@ -1,16 +1,11 @@
 import React, { useState , useEffect } from 'react';
 import "./Doctor.css";
-import NewDoctorPopUp from './NewDoctorPopUp';
-import Navbar from '../components/Navbar';
+import Sidebar from '../components/SidebarMenu';
 
 
 function Doctor(){
   
     const [doctors,setDoctors] = useState([]);
-    const [showPopUp,setShowPopUp] = useState(false);
-    const closePopUp = () => {
-      setShowPopUp(false);
-    }
 
     useEffect(() => {
         const fetchDoctor = async () => {
@@ -32,9 +27,10 @@ function Doctor(){
 
     return(
       <div>
-      <Navbar />
-      {!showPopUp && <div className="doctor-container">
-    <h2 className="doctor-heading">Doctors List</h2>
+        <Sidebar/>
+        <div className='ml-[20%]'>
+      <div className="doctor-container">
+    <h2 className="doctor-heading ml">Doctors List</h2>
     <table className="doctor-table">
       <thead>
         <tr>
@@ -67,16 +63,12 @@ function Doctor(){
         ))}
       </tbody>
     </table>
-    <div className="button-wrapper">
-      <button onClick={() => setShowPopUp(true)} className='new-doctor'>Create a New Doctor</button>
-    </div>
-  </div>}
-      {showPopUp && <NewDoctorPopUp  onClose = {closePopUp}/>}
-</div>
+  </div>
+        </div>
+      </div>
 
     )
 }
 
 
-//Used showPopUp 
 export default Doctor;

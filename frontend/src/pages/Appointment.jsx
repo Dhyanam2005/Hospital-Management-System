@@ -5,7 +5,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { format } from "date-fns";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
-import Navbar from "../components/Navbar";
+import Navbar from "../components/SidebarMenu";
 
 function Appointment() {
   const [selectedDate, setSelectedDate] = useState('');

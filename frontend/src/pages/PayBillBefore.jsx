@@ -1,4 +1,4 @@
-import NavBar from "../components/Navbar";
+import Sidebar from "../components/SidebarMenu";
 import React , { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
@@ -33,8 +33,9 @@ function PayBillBefore(){
 
     return(
         <div>
-            <NavBar/>
-                <div className="search-bar">
+            <Sidebar/>
+            <div className="ml-[20%]">
+               <div className="search-bar">
                     <label>Search Patient</label>
                     <input className = 'search-box' value = {patientName} onChange = {(e) => setPatientName(e.target.value)}type='text' placeholder='Enter patient Name'></input>
                     <button onClick={() => {
@@ -79,6 +80,7 @@ function PayBillBefore(){
                     </table>
                 }
                 {showTestGrid && <PayBill regId = {selectedRegId}/>}
+            </div>
         </div>
     )
 }

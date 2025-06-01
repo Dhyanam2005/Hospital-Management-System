@@ -3,7 +3,7 @@ import "./MedicalItem.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
 import MedicalItemForm from "../components/MedicalItemForm";
-import NavBar from "../components/Navbar";
+import NavBar from "../components/SidebarMenu";
 
 function MedicalItem(){
 
@@ -35,7 +35,7 @@ function MedicalItem(){
     return(
         <div>
             <NavBar/>
-            <div className="MedicalItem">
+            <div className="MedicalItem ml-[20%]">
                 <h1 className="bold text-2xl block text-center pt-5">Medical Item</h1>
                 <div className="search-bar">
                     <label htmlFor="search">Search Patient</label>
