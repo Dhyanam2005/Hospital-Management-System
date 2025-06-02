@@ -1,6 +1,7 @@
 .sidebar-menu{
     width: 20%;
     position: fixed;
+    z-index: 100;
 }
 
 .submenu-link{

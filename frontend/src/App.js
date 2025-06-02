@@ -29,6 +29,11 @@ import Charts from './pages/Charts';
 import Prescription from './pages/Presrciption';
 import Sidebar from './components/SidebarMenu';
 import Breadcrumb from './components/BreadCrumb';
+import LabTestMaster from './pages/LabTestmaster';
+import LocationMaster from './pages/LocationMaster';
+import PharmacyItemMaster from './pages/PharmacyItemMaster';
+import FacilityMaster from './pages/FacilityMaster';
+import DoctorMaster from './pages/DoctorMaster';
 
 function Layout({ children }) {
   return (
@@ -78,6 +83,11 @@ function App() {
               <Route path="/viewPDFBill" element={<PayBillBefore />} />
               <Route path="/chart" element={<Charts />} />
               <Route path="/prescription" element={<Prescription />} />
+              <Route path="/lab-test-master" element={<LabTestMaster />} />
+              <Route path="/location-master" element={<LocationMaster />} />
+              <Route path="/pharmacy-item-master" element={<PharmacyItemMaster />} />
+              <Route path="/facility-master" element={<FacilityMaster />} />
+              <Route path="/doctor-master" element={<DoctorMaster />} />
             </Routes>
           </Layout>
         } />

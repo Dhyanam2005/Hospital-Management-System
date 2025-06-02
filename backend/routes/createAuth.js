@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { findUserByUsername } = require('../models/userModel');
 const db = require("../config/db");
+const bcrypt = require('bcryptjs');
 
 const userTypeMapping = {
     admin: 1,
@@ -9,7 +10,7 @@ const userTypeMapping = {
     operator: 3
 };
 
-router.post("/newuser", (req, res) => {
+router.post("/newuser", async (req, res) => {
     const { username, password, confirm_password, type } = req.body;
 
     if (!username || !password || !confirm_password || !type || type === "Select Role") {
@@ -19,7 +20,8 @@ router.post("/newuser", (req, res) => {
     if (password !== confirm_password || password.length < 8) {
         return res.status(400).json({ message: 'Password not validating' });
     }
-
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password,saltRounds);
     findUserByUsername(username, (err, users) => {
         if (err) {
             return res.status(500).json({ message: 'DB error' });
@@ -28,10 +30,10 @@ router.post("/newuser", (req, res) => {
         if (users.length !== 0) {
             return res.status(409).json({ message: "User already exists" });
         }
-
+        
         db.query(
             "INSERT INTO user (user_name, password, user_type) VALUES (?, ?, ?)",
-            [username, password, userTypeMapping[type]],
+            [username, hashedPassword, userTypeMapping[type]],
             (err, result) => {
                 if (err) {
                     return res.status(500).json({ message: "DB insert error", error: err });

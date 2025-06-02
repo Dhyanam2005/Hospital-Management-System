@@ -13,7 +13,7 @@ const sidebarMenu = [
       { label: "Lab Test Master", link: "/lab-test-master" },
       { label: "Pharmacy Item Master", link: "/pharmacy-item-master" },
       { label: "Facility Master", link: "/facility-master" },
-      { label: "Doctor Master", link: "/doctor" },
+      { label: "Doctor Master", link: "/doctor-master" },
     ],
     icon : faTable
   },

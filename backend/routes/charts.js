@@ -70,8 +70,6 @@ LEFT JOIN (
 ) AS tt ON d.doc_id = tt.doc_id
 ORDER BY total_fee DESC
 LIMIT 5;
-
-;
 `,(err,result) => {
             if(err) return res.json({ message : "Error in fetching third chart details"});
             res.json(result);
