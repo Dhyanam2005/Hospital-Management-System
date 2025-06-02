@@ -36,7 +36,6 @@ function Result(){
 
     return(
         <div>
-            <NavBar />
             <div className="result ml-[20%]">
                 <div className="search-bar">
                     <label>Search Patient</label>

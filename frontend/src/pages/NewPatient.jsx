@@ -85,7 +85,6 @@ const handleNewPatientForm = async (e) =>{
 
     return(
         <div>
-            <Sidebar />
             <div className="new-patient ml-[20%] w-4/5">
                 {errorMessage && (
                 <div className="p-3 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded w-72 text-center mb-4 mx-auto block">

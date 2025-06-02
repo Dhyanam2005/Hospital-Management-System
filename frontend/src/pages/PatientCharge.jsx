@@ -34,7 +34,6 @@ function PatientCharge(){
 
     return(
         <div>
-            <NavBar/>
             <div className="PatientCharge ml-[20%]">
                 <h1 className="bold text-2xl block text-center pt-5">Patient Charge</h1>
                 <div className="search-bar">

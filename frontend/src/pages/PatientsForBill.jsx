@@ -33,7 +33,6 @@ function PatientsForBill(){
 
     return(
         <div>
-            <NavBar/>
             <div className="doctorConsultation">
                 <h1 className="bold text-2xl block text-center pt-5">View patient Bill</h1>
                 <div className="search-bar">

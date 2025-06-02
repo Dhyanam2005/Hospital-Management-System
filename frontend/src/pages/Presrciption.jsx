@@ -44,7 +44,6 @@ function Prescription() {
 
     return (
         <div>
-            <SidebarMenu />
             <div className="ml-[20%]">
                 <div>
                     <select

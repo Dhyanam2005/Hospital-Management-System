@@ -27,7 +27,6 @@ function Doctor(){
 
     return(
       <div>
-        <Sidebar/>
         <div className='ml-[20%]'>
       <div className="doctor-container">
     <h2 className="doctor-heading ml">Doctors List</h2>

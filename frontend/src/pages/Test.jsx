@@ -35,7 +35,6 @@ function Test(){
 
     return(
         <div>
-            <NavBar/>
             <div className="test ml-[20%]">
                 <div className="search-bar">
                     <label>Search Patient</label>

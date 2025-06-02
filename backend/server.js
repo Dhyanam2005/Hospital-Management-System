@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const registerForHashingRouter = require("./routes/registerForHashing");
 const loginRouter = require("./routes/auth")
 const userRouter = require("./routes/userRouter")
 const newUserRouter = require("./routes/createAuth")
@@ -38,7 +39,7 @@ const PORT = 3000;
 app.use(cors());
 app.use(express.json());
 
-
+app.use("/",registerForHashingRouter);
 app.use("/",prescriptionRouter);
 app.use("/",chartRouter);
 app.use("/",getPayBillRouter);

@@ -35,7 +35,6 @@ function DoctorConsultation(){
 
     return(
         <div>
-            <NavBar/>
             <div className="admission ml-[20%]">
                 <h1 className="bold text-2xl block text-center pt-5">Admission</h1>
                 <div className="search-bar">

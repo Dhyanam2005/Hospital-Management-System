@@ -49,7 +49,6 @@ function DeptTestDocFees(){
 
     return(
         <div>
-            <NavBar />
             <div className="doctor-wise-reg-fees ml-[20%]">
                 <h1 className="bold text-center block pt-5 text-2xl">Patient Report State Wise</h1>
                 <div className="flex items-center gap-4 mb-5">

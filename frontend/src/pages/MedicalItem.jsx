@@ -34,7 +34,6 @@ function MedicalItem(){
 
     return(
         <div>
-            <NavBar/>
             <div className="MedicalItem ml-[20%]">
                 <h1 className="bold text-2xl block text-center pt-5">Medical Item</h1>
                 <div className="search-bar">

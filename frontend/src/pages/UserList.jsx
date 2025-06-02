@@ -29,7 +29,6 @@ function UserList() {
 
     return(
         <div>
-            <Navbar/>
             <div className='p-6 userlist'>
             <h1 className="text-2xl font-bold mb-4 block text-center">Browse All Users</h1>
 

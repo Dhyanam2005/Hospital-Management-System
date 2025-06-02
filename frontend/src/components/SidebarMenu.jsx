@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { faUserDoctor } from '@fortawesome/free-solid-svg-icons';
 import { faHospitalUser } from '@fortawesome/free-solid-svg-icons';
@@ -9,75 +9,18 @@ import { faFileAlt } from '@fortawesome/free-solid-svg-icons';
 import "./SidebarMenu.css"
 import { icon } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
-const sidebarMenu = [
-  {
-    title: "Master",
-    submenu: [
-      { label: "Location Master", link: "/location-master" },
-      { label: "Lab Test Master", link: "/lab-test-master" },
-      { label: "Pharmacy Item Master", link: "/pharmacy-item-master" },
-      { label: "Facility Master", link: "/facility-master" },
-      { label: "Doctor Master", link: "/doctor" },
-    ],
-    icon : faTable
-  },
-  {
-    title: "Patient",
-    submenu: [
-      { label: "New Patient", link: "/patient" },
-      { label: "Patient Registration", link: "/registration" },
-      { label: "Patient Admission", link: "/admission" },
-    ],
-    icon : faHospitalUser
-  },
-  {
-    title: "Clinical Services",
-    submenu: [
-      { label: "Test", link: "/test" },
-      { label: "Test Results", link: "/result" },
-      { label: "Pharmacy Items", link: "/medicalItem" },
-      { label: "Service", link: "/patientCharge" },
-    ],
-    icon : faKitMedical
-  },
-  {
-    title: "Doctor",
-    submenu: [
-      { label: "New Doctor", link: "/new-doctor" },
-      { label: "Doctor Consultations", link: "/docConsultation" },
-      { label: "Prescriptions", link: "/prescription" },
-    ],
-    icon : faUserDoctor
-  },
-  {
-    title: "Billing",
-    submenu: [
-      { label: "View Bills", link: "/view-bills" },
-      { label: "Record Payment", link: "/viewPDFBill" },
-    ],
-    icon : faMoneyBill
-  },
-  {
-    title : "Reports",
-    submenu : [{
-      label : "Tabular",
-      submenu : [
-          { label: "Patient Statewise", link: "/patient-state-wise" },
-          { label: "Doctor Collection", link: "/doctor-wise-reg" },
-          { label: "Lab Performance", link: "/dept-test-doc" },
-          { label: "Referral Doctor Summary", link: "/referral-doc" },
-          { label: "Doctor Test Collection", link: "/dept-doc" }
-      ]
-    },
-    {label : "Charts" , link : "/chart"}
-  ],
-    icon : faFileAlt
-  }
-];
+import { getVisibleMenuByRole } from "../utils/sidebarFilter";
+import getUserRole from "../utils/auth";
+import sidebarMenu from '../utils/sidebarMenu';
 
 
 function Sidebar() {
+
+  const role = getUserRole();
+  const [visibleMenu,setVisibleMenu] = useState([]);
+  useEffect(() => {
+    setVisibleMenu(getVisibleMenuByRole(role));
+  },[]);
 
     const [openIndex,setOpenIndex] = useState(null);
     const [subMenuIndex,setSubMenuIndex] = useState(null);
@@ -101,7 +44,7 @@ function Sidebar() {
 
     return(
         <div className="w-64 bg-gray-900 text-white h-screen overflow-y-auto p-4 sidebar-menu">
-            {sidebarMenu.map((menu,index) => (
+            {visibleMenu.map((menu,index) => (
                 <div key={index}>
                     <div
                         onClick={() => {

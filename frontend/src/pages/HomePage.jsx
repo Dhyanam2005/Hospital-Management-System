@@ -6,7 +6,6 @@ import Navbar from '../components/SidebarMenu';
 function HomePage() {
     return (
         <div className="home-page">
-            <Navbar/>
             
         </div>
     );

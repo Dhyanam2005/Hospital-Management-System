@@ -36,7 +36,6 @@ function ProfilePage(){
 
     return(
         <div>
-            <Navbar/>
             <div className='profile-page'>
             <div className="title-container">
                 <h1 className='bold text-3xl block text-center'>Profile Page</h1>

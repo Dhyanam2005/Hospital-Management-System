@@ -6,33 +6,40 @@
 
     const SECRET_KEY = "your-secret-key";
 
-    router.post("/login",(req,res) => {
-        const { username , password } = req.body;
-        console.log("Username is ", username);
-        console.log("Password is ",password);
-        db.query("SELECT * FROM user WHERE user_name = ?", [username], (err, result) => {
-            if(err){
-                return res.status(401).json({ message : "Error"});
-            }
-            if(result.length == 0){
-                return res.status(401).json({ message : "No Result"});
-            }
+    router.post("/login", async (req, res) => {
+  const { username, password } = req.body;
 
-            const user = result[0];
-            console.log("Password is ",user.password);
+  try {
+    // Wrap db.query in a Promise to use await
+    const result = await new Promise((resolve, reject) => {
+      db.query("SELECT * FROM user WHERE user_name = ?", [username], (err, results) => {
+        if (err) reject(err);
+        else resolve(results);
+      });
+    });
 
-        
-            if (password !== user.password) {
-                return res.status(401).json({ message: "Invalid password" });
-            }   
-                const token = jwt.sign(
-                    { id : user.user_id ,username : user.user_name , type : user.user_type },
-                    SECRET_KEY,
-                    { expiresIn : '1h'}
-                );
+    if (result.length === 0) {
+      return res.status(401).json({ message: "No Result" });
+    }
 
-                res.json({ token });
-        })
-    })
+    const user = result[0];
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: "Invalid Password" });
+    }
+
+    const token = jwt.sign(
+      { id: user.user_id, username: user.user_name, type: user.user_type },
+      SECRET_KEY,
+      { expiresIn: "1h" }
+    );
+
+    res.json({ token });
+  } catch (error) {
+    res.status(500).json({ message: "Error occurred", error });
+  }
+});
+
 
     module.exports = router;

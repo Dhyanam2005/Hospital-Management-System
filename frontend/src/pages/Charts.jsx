@@ -52,7 +52,6 @@ function Charts() {
 
   return (
     <div>
-      <Navbar />
       <div className='charts ml-[20%]'>
       <div>
         <h2 className="text-xl font-bold mb-4">Top 5 Tests By Count</h2>

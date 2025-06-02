@@ -33,7 +33,6 @@ function PayBillBefore(){
 
     return(
         <div>
-            <Sidebar/>
             <div className="ml-[20%]">
                <div className="search-bar">
                     <label>Search Patient</label>

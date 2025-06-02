@@ -72,7 +72,6 @@ function NewDoctorPopUp() {
 
   return (
     <div>
-      <Sidebar/>
       <div className='max-w-md mx-auto p-6 shadow-lg rounded-lg ml-[20%]'>
         <h1 className="font-bold text-3xl text-center">Create a New Doctor</h1>
       <form onSubmit={handleDoctorFormSubmit}>

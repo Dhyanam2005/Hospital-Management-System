@@ -33,7 +33,6 @@ function Registration(){
 
     return(
         <div>
-            <NavBar />
             <div className="registration ml-[20%]">
                 <div className="search-bar">
                     <label>Search Patient</label>
