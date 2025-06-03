@@ -75,21 +75,21 @@ function ReferralDocReport
                 <table className="table-auto w-full mt-5">
                     <thead>
                         <tr>
-                            <td>Date</td>
-                            <td>Doctor</td>
-                            <td>Registration Fees</td>
-                            <td>Test Fees</td>
-                            <td>Total Fees</td>
+                            <td className="border border-gray-300 text-left font-bold">Date</td>
+                            <td className="border border-gray-300 text-left font-bold">Doctor</td>
+                            <td className="border border-gray-300 text-left font-bold">Registration Fees</td>
+                            <td className="border border-gray-300 text-left font-bold">Test Fees</td>
+                            <td className="border border-gray-300 text-left font-bold">Total Fees</td>
                         </tr>
                     </thead>
                     <tbody>
                         {filteredData.map((item,index) => (
                             <tr key={index}>
-                                <td>{item["Month"]}</td>
-                                <td>{item["Doctor"]}</td>
-                                <td>{item["Registration Fees"]}</td>
-                                <td>{item["Test Fees"]}</td>
-                                <td>{item["Total Fees"]}</td>
+                                <td className="border border-gray-300">{item["Month"]}</td>
+                                <td className="border border-gray-300">{item["Doctor"]}</td>
+                                <td className="border border-gray-300">{item["Registration Fees"]}</td>
+                                <td className="border border-gray-300">{item["Test Fees"]}</td>
+                                <td className="border border-gray-300">{item["Total Fees"]}</td>
                             </tr>
                         ))}
                     </tbody>

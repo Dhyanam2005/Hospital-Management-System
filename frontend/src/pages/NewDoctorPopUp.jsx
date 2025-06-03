@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom'; 
-import "./NewDoctorPopUp.css";
+import styles from "./NewDoctorPopUp.module.css";
 import Sidebar from '../components/SidebarMenu';
 
 function NewDoctorPopUp() {
@@ -72,107 +72,113 @@ function NewDoctorPopUp() {
 
   return (
     <div>
-      <div className='max-w-md mx-auto p-6 shadow-lg rounded-lg ml-[20%]'>
+      <div className= 'ml-[20%]'>
         <h1 className="font-bold text-3xl text-center">Create a New Doctor</h1>
       <form onSubmit={handleDoctorFormSubmit}>
-        <div className="mt-6">
-          <label htmlFor="doctorName" className="block text-sm font-semibold text-gray-700">Name</label>
-          <input
-            id="doctorName"
-            type="text"
-            placeholder="Type doctor's name"
-            value={doctorName}
-            onChange={(e) => setDoctorName(e.target.value)}
-            className="w-full p-2 border-gray-300 rounded-lg placeholder-gray-400 placeholder-opacity-70 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+        <div className= {styles["form-group"]}>
+          <div className={styles['indiv-inp']}>
+            <label htmlFor="doctorName">Name</label>
+            <input
+              id="doctorName"
+              type="text"
+              placeholder="Type doctor's name"
+              value={doctorName}
+              className={styles['indiv-inp-sizeOfInput']}
+              onChange={(e) => setDoctorName(e.target.value)}
+            />
+          </div>
+          <div className={styles['indiv-inp']}>
+            <label htmlFor="email">Email</label>
+            <input
+              id="email"
+              type="text"
+              placeholder="Type doctor's email"
+              value={email}
+              className={styles['indiv-inp-sizeOfInput']}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
         </div>
-        <div className="mt-6">
-          <label htmlFor="email" className="block text-sm font-semibold text-gray-700">Email</label>
-          <input
-            id="email"
-            type="text"
-            placeholder="Type doctor's email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-2 border-gray-300 rounded-lg placeholder-gray-400 placeholder-opacity-70 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-        <div className="mt-6">
-          <label htmlFor="phone" className="block text-sm font-semibold text-gray-700">Phone</label>
-          <input
-            id="phone"
-            type="text"
-            placeholder="Type phone number"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            className="w-full p-2 border-gray-300 rounded-lg placeholder-gray-400 placeholder-opacity-70 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+        <div className={styles['form-group']}>
+          <div className={styles['indiv-inp']}>
+            <label htmlFor="phone">Phone</label>
+            <input
+              id="phone"
+              type="text"
+              placeholder="Type phone number"
+              value={phone}
+              className={styles['indiv-inp-sizeOfInput']}
+              onChange={(e) => setPhone(e.target.value)}
+            />
+          </div>
+          <div className={styles['indiv-inp']}>
+            <label htmlFor="qualification">Qualification</label>
+            <input
+              id="qualification"
+              type="text"
+              placeholder="Type qualification"
+              value={qualification}
+              className={styles['indiv-inp-sizeOfInput']}
+              onChange={(e) => setQualification(e.target.value)}
+            />
+          </div>
         </div>
 
-        <div className="mt-6">
-          <label htmlFor="address" className="block text-sm font-semibold text-gray-700">Address</label>
-          <input
+        <div className={styles['indiv-inp']}>
+          <label htmlFor="address">Address</label>
+          <textarea
             id="address"
             type="text"
             placeholder="Type address"
             value={address}
+            className={`${styles['indiv-inp-sizeOfInput']} ${styles['textarea-address']}`}
+            rows={4}
             onChange={(e) => setAddress(e.target.value)}
-            className="w-full p-2 border-gray-300 rounded-lg placeholder-gray-400 placeholder-opacity-70 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
 
-        <div className="mt-6">
-          <label htmlFor="qualification" className="block text-sm font-semibold text-gray-700">Qualification</label>
-          <input
-            id="qualification"
-            type="text"
-            placeholder="Type qualification"
-            value={qualification}
-            onChange={(e) => setQualification(e.target.value)}
-            className="w-full p-2 border-gray-300 rounded-lg placeholder-gray-400 placeholder-opacity-70 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-
-        <div className="mt-6">
-  <label htmlFor="specialization" className="block text-sm font-semibold text-gray-700">Specialization</label>
+        <div className={styles['form-group']}>
+       <div className={styles['indiv-inp']}>
+  <label htmlFor="specialization">Specialization</label>
   <select
     id="specialization"
     value={specialization}
+    className={styles['indiv-inp-sizeOfselect']}
     onChange={(e) => setSpecialization(e.target.value)}
-    className="w-full p-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
   >
-    <option value="" disabled hidden></option>
+    <option value="" disabled hidden>Select</option>
     {specializations.map((spec) => (
       <option key={spec.doc_spe_id} value={spec.doc_spe_id}>{spec.specialization}</option>
     ))}
   </select>
 </div>
-        <div className="mt-6">
-  <label htmlFor="doc_type" className="block text-sm font-semibold text-gray-700">Doc Type</label>
+        <div className={styles['indiv-inp']}>
+  <label htmlFor="doc_type">Doc Type</label>
   <select
     id="doc_type"
     value={docType}
+    className={styles['indiv-inp-sizeOfselect']}
     onChange={(e) => setDocType(e.target.value)}
-    className="w-full p-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
   >
-    <option value="" disabled hidden></option>
+    <option value="" disabled hidden>Select</option>
     <option value="I">I</option>
     <option value="R">R</option>
   </select>
 </div>
-        <div className="mt-6">
-          <label htmlFor="licenseNumber" className="block text-sm font-semibold text-gray-700">License Number</label>
+        </div>
+        <div className={`${styles['indiv-inp']} ${styles['indiv-license']}`}>
+          <label htmlFor="licenseNumber">License Number</label>
           <input
             id="licenseNumber"
             type="text"
             placeholder="Type license number"
             value={licenseNumber}
+            className={styles['indiv-inp-sizeOfInput']}
             onChange={(e) => setLicenseNumber(e.target.value)}
-            className="w-full p-2 border-gray-300 rounded-lg placeholder-gray-400 placeholder-opacity-70 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
-        <div className='button-wrapper'>
-            <button className='submit-button'>Submit</button>
+        <div className={styles['buttons']}>
+            <button className={styles['submit-button']}>Submit</button>
         </div>
       </form>
       </div>

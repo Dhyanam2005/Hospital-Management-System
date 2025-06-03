@@ -1,0 +1,43 @@
+.registration {
+  margin-top: 1rem;
+}
+
+.marginLeft20 {
+  margin-left: 20%;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 1rem auto;
+}
+
+.search-bar label {
+  font-weight: 600;
+}
+
+.search-box {
+  border: 1px solid black;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  min-width: 200px;
+}
+
+.search-bar button {
+  cursor: pointer;
+  background-color: #007bff;
+  border: none;
+  color: white;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-bar button:hover {
+  background-color: #0056b3;
+}

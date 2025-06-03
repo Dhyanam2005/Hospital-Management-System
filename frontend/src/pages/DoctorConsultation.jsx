@@ -1,9 +1,9 @@
 import React , { useState , useEffect } from "react";
-import "./DoctorConsultation.css";
+import styles from "./DoctorConsultation.module.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
 import DoctorConsultationForm from "../components/DoctorConsultationForm";
-import NavBar from "../components/SidebarMenu";
+import GenericMasterTableViewForRegistration from "../components/GenericTableForReg";
 
 function DoctorConsultation(){
 
@@ -31,61 +31,64 @@ function DoctorConsultation(){
             console.log("Error in try statement");
         }
     }
+    const columns = [
+        { field: 'patient_id', headerName: 'Patient ID', width: 130 },
+        { field: 'name', headerName: 'Name', width: 150 },
+        { field: 'age', headerName: 'Age', width: 100 },
+        { field: 'reg_id', headerName: 'Registration ID', width: 160 },
+        {
+            field: 'select',
+            headerName: 'Select',
+            width: 100,
+            renderCell: (params) => (
+                <input
+                    type="radio"
+                    name="select"
+                    checked={selectedRegId === params.row.reg_id}
+                    onChange={() => {
+                        setSelectedRegId(params.row.reg_id);
+                        setShowTestGrid(true);
+                    }}
+                />
+            ),
+        },
+    ];
 
-    return(
+    const rows = patientData.map((patient, index) => ({
+        id: index,
+        ...patient,
+    }));
+
+    return (
         <div>
-            <div className="doctorConsultation ml-[20%]">
-                <h1 className="bold text-2xl block text-center pt-5">Doctor Consultation</h1>
-                <div className="search-bar">
+            <div className={`${styles.admission} ml-[20%]`}>
+                <div className={styles["search-bar"]}>
                     <label htmlFor="search">Search Patient</label>
                     <input
                         type="text"
                         placeholder="Enter patient name"
                         id="search"
-                        className="search-box"
+                        className={styles["search-box"]}
                         value={patientName}
                         onChange={(e) => setPatientName(e.target.value)}
                     />
-                    <button
-                        onClick={handleSearch}
-                    >
+                    <button onClick={handleSearch}>
                         <FontAwesomeIcon icon={faMagnifyingGlass} />
                     </button>
                 </div>
-                {patientData.length > 0 && 
-                    <table>
-                        <thead>
-                        <tr>
-                            <th>Patient ID</th>
-                            <th>Name</th>
-                            <th>Age</th>
-                            <th>Registration ID</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                            {patientData.map((patient,index) => (
-                                <tr key={index}>
-                                    <td>{patient.patient_id}</td>
-                                    <td>{patient.name}</td>
-                                    <td>{patient.age}</td>
-                                    <td>{patient.reg_id}</td>
-                                    <td>
-                                        <input
-                                            type="radio"
-                                            name="select"
-                                            value={selectedRegId}
-                                            onChange={() => {
-                                                setSelectedRegId(patient.reg_id);
-                                                setShowTestGrid(true);
-                                            }}
-                                        ></input>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                }
-                {showTestGrid && <DoctorConsultationForm regId = {selectedRegId}/>}
+            </div>
+            <div>
+                <div>
+                    {patientData.length > 0 && (
+                        <GenericMasterTableViewForRegistration
+                            columns={columns}
+                            rows={rows}
+                        />
+                    )}
+                </div>
+                <div className="ml-[20%]">
+                    {showTestGrid && <DoctorConsultationForm regId={selectedRegId} />}
+                </div>
             </div>
         </div>
     )

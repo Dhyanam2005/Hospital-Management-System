@@ -1,0 +1,57 @@
+.indiv-inp{
+    display: flex;
+    flex-direction: column;
+}
+
+.indiv-inp-sizeOfInput{
+    margin-right: 2rem;
+    border: 1px solid rgb(211,211,211);
+    border-radius: 0.25rem;
+}
+
+.indiv-inp-sizeOfselect{
+    width: 90%;
+    margin-right: 1rem;
+    border-radius: 0.25rem ;
+    border: 1px solid rgb(211,211,211);
+    height: 1.3rem;
+    font-size: 0.9rem;
+    line-height: 1.3rem;
+    text-align: left;
+    padding: 0;
+}
+
+.indiv-license{
+    margin-top: 1%;
+    width: 40%;
+}
+
+.textarea-address{
+    width: 40%;
+}
+
+.form-group{
+    display: flex;
+    flex-direction: row;
+}
+
+.error-msg{
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+.buttons{
+    display: flex;
+    justify-content: flex-end;
+    gap : 1rem
+}
+
+.submit-button{
+    border: 1px solid black;
+    width: 8rem;
+    height: 2rem;
+    text-align: center;
+    border-radius: 1rem;
+    margin-top: 2rem;
+    background-color: #008CBA;
+}

@@ -1,0 +1,10 @@
+.select-dropdown{
+    border-radius: 0.25rem;
+    border: 1px solid rgb(212,212,212);
+}
+
+.items{
+    display: flex;
+    flex-direction: row;
+    gap: 4rem;
+}

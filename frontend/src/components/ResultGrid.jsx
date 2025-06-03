@@ -1,5 +1,5 @@
 import React , { useEffect, useState} from "react";
-import "./ResultGrid.css";
+import styles from "./ResultGrid.module.css";
 
 function ResultGrid({ regId }){
 
@@ -54,16 +54,15 @@ function ResultGrid({ regId }){
 
     return(
         <div>
-            <h2 className="mx-auto bold text-center pt-4">Test for Registration Id : {regId}</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <td>Test Name</td>
-                        <td>Test Category</td>
-                        <td>Result Type</td>
-                        <td>Range</td>
-                        <td>Result</td>
-                        <td>Test Date</td>
+            <h2 className="mx-auto text-center">Test for Registration Id : {regId}</h2>
+            <table className="border border-gray-300 w-full">
+                <thead className="border border-gray-300">
+                    <tr className="border border-gray-300">
+                        <td className="border border-gray-300 font-bold">Test Name</td>
+                        <td className="border border-gray-300 font-bold">Test Category</td>
+                        <td className="border border-gray-300 font-bold">Range</td>
+                        <td className="border border-gray-300 font-bold">Result</td>
+                        <td className="border border-gray-300 font-bold">Test Date</td>
                     </tr>
                 </thead>
                 <tbody>
@@ -75,20 +74,21 @@ function ResultGrid({ regId }){
                     {resultData.length > 0 && 
                         resultData.map((res,index) => (
                             <tr key={index}>
-                                <td>{res.test_name}</td>
-                                <td>{res.test_category_name}</td>
-                                <td>{res.result_type}</td>
-                                <td>{res.reference_result || "-"}</td>
-                                <td>
+                                <td className="border border-gray-300">{res.test_name}</td>
+                                <td className="border border-gray-300">{res.test_category_name}</td>
+                                <td className="border border-gray-300">{res.reference_result || "-"}</td>
+                                <td className="border border-gray-300">
                                     <input type="text" value={res.result_char || res.result_num} onChange={(e) => handleResultChange (index,e.target.value)}/>
                                 </td>
-                                <td>{res.test_date}</td>
+                                <td className="border border-gray-300">{res.test_date}</td>
                             </tr>
                         ))
                     }
                 </tbody>
             </table>
-            <button onClick={submitResults} className="pt-5 pb-5  submit-results-btn mx-auto block text-center">Submit Results</button>
+            <div className={styles["buttons"]}>
+                <button onClick={submitResults} className={styles["save-btn"]}>Save</button>
+            </div>
         </div>
     )
 }

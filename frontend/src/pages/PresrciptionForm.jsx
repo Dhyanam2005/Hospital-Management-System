@@ -1,4 +1,8 @@
 import React, { useEffect, useState } from "react";
+import styles from "../components/MedicalItemForm.module.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {faPlus } from "@fortawesome/free-solid-svg-icons";
+import deleteIcon from "../images/delete-icon.png";
 
 function PrescriptionForm({ selectedDoctor, selectedDate, selectedPatientRegId }) {
     const [rows, setRows] = useState([]);
@@ -81,20 +85,28 @@ function PrescriptionForm({ selectedDoctor, selectedDate, selectedPatientRegId }
     };
 
     return (
-        <div>
-            <table>
+        <div >
+            <div className="mt-10">
+                <div className={styles["title-icon"]}>
+                    <p>Prescription Details </p>
+                <button type="button" onClick={addRow}>
+                <FontAwesomeIcon icon={faPlus} className={styles["title-icon-i"]} />
+                </button>
+            </div>    
+            </div>
+            <table className="border border-gray-300 w-full">
                 <thead>
                     <tr>
-                        <th>Drug Name</th>
-                        <th>Dosage Schedule</th>
-                        <th>Food Instruction</th>
-                        <th>Action</th>
+                        <th className="border border-gray-300 text-left">Drug Name</th>
+                        <th className="border border-gray-300 text-left">Dosage Schedule</th>
+                        <th className="border border-gray-300 text-left">Food Instruction</th>
+                        <th className="border border-gray-300 text-left">Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     {rows.map((row, index) => (
                         <tr key={index}>
-                            <td>
+                            <td className="border border-gray-300">
                                 <select
                                     value={row.drugId || ""}
                                     onChange={(e) => handleChange(index, "drugId", e.target.value)}
@@ -107,7 +119,7 @@ function PrescriptionForm({ selectedDoctor, selectedDate, selectedPatientRegId }
                                     ))}
                                 </select>
                             </td>
-                            <td>
+                            <td className="border border-gray-300">
                                 <select
                                     value={row.dosageId || ""}
                                     onChange={(e) => handleChange(index, "dosageId", e.target.value)}
@@ -120,7 +132,7 @@ function PrescriptionForm({ selectedDoctor, selectedDate, selectedPatientRegId }
                                     ))}
                                 </select>
                             </td>
-                            <td>
+                            <td className="border border-gray-300">
                                 <select
                                     value={row.foodId || ""}
                                     onChange={(e) => handleChange(index, "foodId", e.target.value)}
@@ -133,17 +145,18 @@ function PrescriptionForm({ selectedDoctor, selectedDate, selectedPatientRegId }
                                     ))}
                                 </select>
                             </td>
-                            <td>
+                            <td className="border border-gray-300">
                                 <button onClick={() => deleteRow(index)} style={{ color: "red" }}>
-                                    Delete
+                                    <img src={deleteIcon} alt="delete" style={{width:"40%",height:"40%"}}/>
                                 </button>
                             </td>
                         </tr>
                     ))}
                 </tbody>
             </table>
-            <button onClick={addRow} className="mx-auto block pt-4">+ Add Medicine</button><br />
-            <button type="button" onClick={handleSave} className="mx-auto block">Save</button>
+            <div className={styles["buttons"]}>
+                <button onClick={handleSave} className={styles["save-btn"]}>Save</button>
+            </div>
         </div>
     );
 }

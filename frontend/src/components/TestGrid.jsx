@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
-import "./TestGrid.css";
+import styles from "./TestGrid.module.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faP, faPlus } from "@fortawesome/free-solid-svg-icons";
+import deleteIcon from "../images/delete-icon.png";
 
 function TestGrid({ regId }) {
   const [inHouseDoctor, setInHouseDoctor] = useState([]);
@@ -91,21 +94,26 @@ const saveData = async () => {
 
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2 className="mx-auto bold text-center pb-4">Test for Patient Id : {regId}</h2>
-      <table border="1" cellPadding="10" style={{ borderCollapse: "collapse", width: "100%" }}>
+    <div>
+      <div className={styles["title-icon"]}>
+        <h2 className="mx-auto bold text-center pb-4">Test for Patient Id : {regId}</h2>
+        <button>
+          <FontAwesomeIcon icon={faPlus} onClick={addRow} disabled={loading} className={styles["title-icon-i"]}></FontAwesomeIcon>
+        </button>
+      </div>
+      <table border="1" cellPadding="10" style={{ borderCollapse: "collapse", width: "100%" }} className={`${styles["table"]} table-auto border border-gray-300 w-full`}>
         <thead>
           <tr>
-            <th>Doctor Name</th>
-            <th>Test Name</th>
-            <th>Test Date</th>
-            <th>Action</th>
+            <th className="border border-gray-300">Doctor Name</th>
+            <th className="border border-gray-300">Test Name</th>
+            <th className="border border-gray-300">Test Date</th>
+            <th className="border border-gray-300"></th>
           </tr>
         </thead>
         <tbody>
           {rows.map((row, idx) => (
             <tr key={idx}>
-              <td>
+              <td className="border border-gray-300">
                 <select value={row.doctor?.doc_id || ""} onChange={(e) => {
     const selectedDoc = inHouseDoctor.find((doc) => doc.doc_id.toString() === e.target.value);
     updateRow(idx, "doctor", selectedDoc);
@@ -117,7 +125,7 @@ const saveData = async () => {
                   ))}
                 </select>
               </td>
-              <td>
+              <td className="border border-gray-300">
                 <select value={row.test?.test_id || ""}  onChange={(e) => {
     const selectedTest = tests.find((t) => t.test_id.toString() === e.target.value);
     updateRow(idx, "test", selectedTest);
@@ -129,15 +137,17 @@ const saveData = async () => {
                   ))}
                 </select>
               </td>
-              <td>
+              <td className="border border-gray-300">
                 <input
                   type="date"
                   value={testDate}
                   onChange={(e) => setTestDate(e.target.value)}
                 />
               </td>
-              <td>
-                <button onClick={() => deleteRow(idx)}>Delete</button>
+              <td className="border border-gray-300" >
+                <button onClick={() => deleteRow(idx)} className={styles["delete-btn-test"]}>
+                  <img src={deleteIcon} alt="delete"/>
+                </button>
               </td>
             </tr>
           ))}
@@ -145,13 +155,11 @@ const saveData = async () => {
       </table>
 
       <br />
-      <button onClick={addRow} disabled={loading} className="mx-auto block addRow">
-        {loading ? "Loading..." : "Add Row"}
-      </button>
-
-      <button onClick={saveData} disabled={rows.length === 0}>
-        Save
-      </button>
+          <div className={styles["buttons"]}>
+            <button onClick={saveData} disabled={rows.length === 0} className={styles["save-btn"]}>
+             Save
+            </button>
+          </div>
     </div>
   );
 }

@@ -1,5 +1,8 @@
 import React , { useEffect, useState } from 'react';
-import "./DoctorConsultation.css"
+import styles from "./MedicalItemForm.module.css";
+import deleteIcon from "../images/delete-icon.png";
+import { faP, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 function PatientChargeForm({ regId}){
 
@@ -133,21 +136,25 @@ function PatientChargeForm({ regId}){
     return(
         <div>
             <form>
-                <h1 className='text-center block text-lg pt-3 pb-3'>Consultation for registered ID : {regId}</h1>
-                <table>
+        <div className={styles["title-icon"]}>
+  <h1>Consultation for Registered ID: {regId}</h1>
+  <button type="button" onClick={addRow}>
+    <FontAwesomeIcon icon={faPlus} className={styles["title-icon-i"]} />
+  </button>
+</div>
+                <table className='border -border-gray-300 w-full'>
                     <thead>
-                        <tr>
-                            <th>Service</th>
-                            <th>Service Date</th>
-                            <th>Service Amount</th>
-                            <th>Doctor</th>
-                            <th>Update flag</th>
+                        <tr >
+                            <th className='border -border-gray-300'>Service</th>
+                            <th className='border -border-gray-300'>Service Date</th>
+                            <th className='border -border-gray-300'>Service Amount</th>
+                            <th className='border -border-gray-300'>Doctor</th>
                         </tr>
                     </thead>
                    <tbody>
   {rows.map((row, index) => (
     <tr key={index}>
-      <td>
+      <td className='border -border-gray-300'>
         <select
           value={row.service_id}
           onChange={(e) => handleChange(index, "service_id", e.target.value)}
@@ -160,23 +167,25 @@ function PatientChargeForm({ regId}){
           ))}
         </select>
       </td>
-      <td>
+      <td className='border -border-gray-300'>
         <input
           type="date"
           value={row.service_date || ""}
           onChange={(e) => handleChange(index, "service_date", e.target.value)}
         />
       </td>
-      <td>
+      <td className='border -border-gray-300'>
         <input
           type="number"
           value={row.service_amt || ""}
           onChange={(e) => handleChange(index, "service_amt", e.target.value)}
         />
       </td>
-        <select
+      <td className='border border-gray-300'>
+                <select
           value={row.doc_id}
           onChange={(e) => handleChange(index, "doc_id", e.target.value)}
+          
         >
           <option value=" ">Select Doctor</option>
           {doctors.map((doctor,i) => (
@@ -185,14 +194,13 @@ function PatientChargeForm({ regId}){
             </option>
           ))}
         </select>
-      <td>{row.update_flag}</td>
-      <td>
+      </td>
+      <td className='border -border-gray-300'>
         <button
           type="button"
-          className="delete-btn"
           onClick={() => deleteRows(row.charge_id)}
         >
-          Delete Row
+          <img src = {deleteIcon} alt='delete-btn' style={{ width : "40%" , height : "40%"}}/>
         </button>
       </td>
     </tr>
@@ -201,14 +209,13 @@ function PatientChargeForm({ regId}){
 
                 </table>
 
-                <div className='pt-4 flex gap-4'>
-                  <button type='button' onClick={addRow}>
-                    + Add Row
-                  </button>
-                  <button type='button' onClick={savePatientCharges}>
-                    💾 Save
-                  </button>
-                </div>
+        <div>
+          <div className={styles["buttons"]}>
+            <button onClick={savePatientCharges} disabled={rows.length === 0} className={styles["save-btn"]}>
+             Save
+            </button>
+          </div>
+        </div>
             </form>
         </div>
     )

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "./Prescription.css";
-import SidebarMenu from "../components/SidebarMenu.jsx";
+import styles from "./Prescription.module.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import PrescriptionForm from "./PresrciptionForm.jsx"; 
@@ -43,12 +42,13 @@ function Prescription() {
     };
 
     return (
-        <div>
-            <div className="ml-[20%]">
-                <div>
+        <div className="ml-[20%]">
+            <div>
+                <div className={styles["items"]}>
                     <select
                         value={selectedDoctor}
                         onChange={(e) => setIsSelectedDoctor(e.target.value)}
+                        className={styles["select-dropdown"]}
                     >
                         <option value="" disabled>Select doctor</option>
                         {doctors.map((doctor) => (
@@ -59,6 +59,7 @@ function Prescription() {
                     <select
                         value={selectedPatientRegId}
                         onChange={(e) => setSelectedPatientRegId(e.target.value)}
+                        className={styles["select-dropdown"]}
                     >
                         <option value="" disabled>Select patient</option>
                         {patient.map((pat) => (

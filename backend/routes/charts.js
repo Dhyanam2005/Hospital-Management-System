@@ -2,7 +2,7 @@ const express = require('express');
 const db = require("../config/db");
 const router = express.Router();
 
-router.use("/firstChart",(req,res) => {
+router.get("/firstChart",(req,res) => {
     db.query(
         `SELECT t.test_name, COUNT(td.test_id) AS count
          FROM test_detail td , test t
@@ -16,7 +16,7 @@ router.use("/firstChart",(req,res) => {
     )
 })
 
-router.use("/secondChart",(req,res) => {
+router.get("/secondChart",(req,res) => {
     db.query(
         `SELECT t.test_name, SUM(t.test_charge) AS sum
          FROM test_detail td , test t
@@ -30,7 +30,7 @@ router.use("/secondChart",(req,res) => {
     )
 })
 
-router.use("/thirdChart",(req,res) => {
+router.get("/thirdChart",(req,res) => {
     db.query(
         `select d.drug_name , sum(m.item_value) as sum
         from medical_item m,drug_master d
@@ -77,4 +77,19 @@ LIMIT 5;
     )
 })
 
+router.get("/fifthChart",(req,res) => {
+    db.query(
+        `select case
+when sex = "M" then "Male"
+else "Female"
+end
+as sex,count(*)
+as s_count 
+from patient
+GROUP By sex;`,(err,result) => {
+            if(err) return res.json({ message : "Error in fetching third chart details"});
+            res.json(result);
+        }
+    )
+})
 module.exports = router;

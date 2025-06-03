@@ -8,11 +8,11 @@ const GenericMasterTableView = ({ columns, rows, title }) => {
       <div
         style={{
           height: 500,
-          overflowX: 'auto', // enable horizontal scrolling
+          overflowX: 'auto',
           whiteSpace: 'nowrap',
         }}
       >
-        <div style={{ minWidth: '1000px' /* adjust as needed */ }}>
+        <div style={{ minWidth: '1000px'}}>
           <DataGrid
             rows={rows}
             columns={columns}

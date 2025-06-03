@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import "./Appointment.css";
+import styles from "./Appointment.module.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { format } from "date-fns";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import Navbar from "../components/SidebarMenu";
+import delteIcon from "../images/delete-icon.png";
 
 function Appointment() {
   const [selectedDate, setSelectedDate] = useState('');
@@ -115,18 +116,19 @@ function Appointment() {
   return (
     <div>
       <div className="appointment ml-[20%]">
-        <div className="flex items-center gap-4 mb-5">
+        <div className="flex items-center gap-2 mb-5">
           <label>Select Date:</label>
           <DatePicker
             selected={selectedDate}
             onChange={(date) => setSelectedDate(date)}
             dateFormat="dd-MM-yyyy"
-            placeholderText="Select date"
+            placeholderText="Select"
+            className={styles["select-date"]}
           />
           <select
             value={selectedDoctor}
             onChange={(e) => setSelectedDoctor(e.target.value)}
-            className="p-2 border rounded-md"
+            className={styles["select-doctor"]}
           >
             <option value="">Select Doctor</option>
             {inHousedoctors.map((doctor) => (
@@ -143,12 +145,12 @@ function Appointment() {
         {isSearched && appointment.length > 0 && (
           <div>
             <form onSubmit={saveAppointment}>
-              <table>
+              <table className="border border-gray-300 w-3/4">
                 <thead>
                   <tr>
-                    <th>Appointment Time</th>
-                    <th>Patient</th>
-                    <th>Delete Row</th>
+                    <th className="border border-gray-300 text-left">Appointment Time</th>
+                    <th className="border border-gray-300 text-left">Patient</th>
+                    <th className="border border-gray-300"></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -164,14 +166,14 @@ function Appointment() {
 
                     return (
                       <tr key={index}>
-                        <td>{app.appointment_time}</td>
-                        <td>
+                        <td className="border border-gray-300">{app.appointment_time}</td>
+                        <td className="border border-gray-300">
                           <select
                             value={app.patient_id || ''}
                             onChange={(e) =>
                               handleChange(index, "patient_id", e.target.value)
                             }
-                            className="p-2 border rounded-md"
+                            className={styles["select-doctor-time"]}
                           >
                             <option value="">Select Patient</option>
                             {remainingPatients.map((pat) => (
@@ -184,14 +186,14 @@ function Appointment() {
                             ))}
                           </select>
                         </td>
-                        <td>
+                        <td className="border border-gray-300">
                           <button
                             type="button"
                             onClick={() =>
                               deleteAppointment(app.APPOINTMENT_ID)
                             }
                           >
-                            Delete Row
+                            <img src={delteIcon} alt="delete" style={{width : "40%",height:"40%"}}></img>
                           </button>
                         </td>
                       </tr>

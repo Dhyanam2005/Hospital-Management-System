@@ -1,5 +1,8 @@
 import React , { useEffect, useState } from 'react';
-import "./DoctorConsultation.css"
+import styles from "./MedicalItemForm.module.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faP, faPlus } from "@fortawesome/free-solid-svg-icons";
+import deleteIcon from "../images/delete-icon.png";
 
 function DoctorConsultationForm({ regId}){
 
@@ -125,21 +128,24 @@ function DoctorConsultationForm({ regId}){
     return(
         <div>
             <form>
-                <h1 className='text-center block text-lg pt-3 pb-3'>Consultation for registered ID : {regId}</h1>
-                <table>
+        <div className={styles["title-icon"]}>
+  <h1>Consultation for Registered ID: {regId}</h1>
+  <button type="button" onClick={addRow}>
+    <FontAwesomeIcon icon={faPlus} className={styles["title-icon-i"]} />
+  </button>
+</div>                <table className='border border-gray-300 w-full'>
                     <thead>
                         <tr>
-                            <th>Doctor Name</th>
-                            <th>Date</th>
-                            <th>Consultation Fees</th>
-                            <th>Consultation ID</th>
-                            <th>Update Flag</th>
+                            <th className='border border-gray-300 text-left'>Doctor Name</th>
+                            <th className='border border-gray-300 text-left'>Date</th>
+                            <th className='border border-gray-300 text-left'>Consultation Fees</th>
+                            <th className='border border-gray-300 text-left'>Consultation ID</th>
                         </tr>
                     </thead>
                     <tbody>
                         {rows.map((row,index) => (
                           <tr key={index}>
-                            <td>
+                            <td className='border border-gray-300'>
                               <select
                                 value={row.doc_id}
                                 onChange={(e) => handleChange(index,"doc_id",e.target.value)}>
@@ -151,23 +157,22 @@ function DoctorConsultationForm({ regId}){
                                   ))}
                               </select>
                             </td>
-                            <td>
+                            <td className='border border-gray-300'>
                               <input
                                 type='date'
                                 value={row.date}
                                 onChange={(e) => handleChange(index,"date",e.target.value)}
                               />
                             </td>
-                            <td>
+                            <td className='border border-gray-300'>
                               <input
                                 type='number'
                                 value={row.fee}
                                 onChange={(e) => handleChange(index,"fee",e.target.value)}
                               />
                             </td>
-                            <td>{row.consultationId}</td>
-                            <td>{row.update_flag}</td>
-                            <td>
+                            <td className='border border-gray-300'>{row.consultationId}</td>
+                            <td className='border border-gray-300'>
                               <button type='button' className='delete-btn' onClick={() => deleteRows(row.consultationId)}>
                                 Delete Row
                               </button>
@@ -176,15 +181,9 @@ function DoctorConsultationForm({ regId}){
                         ))}
                     </tbody>
                 </table>
-
-                <div className='pt-4 flex gap-4'>
-                  <button type='button' onClick={addRow}>
-                    + Add Row
-                  </button>
-                  <button type='button' onClick={saveConsultations}>
-                    💾 Save
-                  </button>
-                </div>
+            <div className={styles["buttons"]}>
+                <button onClick={saveConsultations} className={styles["save-btn"]}>Save</button>
+            </div>
             </form>
         </div>
     )

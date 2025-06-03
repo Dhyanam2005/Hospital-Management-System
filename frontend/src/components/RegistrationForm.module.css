@@ -1,0 +1,92 @@
+.regTitle {
+  font-family: 'Open Sans', sans-serif;
+  text-align: center;
+  font-size: large;
+  margin-bottom: 1rem;
+}
+
+.loginForm {
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  width: 50%;
+}
+
+.loginForm div {
+  margin-bottom: 0.25rem;
+}
+
+.indivInp {
+  display: flex;
+  flex-direction: column;
+  margin-left: 1%;
+  margin-right: 1%;
+}
+
+.indivInpInput {
+  width: 50%;
+  border: 1px solid rgb(211, 211, 211);
+  border-radius: 0.25rem;
+}
+
+.regButton {
+  background-color: rgb(26, 255, 212);
+  border-radius: 0.5rem;
+  width: 10rem;
+  height: 2rem;
+  text-align: center;
+  margin: 0 auto;
+}
+
+.indivSelect {
+  display: flex;
+  flex-direction: column;
+  width: 60%;
+}
+
+.indivInp-select{
+  border: 1px solid rgb(212,212,212);
+  border-radius: 0.25rem;
+}
+
+.errorMsg {
+  padding-top: 0.75rem;
+  background-color: #fee2e2;
+  border: 1px solid #fca5a5;
+  color: #b91c1c;
+  padding: 0.75rem 1rem;
+  border-radius: 0.375rem;
+  width: 18rem;
+  text-align: center;
+  margin: 0.5rem auto 1rem auto;
+  display: block;
+}
+
+.successMsg {
+  padding-top: 0.75rem;
+  background-color: #dcfce7;
+  border: 1px solid #bbf7d0;
+  color: #15803d;
+  padding: 0.75rem 1rem;
+  border-radius: 0.375rem;
+  width: 18rem;
+  text-align: center;
+  margin: 0.5rem auto 1rem auto;
+  display: block;
+}
+
+.save-btn{
+    border: 1px solid black;
+    width: 8rem;
+    height: 2rem;
+    text-align: center;
+    border-radius: 1rem;
+    margin-top: 2rem;
+    background-color: #008CBA;
+}
+
+.buttons{
+    display: flex;
+    justify-content: flex-end;
+    gap : 1rem
+}

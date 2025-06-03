@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "./PayBill.css";
+import styles from "./PayBill.module.css";
 
 function PayBill({ regId }) {
     const [billInfo, setBillInfo] = useState({});
@@ -67,28 +67,43 @@ function PayBill({ regId }) {
     return (
         <div>
             <form>
-                <div><label>Registration Charges</label><input type="text" value={paymentData?.REGN_CHARGES || billInfo.reg_charges || ''} readOnly /></div>
-                <div><label>Admission Charges</label><input type="text" value={paymentData?.ADMISSION_CHARGES || billInfo.admission_charges || ''} readOnly /></div>
-                <div><label>Test Charges</label><input type="text" value={paymentData?.TEST_FEE || billInfo.test_charges || ''} readOnly /></div>
-                <div><label>Medical Charges</label><input type="text" value={paymentData?.DOC_FEE || billInfo.medical_charges || ''} readOnly /></div>
-                <div><label>Service Charges</label><input type="text" value={paymentData?.SERVICE_CHARGES || billInfo.services_charges || ''} readOnly /></div>
-                <div><label>Consultation Charges</label><input type="text" value={billInfo.consultation_charges || ''} readOnly /></div>
-                <div><label>Ward Charges</label><input type="text" value={paymentData?.WARD_CHARGES || billInfo.ward_charges || ''} readOnly /></div>
-                <div><label>Total Charges</label><input type="text" value={totalCharges} readOnly /></div>
-                <div><label>Discount</label><input type="text" value={paymentData?.DISCOUNT || discount} onChange={(e) => setDiscount(e.target.value)} readOnly={!!paymentData} /></div>
-                <div><label>Total Payable</label><input type="text" value={paymentData?.AMT_TO_PAY || totalPayable} readOnly /></div>
-                <div>
-                    <label>Mode of Payment</label>
-                    <select value={paymentData?.PAYMENT_MODE || paymentMode} onChange={(e) => setPaymentMode(e.target.value)} disabled={!!paymentData}>
-                        <option value="" disabled>Select Mode of Payment</option>
-                        <option value="cash">Cash</option>
-                        <option value="cheque">Cheque</option>
-                        <option value="card">Card</option>
-                    </select>
+                <div className={styles["form-group"]}>
+                    <div className={styles["indiv-inp"]}><label>Registration Charges</label><input type="text" value={paymentData?.REGN_CHARGES || billInfo.reg_charges || ''} readOnly /></div>
+                    <div className={styles["indiv-inp"]}><label>Admission Charges</label><input type="text" value={paymentData?.ADMISSION_CHARGES || billInfo.admission_charges || ''} readOnly /></div>
+                    <div className={styles["indiv-inp"]}><label>Test Charges</label><input type="text" value={paymentData?.TEST_FEE || billInfo.test_charges || ''} readOnly /></div>
+                    <div className={styles["indiv-inp"]}><label>Service Charges</label><input type="text" value={paymentData?.SERVICE_CHARGES || billInfo.services_charges || ''} readOnly /></div>
+
                 </div>
-                <div><label>Payment Detail</label><input type="text" value={paymentData?.PAYMENT_DETAIL || paymentDetail} onChange={(e) => setPaymentDetail(e.target.value)} readOnly={!!paymentData} /></div>
-                <div><label>Payment Date</label><input type="date" value={paymentData?.PAYMENT_DATE ? new Date(paymentData.PAYMENT_DATE).toISOString().split('T')[0] : paymentDate} onChange={(e) => setPaymentDate(e.target.value)} readOnly={!!paymentData} /></div>
-                {!paymentData && <button type="button" onClick={saveInfo}>Save</button>}
+                <div className={styles["form-group"]}>
+                    <div className={styles["indiv-inp"]}><label>Consultation Charges</label><input type="text" value={billInfo.consultation_charges || ''} readOnly /></div>
+                    <div className={styles["indiv-inp"]}><label>Medical Charges</label><input type="text" value={paymentData?.DOC_FEE || billInfo.medical_charges || ''} readOnly /></div>
+                    <div className={styles["indiv-inp"]}><label>Ward Charges</label><input type="text" value={paymentData?.WARD_CHARGES || billInfo.ward_charges || ''} readOnly /></div>
+                    <div className={styles["indiv-inp"]}><label>Total Charges</label><input type="text" value={totalCharges} readOnly /></div>
+                </div>
+                <div className={styles["form-group"]}>
+                    <div className={styles["indiv-inp"]}><label>Discount</label><input type="text" placeholder="Enter discount" value={paymentData?.DISCOUNT || discount} onChange={(e) => setDiscount(e.target.value)} readOnly={!!paymentData} /></div>
+                    <div className={styles["indiv-inp"]}><label>Total Payable</label><input type="text" value={paymentData?.AMT_TO_PAY || totalPayable} readOnly /></div>
+                </div>
+                <div className={styles["form-group"]}>
+                </div>
+                <div className={styles["form-group"]}>
+                    <div className={styles["indiv-inp-select"]}>
+                        <label>Mode of Payment</label>
+                        <select value={paymentData?.PAYMENT_MODE || paymentMode} onChange={(e) => setPaymentMode(e.target.value) } disabled={!!paymentData}>
+                            <option value="" disabled>Select Mode of Payment</option>
+                            <option value="cash">Cash</option>
+                            <option value="cheque">Cheque</option>
+                            <option value="card">Card</option>
+                        </select>
+                    </div>
+                    <div className={styles["indiv-inp"]}><label>Payment Detail</label><input type="text" value={paymentData?.PAYMENT_DETAIL || paymentDetail} onChange={(e) => setPaymentDetail(e.target.value)} readOnly={!!paymentData} /></div>
+                    <div className={styles["indiv-inp"]}><label>Payment Date</label><input type="date" value={paymentData?.PAYMENT_DATE ? new Date(paymentData.PAYMENT_DATE).toISOString().split('T')[0] : paymentDate} onChange={(e) => setPaymentDate(e.target.value)} readOnly={!!paymentData} /></div>
+                </div>
+                {!paymentData && 
+                    <div className={styles["buttons"]}>
+                        <button onClick={saveInfo} className={styles["save-btn"]}>Save</button>
+                    </div>
+                }
             </form>
         </div>
     );

@@ -1,83 +1,91 @@
-import React , { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import NavBar from "../components/SidebarMenu";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
-import "./Registration.css";
-import "../components/RegistrationForm";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import RegistrationForm from '../components/RegistrationForm';
+import GenericMasterTableViewForRegistration from '../components/GenericTableForReg';
+import styles from "./Registration.module.css";
 
+function Registration() {
+  const [patientName, setPatientName] = useState('');
+  const [selectedPatientId, setSelectedPatientId] = useState('');
+  const [patientData, setPatientData] = useState([]);
 
-function Registration(){
-    const [patientName,setPatientName] = useState('');
-    const [selectedPatientId,setSelectedPatientId] = useState('');
-    const [patientData,setPatientData]= useState([]);
-    const handleSearch = async () => {
-    try{
-        let res = await fetch(`http://localhost:3000/fetchpat?patientName=${encodeURIComponent(patientName)}`,{
-            method : 'GET',
-            headers: { 'Content-Type': 'application/json' },
-        });
+  const handleSearch = async () => {
+    try {
+      const res = await fetch(`http://localhost:3000/fetchpat?patientName=${encodeURIComponent(patientName)}`);
+      const data = await res.json();
 
-        let data = await res.json();
-
-        if(res.ok){
-            console.log(data);
-            setPatientData(data);
-        }else{
-            console.log("res is not ok");
-        }
-    }catch(err){
-        console.log("Error in try statement");
+      if (res.ok) {
+        const withId = data.map((item, index) => ({
+          id: item.patient_id || index,
+          ...item,
+        }));
+        setPatientData(withId);
+      } else {
+        console.log("res is not ok");
+      }
+    } catch (err) {
+      console.log("Error in try statement");
     }
-}
+  };
 
-    return(
-        <div>
-            <div className="registration ml-[20%]">
-                <div className="search-bar">
-                    <label>Search Patient</label>
-                    <input className = 'search-box' value = {patientName} onChange = {(e) => setPatientName(e.target.value)}type='text' placeholder='Enter patient Name'></input>
-                    <button onClick={() => {
-                        setSelectedPatientId('');
-                        handleSearch();
-                    }}>
-                        <FontAwesomeIcon icon={faMagnifyingGlass} />
-                    </button>
-                </div>
+  const columns = [
+    {
+      field: 'select',
+      headerName: '',
+      width: 70,
+      renderCell: (params) => (
+        <input
+          type="radio"
+          name="select"
+          value={params.row.patient_id}
+          checked={selectedPatientId === params.row.patient_id}
+          onChange={() => setSelectedPatientId(params.row.patient_id)}
+        />
+      ),
+    },
+    { field: 'patient_id', headerName: 'Patient ID', width: 150 },
+    { field: 'name', headerName: 'Name', width: 200 },
+    { field: 'date_of_birth', headerName: 'DOB', width: 150 },
+    { field: 'age', headerName: 'Age', width: 100 },
+  ];
 
-                {patientData.length > 0 && 
-                    <table className='table-container'>
-                        <thead>
-                            <tr>
-                                <th>Patient ID</th>
-                                <th>Name</th>
-                                <th>DOB</th>
-                                <th>Age</th>
-                                <th>Phone</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {patientData.map((patient,index) => (
-                            <tr key={index}>
-                                <td>{patient.patient_id}</td>
-                                <td>{patient.name}</td>
-                                <td>{patient.date_of_birth}</td>
-                                <td>{patient.age}</td>
-                                <td>{patient.phone}</td>
-                                <input value = {patient.patient_id} onChange={(e) => setSelectedPatientId(e.target.value)} type='radio' name = "select"/>
-                            </tr>
-                        )) }
-                        </tbody>
-                    </table>
-                }
-
-                {selectedPatientId && (
-                    <RegistrationForm patientId = {selectedPatientId}/>
-                )}
-            </div>
+  return (
+    <div>
+      <div className={`${styles.registration} ${styles.marginLeft20}`}>
+        <div className={styles["search-bar"]}>
+          <label>Search Patient</label>
+          <input
+            className={styles["search-box"]}
+            value={patientName}
+            onChange={(e) => setPatientName(e.target.value)}
+            type="text"
+            placeholder="Enter patient name"
+          />
+          <button
+            onClick={() => {
+              setSelectedPatientId('');
+              handleSearch();
+            }}
+          >
+            <FontAwesomeIcon icon={faMagnifyingGlass} />
+          </button>
         </div>
-    )
+      </div>
+      <div>
+        {patientData.length > 0 && (
+          <GenericMasterTableViewForRegistration
+            columns={columns}
+            rows={patientData}
+          />
+        )}
+      </div>
+      <div className={styles.marginLeft20}>
+        {selectedPatientId && <RegistrationForm patientId={selectedPatientId} />}
+      </div>
+    </div>
+  );
 }
 
 export default Registration;
-

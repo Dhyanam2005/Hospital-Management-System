@@ -34,6 +34,7 @@ import LocationMaster from './pages/LocationMaster';
 import PharmacyItemMaster from './pages/PharmacyItemMaster';
 import FacilityMaster from './pages/FacilityMaster';
 import DoctorMaster from './pages/DoctorMaster';
+import PatientsForBill from './pages/PatientsForBill';
 
 function Layout({ children }) {
   return (
@@ -79,7 +80,7 @@ function App() {
               <Route path="/patientCharge" element={<PatientCharge />} />
               <Route path="/admission" element={<Admission />} />
               <Route path="/appointment" element={<Appointment />} />
-              <Route path="/viewPatientBill" element={<PayBillBefore />} />
+              <Route path="/view-bills" element={<PatientsForBill />} />
               <Route path="/viewPDFBill" element={<PayBillBefore />} />
               <Route path="/chart" element={<Charts />} />
               <Route path="/prescription" element={<Prescription />} />

@@ -1,0 +1,43 @@
+.addRow{
+    border: 1px solid black;
+    width: 7rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-radius: 0.5rem;
+}
+
+.delete-btn-test img{
+    width: 40%;
+    height: 40%;
+}
+
+.title-icon{
+    display: flex;
+    flex-direction: row;
+}
+
+.title-icon-i{
+    width: 20px;
+    height: 20px;
+    color: red;
+}
+
+.table{
+    text-align: left;
+}
+
+.save-btn{
+    border: 1px solid black;
+    width: 8rem;
+    height: 2rem;
+    text-align: center;
+    border-radius: 1rem;
+    margin-top: 2rem;
+    background-color: #008CBA;
+}
+
+.buttons{
+    display: flex;
+    justify-content: flex-end;
+    gap : 1rem
+}

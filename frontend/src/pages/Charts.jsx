@@ -7,6 +7,9 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
 } from 'recharts';
 import Navbar from '../components/SidebarMenu';
 
@@ -15,6 +18,12 @@ function Charts() {
   const [secondInfo, setSecondInfo] = useState([]);
   const [thirdInfo, setThirdInfo] = useState([]);
   const [fourthInfo, setFourthInfo] = useState([]);
+  const [fifthInfo,setFifthInfo] = useState([]);
+  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+
+  const renderCustomizedLabel = ({ name, percent }) => {
+  return `${name}: ${(percent * 100).toFixed(0)}%`;
+};
 
   useEffect(() => {
     async function fetchData() {
@@ -23,14 +32,14 @@ function Charts() {
         const res2 = await fetch('http://localhost:3000/secondChart');
         const res3 = await fetch('http://localhost:3000/thirdChart');
         const res4 = await fetch('http://localhost:3000/fourthChart');
+        const res5 = await fetch('http://localhost:3000/fifthChart');
 
-        if (res1.ok && res2.ok && res3.ok && res4.ok) {
+        if (res1.ok && res2.ok && res3.ok && res4.ok && res5.ok) {
           const data1 = await res1.json();
           const data2 = await res2.json();
           const data3 = await res3.json();
           const data4 = await res4.json();
-
-          // Parse total_fee to number
+          const data5 = await res5.json();
           const parsedData4 = data4.map((d) => ({
             ...d,
             total_fee: Number(d.total_fee),
@@ -40,6 +49,7 @@ function Charts() {
           setSecondInfo(data2);
           setThirdInfo(data3);
           setFourthInfo(parsedData4);
+          setFifthInfo(data5)
         } else {
           console.log('One or more responses are not OK');
         }
@@ -120,6 +130,27 @@ function Charts() {
           </BarChart>
         </ResponsiveContainer>
       </div>
+  <div>
+  <h2 className="text-xl font-bold mb-4">Gender Patient Distribution</h2>
+  <ResponsiveContainer width="100%" height={350}>
+    <PieChart>
+      <Pie
+        data={fifthInfo}
+        dataKey="s_count"
+        nameKey="sex"
+        cx="50%"
+        cy="50%"
+        outerRadius={100}
+        fill="#8884d8"
+        label={renderCustomizedLabel}
+      >
+        {fifthInfo.map((entry, index) => (
+          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+        ))}
+      </Pie>
+    </PieChart>
+  </ResponsiveContainer>
+</div>
       </div>
     </div>
   );

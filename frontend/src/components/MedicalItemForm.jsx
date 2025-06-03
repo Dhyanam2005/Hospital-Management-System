@@ -1,209 +1,226 @@
-import React , { useEffect, useState } from 'react';
-import "./DoctorConsultation.css"
+import React, { useEffect, useState } from 'react';
+import styles from "./MedicalItemForm.module.css";
+import deleteIcon from "../images/delete-icon.png";
+import { faP, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-function MedicalItemForm({ regId}){
+function MedicalItemForm({ regId }) {
+  const [medicines, setMedicines] = useState([]);
+  const [rows, setRows] = useState([]);
+  const token = localStorage.getItem('token');
 
-    const [medicines, setMedicines] = useState([]);
-    const [rows, setRows] = useState([]);
-    const token = localStorage.getItem('token');
-
-    useEffect(() => {
-        const fetchData = async () => {
-          try {
-            const medicineRes = await fetch("http://localhost:3000/fetchMedicines");    
-            const medicines = await medicineRes.json();
-    
-            if (medicineRes.ok) {
-              setMedicines(medicines);
-              console.log("medicines fetched successfully");
-            } else {
-              console.log("Error in fetching medicines");
-            }
-          } catch (err) {
-            console.error("Error fetching data:", err);
-          }
-        };
-        fetchData();
-      }, []);
-
-      useEffect(() => {
-      if (regId) {
-        console.log("Fetch Consultations being called for regId ", regId);
-        fetchMedicalItems();
-      }
-      }, [regId]);
-
-        const fetchMedicalItems = async () => {
-          try{
-              let res = await fetch(`http://localhost:3000/fetchMedicalItems?regId=${encodeURIComponent(regId)}`);
-              let data = await res.json();
-              if(res.ok){
-                console.log("Length of data is ",data);
-                setRows(data.map((item) => ({
-                  drug_id: item.drug_id,
-                  drug_name : item.medicineName,
-                  quantity: item.item_qty,
-                  price : item.item_price,
-                  value : item.item_value,
-                  date: item.date,
-                  update_flag:item.update_flag,
-                  medical_item_id: item.medical_item_id
-                })));
-              }else{
-                console.log("Error fetching consultations");
-              }
-          }catch(err){
-            console.error(err);
-          }
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const medicineRes = await fetch("http://localhost:3000/fetchMedicines");
+        const medicines = await medicineRes.json();
+        if (medicineRes.ok) {
+          setMedicines(medicines);
+          console.log("Medicines fetched successfully");
+        } else {
+          console.log("Error in fetching medicines");
         }
-
-
-      const addRow = () => {
-        setRows([...rows, { drug_id: "", date: "", quantity: "", price: "", value: "" }]);
+      } catch (err) {
+        console.error("Error fetching data:", err);
+      }
     };
+    fetchData();
+  }, []);
 
+  useEffect(() => {
+    if (regId) {
+      console.log("Fetch Medical Items being called for regId", regId);
+      fetchMedicalItems();
+    }
+  }, [regId]);
 
-      const handleChange = (index,field,value) => {
-        const updatedRows = [...rows];
-        updatedRows[index][field] = value;
-        if(updatedRows[index].medical_item_id) updatedRows[index].update_flag = "Yes";
-        setRows(updatedRows);
+  const fetchMedicalItems = async () => {
+    try {
+      const res = await fetch(`http://localhost:3000/fetchMedicalItems?regId=${encodeURIComponent(regId)}`);
+      const data = await res.json();
+      if (res.ok) {
+        setRows(data.map(item => ({
+          drug_id: item.drug_id,
+          drug_name: item.medicineName,
+          quantity: item.item_qty,
+          price: item.item_price,
+          value: item.item_value,
+          date: item.date,
+          update_flag: item.update_flag,
+          medical_item_id: item.medical_item_id
+        })));
+      } else {
+        console.log("Error fetching consultations");
       }
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
-      const saveMedicalItems = async() => {
-        try{
-          let res = await fetch('http://localhost:3000/medicalItems',{
-            method: "POST",
-            headers: { 
-              "Content-Type": "application/json",
-             },
-            body: JSON.stringify({ regId , medicalItems : rows })
-          });
+  const addRow = () => {
+    setRows([...rows, { drug_id: "", date: "", quantity: "", price: "", value: "", update_flag: "", medical_item_id: null }]);
+  };
 
-          let data = await res.json();
+  const handleChange = (index, field, value) => {
+    const updatedRows = [...rows];
+    updatedRows[index][field] = value;
 
-          if(res.ok){
-            alert("Consultations Saved Successfully");
-            fetchMedicalItems();
-          }else{
-            alert("Failed to save consultations");
-          }
-        }catch(err){
-          console.error("Error is ",err);
-        }
-      };
+    const quantity = parseFloat(updatedRows[index].quantity || 0);
+    const price = parseFloat(updatedRows[index].price || 0);
+    updatedRows[index].value = (price * quantity).toFixed(2);
 
-      const deleteRows = async(id,index) => {
+    if (updatedRows[index].medical_item_id) {
+      updatedRows[index].update_flag = "Yes";
+    }
 
-        if(!id){
-          const updatedRows = [...rows];
-          updatedRows.splice(index,1);
-          setRows(updatedRows);
-          return;
-        }
-                const confirmed = window.confirm("Are you sure you want to delete this record?");
-        if(!confirmed) return;
-        console.log("DeleteRows is called and id is ",id);
-        try{
-          let res = await fetch(`http://localhost:3000/docmedicalItems/${id}`,{
-            method: "DELETE",
-            headers: { 
-              "Content-Type": "application/json",
-             },
-          });
+    setRows(updatedRows);
+  };
 
-          let data = await res.json();
+  const saveMedicalItems = async () => {
+    try {
+      const res = await fetch('http://localhost:3000/medicalItems', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ regId, medicalItems: rows })
+      });
 
-          if(res.ok){
-            alert("Consultations Saved Successfully");
-            fetchMedicalItems();
-          }else{
-            alert("Failed to save consultations");
-          }
-        }catch(err){
-          console.error("Error is ",err);
-        }
+      const data = await res.json();
+
+      if (res.ok) {
+        alert("Consultations Saved Successfully");
+        fetchMedicalItems();
+      } else {
+        alert("Failed to save consultations");
       }
+    } catch (err) {
+      console.error("Error is", err);
+    }
+  };
 
-    return(
-        <div>
-            <form>
-                <h1 className='text-center block text-lg pt-3 pb-3'>Consultation for registered ID : {regId}</h1>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Medicine</th>
-                            <th>Issue Date</th>
-                            <th>Quantity</th>
-                            <th>Price</th>
-                            <th>Value</th>
-                        </tr>
-                    </thead>
-                   <tbody>
-  {rows.map((row, index) => (
-    <tr key={index}>
-      <td>
-        <select
-          value={row.drug_id}
-          onChange={(e) => handleChange(index, "drug_id", e.target.value)}
-        >
-          <option value=" ">Select Medicine</option>
-          {medicines.map((med,i) => (
-            <option key={med.DRUG_ID} value={med.DRUG_ID}>
-              {med.DRUG_NAME}
-            </option>
-          ))}
-        </select>
-      </td>
-      <td>
-        <input
-          type="date"
-          value={row.date || ""}
-          onChange={(e) => handleChange(index, "date", e.target.value)}
-        />
-      </td>
-      <td>
-        <input
-          type="number"
-          value={row.quantity || ""}
-          onChange={(e) => handleChange(index, "quantity", e.target.value)}
-        />
-      </td>
-      <td>
-        <input
-          type="number"
-          value={row.price || ""}
-          onChange={(e) => handleChange(index, "price", e.target.value)}
-        />
-      </td>
-      <td>{row.value}</td>
-      <td>{row.update_flag}</td>
-      <td>
-        <button
-          type="button"
-          className="delete-btn"
-          onClick={() => deleteRows(row.medical_item_id)}
-        >
-          Delete Row
-        </button>
-      </td>
-    </tr>
-  ))}
-</tbody>
+  const deleteRows = async (id, index) => {
+    if (!id) {
+      const updatedRows = [...rows];
+      updatedRows.splice(index, 1);
+      setRows(updatedRows);
+      return;
+    }
 
-                </table>
+    const confirmed = window.confirm("Are you sure you want to delete this record?");
+    if (!confirmed) return;
 
-                <div className='pt-4 flex gap-4'>
-                  <button type='button' onClick={addRow}>
-                    + Add Row
-                  </button>
-                  <button type='button' onClick={saveMedicalItems}>
-                    💾 Save
-                  </button>
-                </div>
-            </form>
+    try {
+      const res = await fetch(`http://localhost:3000/docmedicalItems/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        alert("Consultation deleted successfully");
+        fetchMedicalItems();
+      } else {
+        alert("Failed to delete consultation");
+      }
+    } catch (err) {
+      console.error("Error is", err);
+    }
+  };
+
+  return (
+    <div className="p-4">
+      <form>
+        <div className={styles["title-icon"]}>
+  <h1>Consultation for Registered ID: {regId}</h1>
+  <button type="button" onClick={addRow}>
+    <FontAwesomeIcon icon={faPlus} className={styles["title-icon-i"]} />
+  </button>
+</div>
+
+
+        <div className="overflow-x-auto">
+          <table className="min-w-full border border-gray-300 text-sm text-left">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="border px-3 py-2">Medicine</th>
+                <th className="border px-3 py-2">Issue Date</th>
+                <th className="border px-3 py-2">Quantity</th>
+                <th className="border px-3 py-2">Price</th>
+                <th className="border px-3 py-2">Value</th>
+                <th className="border px-3 py-2">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((row, index) => (
+                <tr key={index} className="hover:bg-gray-50">
+                  <td className="border px-3 py-2">
+                    <select
+                      value={row.drug_id}
+                      onChange={(e) => handleChange(index, "drug_id", e.target.value)}
+                      className="w-full border rounded px-2 py-1"
+                    >
+                      <option value="">Select Medicine</option>
+                      {medicines.map((med) => (
+                        <option key={med.DRUG_ID} value={med.DRUG_ID}>
+                          {med.DRUG_NAME}
+                        </option>
+                      ))}
+                    </select>
+                  </td>
+                  <td className="border px-3 py-2">
+                    <input
+                      type="date"
+                      value={row.date || ""}
+                      onChange={(e) => handleChange(index, "date", e.target.value)}
+                      className="w-full border rounded px-2 py-1"
+                    />
+                  </td>
+                  <td className="border px-3 py-2">
+                    <input
+                      type="number"
+                      value={row.quantity || ""}
+                      onChange={(e) => handleChange(index, "quantity", e.target.value)}
+                      className="w-full border rounded px-2 py-1"
+                    />
+                  </td>
+                  <td className="border px-3 py-2">
+                    <input
+                      type="number"
+                      value={row.price || ""}
+                      onChange={(e) => handleChange(index, "price", e.target.value)}
+                      className="w-full border rounded px-2 py-1"
+                    />
+                  </td>
+                  <td className="border px-3 py-2">{row.value}</td>
+                  <td className="border px-3 py-2">
+                    <button
+                      type="button"
+                      className="text-red-600 hover:underline"
+                      onClick={() => deleteRows(row.medical_item_id, index)}
+                    >
+                      <img src = {deleteIcon} alt='delete-btn' style={{ width : "40%" , height : "40%"}}/>
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-    )
+
+        <div>
+          <div className={styles["buttons"]}>
+            <button onClick={saveMedicalItems} disabled={rows.length === 0} className={styles["save-btn"]}>
+             Save
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  );
 }
 
 export default MedicalItemForm;

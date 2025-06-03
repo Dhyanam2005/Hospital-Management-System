@@ -74,21 +74,21 @@ function DeptTestDocFees(){
                 <table className="table-auto w-full mt-5">
                     <thead>
                         <tr>
-                            <td>Test Date</td>
-                            <td>Test Department</td>
-                            <td>Test Name</td>
-                            <td>Doctor</td>
-                            <td>Total Fee collected</td>
+                            <td className="border border-gray-300 text-left font-bold">Test Date</td>
+                            <td className="border border-gray-300 text-left font-bold">Test Department</td>
+                            <td className="border border-gray-300 text-left font-bold">Test Name</td>
+                            <td className="border border-gray-300 text-left font-bold">Doctor</td>
+                            <td className="border border-gray-300 text-left font-bold">Total Fee collected</td>
                         </tr>
                     </thead>
                     <tbody>
                         {filteredData.map((item,index) => (
                             <tr key={index}>
-                                <td>{item["Test Date"]}</td>
-                                <td>{item["Test Department"]}</td>
-                                <td>{item["Test Name"]}</td>
-                                <td>{item["Doctor"]}</td>
-                                <td>{item["Total Fee Collected"]}</td>
+                                <td className="border border-gray-300">{item["Test Date"]}</td>
+                                <td className="border border-gray-300">{item["Test Department"]}</td>
+                                <td className="border border-gray-300">{item["Test Name"]}</td>
+                                <td className="border border-gray-300">{item["Doctor"]}</td>
+                                <td className="border border-gray-300">{item["Total Fee Collected"]}</td>
                             </tr>
                         ))}
                     </tbody>

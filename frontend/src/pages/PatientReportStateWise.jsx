@@ -71,22 +71,22 @@ function PatientReportStateWise(){
                         />
                     </div>
                 </div>
-                <table className="table-auto w-full mt-5">
+                <table className="table-auto w-full mt-5 border border-gray-300">
                     <thead>
                         <tr>
-                            <td>Month</td>
-                            <td>State</td>
-                            <td>City</td>
-                            <td>No of Patients</td>
+                            <td className="border border-gray-300 text-left font-bold">Month</td>
+                            <td className="border border-gray-300 text-left font-bold">State</td>
+                            <td className="border border-gray-300 text-left font-bold">City</td>
+                            <td className="border border-gray-300 text-left font-bold">No of Patients</td>
                         </tr>
                     </thead>
                     <tbody>
                         {filteredData.map((item,index) => (
                             <tr key={index}>
-                                <td>{item.Date}</td>
-                                <td>{item.State}</td>
-                                <td>{item.City}</td>
-                                <td>{item["No of Patients"]}</td>
+                                <td className="border border-gray-300">{item.Date}</td>
+                                <td className="border border-gray-300">{item.State}</td>
+                                <td className="border border-gray-300"> {item.City}</td>
+                                <td className="border border-gray-300">{item["No of Patients"]}</td>
                             </tr>
                         ))}
                     </tbody>

@@ -1,89 +1,97 @@
-import NavBar from "../components/SidebarMenu";
-import React , { useEffect, useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
+import React, { useState } from "react";
+import styles from "./Admission.module.css";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import GenericMasterTableViewForRegistration from '../components/GenericTableForReg';
 import TestGrid from "../components/TestGrid";
-import "./Test.css";
 
-
-function Test(){
-    const [patientName,setPatientName] = useState('');
-    const [selectedRegId,setSelectedRegId] = useState('');
-    const [patientData,setPatientData]= useState([]);
+function Admission() {
+    const [patientName, setPatientName] = useState('');
+    const [selectedRegId, setSelectedRegId] = useState('');
+    const [patientData, setPatientData] = useState([]);
     const [showTestGrid, setShowTestGrid] = useState(false);
 
-    
     const handleSearch = async () => {
-    try{
-        let res = await fetch(`http://localhost:3000/fetchpatreg?patientName=${encodeURIComponent(patientName)}`,{
-            method : 'GET',
-            headers: { 'Content-Type': 'application/json' },
-        });
+        try {
+            let res = await fetch(`http://localhost:3000/consultationDoc?patientName=${encodeURIComponent(patientName)}`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+            });
 
-        let data = await res.json();
+            let data = await res.json();
 
-        if(res.ok){
-            console.log(data);
-            setPatientData(data);
-        }else{
-            console.log("res is not ok");
+            if (res.ok) {
+                console.log(data);
+                setPatientData(data);
+            } else {
+                console.log("res is not ok");
+            }
+        } catch (err) {
+            console.log("Error in try statement");
         }
-    }catch(err){
-        console.log("Error in try statement");
-    }
-}
+    };
 
-    return(
+    const columns = [
+        { field: 'patient_id', headerName: 'Patient ID', width: 130 },
+        { field: 'name', headerName: 'Name', width: 150 },
+        { field: 'age', headerName: 'Age', width: 100 },
+        { field: 'reg_id', headerName: 'Registration ID', width: 160 },
+        {
+            field: 'select',
+            headerName: 'Select',
+            width: 100,
+            renderCell: (params) => (
+                <input
+                    type="radio"
+                    name="select"
+                    checked={selectedRegId === params.row.reg_id}
+                    onChange={() => {
+                        setSelectedRegId(params.row.reg_id);
+                        setShowTestGrid(true);
+                    }}
+                />
+            ),
+        },
+    ];
+
+    const rows = patientData.map((patient, index) => ({
+        id: index,
+        ...patient,
+    }));
+
+    return (
         <div>
-            <div className="test ml-[20%]">
-                <div className="search-bar">
-                    <label>Search Patient</label>
-                    <input className = 'search-box' value = {patientName} onChange = {(e) => setPatientName(e.target.value)}type='text' placeholder='Enter patient Name'></input>
-                    <button onClick={() => {
-                        setSelectedRegId('');
-                        handleSearch();
-                    }}>
+            <div className={`${styles.admission} ml-[20%]`}>
+                <div className={styles["search-bar"]}>
+                    <label htmlFor="search">Search Patient</label>
+                    <input
+                        type="text"
+                        placeholder="Enter patient name"
+                        id="search"
+                        className={styles["search-box"]}
+                        value={patientName}
+                        onChange={(e) => setPatientName(e.target.value)}
+                    />
+                    <button onClick={handleSearch}>
                         <FontAwesomeIcon icon={faMagnifyingGlass} />
                     </button>
                 </div>
-                {patientData.length > 0 && 
-                    <table className='table-container'>
-                        <thead>
-                            <tr>
-                                <th>Patient ID</th>
-                                <th>Name</th>
-                                <th>Age</th>
-                                <th>Registration ID</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {patientData.map((patient,index) => (
-                            <tr key={index}>
-                            <td>{patient.patient_id}</td>
-                            <td>{patient.name}</td>
-                            <td>{patient.age}</td>
-                            <td>{patient.reg_id}</td>
-  <td>
-    <input
-      type="radio"
-      name="select"
-      value={patient.reg_id}
-      onChange={() => {
-        setSelectedRegId(patient.reg_id);
-        setShowTestGrid(true);
-      }}
-    />
-  </td>
-</tr>
-
-                        )) }
-                        </tbody>
-                    </table>
-                }
-                {showTestGrid && <TestGrid regId = {selectedRegId}/>}
+            </div>
+            <div>
+                <div>
+                    {patientData.length > 0 && (
+                        <GenericMasterTableViewForRegistration
+                            columns={columns}
+                            rows={rows}
+                        />
+                    )}
+                </div>
+                <div className="ml-[20%]">
+                    {showTestGrid && <TestGrid regId={selectedRegId} />}
+                </div>
             </div>
         </div>
-    )
+    );
 }
 
-export default Test;
+export default Admission;

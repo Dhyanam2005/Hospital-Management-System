@@ -74,19 +74,19 @@ function DoctorWiseRegistration(){
                 <table className="table-auto w-full mt-5">
                     <thead>
                         <tr>
-                            <td>Date</td>
-                            <td>Doctor</td>
-                            <td>No of Patients</td>
-                            <td>Total Fee Collected</td>
+                            <td className="border border-gray-300 text-left font-bold">Date</td>
+                            <td className="border border-gray-300 text-left font-bold">Doctor</td>
+                            <td className="border border-gray-300 text-left font-bold">No of Patients</td>
+                            <td className="border border-gray-300 text-left font-bold">Total Fee Collected</td>
                         </tr>
                     </thead>
                     <tbody>
                         {filteredData.map((item,index) => (
                             <tr key={index}>
-                                <td>{item.Date}</td>
-                                <td>{item.Doctor}</td>
-                                <td>{item["No of Patients"]}</td>
-                                <td>{item["Total Fee Collected"]}</td>
+                                <td className="border border-gray-300">{item.Date}</td>
+                                <td className="border border-gray-300">{item.Doctor}</td>
+                                <td className="border border-gray-300">{item["No of Patients"]}</td>
+                                <td className="border border-gray-300">{item["Total Fee Collected"]}</td>
                             </tr>
                         ))}
                     </tbody>
