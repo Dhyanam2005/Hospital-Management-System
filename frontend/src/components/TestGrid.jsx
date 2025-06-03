@@ -15,6 +15,13 @@ function TestGrid({ regId }) {
 
 
   useEffect(() => {
+    const resetData = () => {
+      setRows([]);
+    };
+    resetData();
+  },[regId]);
+
+  useEffect(() => {
     const fetchData = async () => {
       try {
         const doctorRes = await fetch("http://localhost:3000/fetchInHouseDoctors");

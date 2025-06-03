@@ -10,6 +10,13 @@ function DoctorConsultationForm({ regId}){
     const [rows, setRows] = useState([]);
     const token = localStorage.getItem('token');
 
+  useEffect(() => {
+    const resetData = () => {
+      setRows([]);
+    };
+    resetData();
+  },[regId]);
+
     useEffect(() => {
         const fetchData = async () => {
           try {

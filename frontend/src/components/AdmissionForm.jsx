@@ -39,6 +39,17 @@ function NewAdmission({ regId }) {
 
   useEffect(() => {
     async function fetchAdmission() {
+
+    setAdmissionDate("");
+    setDischargeDate("");
+    setDoctor("");
+    setAdmissionCharges("");
+    setSelectedBed("");
+    setAdmitReason("");
+    setWardCharges("");
+    setSelectedBedName("");
+    setFetchAdmission(false);
+    setErrorMessage("");
       try {
         const res = await fetch(
           `http://localhost:3000/fetchAdmission?regId=${encodeURIComponent(
@@ -49,7 +60,7 @@ function NewAdmission({ regId }) {
 
         if (res.ok) {
           const admission = data[0];
-          if (!admission.message) {
+          if (admission && !admission.message) {
             setAdmissionDate(admission.admission_date || "");
             setDischargeDate(admission.discharge_date || "");
             setDoctor(admission.doc_id || "");
@@ -59,17 +70,6 @@ function NewAdmission({ regId }) {
             setWardCharges(admission.ward_charges || "");
             setSelectedBedName(admission.bed || "");
             setFetchAdmission(true);
-          } else {
-            // Reset form if no admission found
-            setAdmissionDate("");
-            setDischargeDate("");
-            setDoctor("");
-            setAdmissionCharges("");
-            setSelectedBed("");
-            setAdmitReason("");
-            setWardCharges("");
-            setSelectedBedName("");
-            setFetchAdmission(false);
           }
         } else {
           console.error("Error fetching admission");

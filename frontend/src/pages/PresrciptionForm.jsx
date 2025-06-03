@@ -21,6 +21,13 @@ function PrescriptionForm({ selectedDoctor, selectedDate, selectedPatientRegId }
         { id: 5, name: "With Food" }, { id: 6, name: "With Plenty of Water" }
     ];
 
+      useEffect(() => {
+        const resetData = () => {
+          setRows([]);
+        };
+        resetData();
+      },[selectedDate,selectedDoctor,selectedPatientRegId]);
+
     useEffect(() => {
         const fetchMedicine = async () => {
             try {
@@ -94,6 +101,7 @@ function PrescriptionForm({ selectedDoctor, selectedDate, selectedPatientRegId }
                 </button>
             </div>    
             </div>
+            {rows.length > 0 && 
             <table className="border border-gray-300 w-full">
                 <thead>
                     <tr>
@@ -154,6 +162,7 @@ function PrescriptionForm({ selectedDoctor, selectedDate, selectedPatientRegId }
                     ))}
                 </tbody>
             </table>
+            }
             <div className={styles["buttons"]}>
                 <button onClick={handleSave} className={styles["save-btn"]}>Save</button>
             </div>
