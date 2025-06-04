@@ -36,6 +36,7 @@ function PrescriptionForm({ selectedDoctor, selectedDate, selectedPatientRegId }
           }
         };
         fetchData();
+        console.log(rows);
       },[selectedDate,selectedDoctor,selectedPatientRegId]);
 
     useEffect(() => {
@@ -101,6 +102,23 @@ function PrescriptionForm({ selectedDoctor, selectedDate, selectedPatientRegId }
         }
     };
 
+const handleDelete = async () => {
+    try {
+        const res = await fetch(`http://localhost:3000/prescription?reg=${selectedPatientRegId}&doc=${selectedDoctor}&date=${selectedDate}`, {
+            method: "DELETE"
+        });
+        if (res.ok) {
+            alert("Prescription deleted successfully");
+            setRows([]);
+        } else {
+            alert("Failed to delete prescription");
+        }
+    } catch (error) {
+        console.error("Delete error:", error);
+    }
+};
+
+
     return (
         <div >
             <div className="mt-10">
@@ -164,7 +182,7 @@ function PrescriptionForm({ selectedDoctor, selectedDate, selectedPatientRegId }
                                 </select>
                             </td>
                             <td className="border border-gray-300">
-                                <button onClick={() => deleteRow(index)} style={{ color: "red" }}>
+                                <button onClick={handleDelete} style={{ color: "red" }}>
                                     <img src={deleteIcon} alt="delete" style={{width:"40%",height:"40%"}}/>
                                 </button>
                             </td>
