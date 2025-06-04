@@ -35,6 +35,7 @@ router.get("/fetchMedicalItems",(req,res) => {
 })
 
 router.post("/docConsultation",authenticateJWT, async (req,res) =>{
+    console.log("post route called")
     const userId = req.user.id;
     try{
         let {regId , consultation} = req.body;

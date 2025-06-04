@@ -11,8 +11,9 @@ router.get("/payBill", (req, res) => {
         (err, result) => {
             if (err) {
                 return res.status(500).json({ message: "Error fetching payment details" });
-            }
-
+            }   
+            console.log("Result after first query is ",result);
+            console.log(result.length);
             if (result.length > 0) {
                 return res.json(result[0]);
             } else {
@@ -41,6 +42,7 @@ router.get("/payBill", (req, res) => {
                         if (result2.length === 0) {
                             return res.status(404).json({ message: "No record found" });
                         }
+                        console.log(result2[0]);
                         return res.json(result2[0]);
                     }
                 );

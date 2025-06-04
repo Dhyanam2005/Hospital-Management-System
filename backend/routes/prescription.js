@@ -75,5 +75,4 @@ router.post("/prescription", (req, res) => {
     });
 });
 
-
 module.exports = router;

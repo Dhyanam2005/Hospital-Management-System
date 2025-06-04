@@ -48,7 +48,11 @@ function ResultGrid({ regId }){
 
     const handleResultChange = (index,value) => {
         const updated = [...resultData];
-        updated[index].result = value;
+        if (updated[index].result_type === "P") {
+            updated[index].result_char = value;
+        } else {
+            updated[index].result_num = value;
+        }
         setResultData(updated);
     }
 

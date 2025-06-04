@@ -283,6 +283,7 @@
         )}
 
         <form id="registrationForm" onSubmit={handleRegisterSubmit} className={styles.loginForm}>
+          <span className='block text-center'>Enter a new registration</span>
           <div>
             <div className={styles.indivInp}>
               <label htmlFor="regCharges">Registration Fees</label>

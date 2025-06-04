@@ -146,7 +146,6 @@ function DoctorConsultationForm({ regId}){
                             <th className='border border-gray-300 text-left'>Doctor Name</th>
                             <th className='border border-gray-300 text-left'>Date</th>
                             <th className='border border-gray-300 text-left'>Consultation Fees</th>
-                            <th className='border border-gray-300 text-left'>Consultation ID</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -178,7 +177,6 @@ function DoctorConsultationForm({ regId}){
                                 onChange={(e) => handleChange(index,"fee",e.target.value)}
                               />
                             </td>
-                            <td className='border border-gray-300'>{row.consultationId}</td>
                             <td className='border border-gray-300'>
                               <button type='button' className='delete-btn' onClick={() => deleteRows(row.consultationId)}>
                                 Delete Row
@@ -189,7 +187,7 @@ function DoctorConsultationForm({ regId}){
                     </tbody>
                 </table>
             <div className={styles["buttons"]}>
-                <button onClick={saveConsultations} className={styles["save-btn"]}>Save</button>
+                <button type='button'onClick={saveConsultations} className={styles["save-btn"]}>Save</button>
             </div>
             </form>
         </div>
