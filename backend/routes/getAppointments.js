@@ -34,58 +34,74 @@ ORDER BY ts.slot`,
     )
 })
 
-router.post("/appointment",authenticateJWT, async (req,res) => {
-    console.log("Called");
-    try{
-    const { appointment , selectedDoctor , selectedDate } = req.body;
+router.post("/appointment", authenticateJWT, async (req, res) => {
+   console.log("Request Body:", req.body);
+  console.log("Called");
+  try {
+    const { appointment, selectedDoctor, selectedDate } = req.body;
     const userId = req.user.id;
-    console.log("Appointment",appointment ,"SelectDate", selectedDate," selectdoc", selectedDoctor," userid" , userId);
-    const newAppointments = appointment.filter(a => {
-        return a.APPOINTMENT_ID === null && a.patient_id !== null;
-    });
-    console.log(newAppointments);
+
+    console.log("Appointment", appointment, "SelectDate", selectedDate, " selectdoc", selectedDoctor, " userid", userId);
+
+    const appointmentsArr = appointment || [];
+
+    const newAppointments = appointmentsArr.filter(a => a.APPOINTMENT_ID === null && a.patient_id !== null);
+    console.log("New Appointments:", newAppointments);
+
     const newAppointmentsPromises = newAppointments.map(a => {
-        return new Promise((resolve,reject) => {
-            db.query(
-                `INSERT INTO appointment
-                (patient_id,doctor_id,appointment_date,appointment_time,user_id)
-                VALUES (?,?,?,?,?)
-                `,[a.patient_id,selectedDoctor,selectedDate,a.appointment_time,userId],(err,result) => {
-                    if(err) reject(err);
-                    resolve(result)
-                }
-            );
-        })
-    })
-
-    const updateAppointments = appointment.filter(a => {
-        return a.APPOINTMENT_ID !== null && a.patient_id !== null;
+      return new Promise((resolve, reject) => {
+        db.query(
+          `INSERT INTO appointment
+           (patient_id, doctor_id, appointment_date, appointment_time, user_id)
+           VALUES (?, ?, ?, ?, ?)`,
+          [a.patient_id, selectedDoctor, selectedDate, a.appointment_time, userId],
+          (err, result) => {
+            if (err) {
+              console.error("Insert Error:", err);
+              reject(err);
+            } else {
+              resolve(result);
+            }
+          }
+        );
+      });
     });
+
+    const updateAppointments = appointmentsArr.filter(a => a.APPOINTMENT_ID !== null && a.patient_id !== null);
+    console.log("Update Appointments:", updateAppointments);
+
     const updateAppointmentsPromises = updateAppointments.map(a => {
-        return new Promise((resolve,reject) => {
-            db.query(
-                `UPDATE appointment
-                SET patient_id = ?,
-                    doctor_id = ?,
-    appointment_date = ?,
-    appointment_time = ?,
-    user_id = ?
-WHERE appointment_id = ?
-                `,[a.patient_id,selectedDoctor,selectedDate,a.appointment_time,userId,a.APPOINTMENT_ID],(err,result) => {
-                    if(err) reject(err);
-                    resolve(result)
-                }
-            );
-        })
-    })
+      return new Promise((resolve, reject) => {
+        db.query(
+          `UPDATE appointment
+           SET patient_id = ?,
+               doctor_id = ?,
+               appointment_date = ?,
+               appointment_time = ?,
+               user_id = ?
+           WHERE appointment_id = ?`,
+          [a.patient_id, selectedDoctor, selectedDate, a.appointment_time, userId, a.APPOINTMENT_ID],
+          (err, result) => {
+            if (err) {
+              console.error("Update Error:", err);
+              reject(err);
+            } else {
+              resolve(result);
+            }
+          }
+        );
+      });
+    });
 
-    await Promise.all([...newAppointmentsPromises,...updateAppointmentsPromises]);
-    res.json({ message : "All data saved successfully"});
+    await Promise.all([...newAppointmentsPromises, ...updateAppointmentsPromises]);
 
-    }catch(err){
-        console.error("Error is ",err);
-    }
-})
+    res.json({ message: "All data saved successfully" });
+  } catch (err) {
+    console.error("Error is ", err);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
 
 router.delete("/appointment/:id",(req,res) => {
     let id = req.params.id;

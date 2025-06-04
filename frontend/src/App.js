@@ -35,13 +35,19 @@ import PharmacyItemMaster from './pages/PharmacyItemMaster';
 import FacilityMaster from './pages/FacilityMaster';
 import DoctorMaster from './pages/DoctorMaster';
 import PatientsForBill from './pages/PatientsForBill';
+import ProfileButton from './pages/ProfileButton';
+import ProtectedRoute from "./components/ProtectedRoute";
+
 
 function Layout({ children }) {
   return (
     <div className="flex">
         <Sidebar/>
       <div className="flex-1 p-4">
-        <Breadcrumb />
+        <div className='flex items-center justify-between'>
+          <Breadcrumb />
+          <ProfileButton />
+        </div>
         {children}
       </div>
     </div>
@@ -52,46 +58,48 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/login" element={<Login />} />
-        
-        <Route path="*" element={
-          <Layout>
-            <Routes>
-              <Route path="/home" element={<Home />} />
-              <Route path="/userlist" element={<UserList />} />
-              <Route path="/newuser" element={<Newuser />} />
-              <Route path="/profile" element={<ProfilePage />} />
-              <Route path="/changePassword" element={<ChangePassword />} />
-              <Route path="/doctor" element={<Doctor />} />
-              <Route path="/newdoctor" element={<NewDoctorPopUp />} />
-              <Route path="/new-doctor" element={<NewDoctorPopUp />} />
-              <Route path="/patient" element={<NewPatient />} />
-              <Route path="/registration" element={<Registration />} />
-              <Route path="/test" element={<Test />} />
-              <Route path="/result" element={<Result />} />
-              <Route path="/pdf" element={<PDF />} />
-              <Route path="/doctor-wise-reg" element={<DoctorWiseRegistration />} />
-              <Route path="/patient-state-wise" element={<PatientReportStateWise />} />
-              <Route path="/dept-test-doc" element={<DeptTestDocFees />} />
-              <Route path="/dept-doc" element={<DeptDocFees />} />
-              <Route path="/referral-doc" element={<ReferralDocReport />} />
-              <Route path="/docConsultation" element={<DoctorConsultation />} />
-              <Route path="/medicalItem" element={<MedicalItem />} />
-              <Route path="/patientCharge" element={<PatientCharge />} />
-              <Route path="/admission" element={<Admission />} />
-              <Route path="/appointment" element={<Appointment />} />
-              <Route path="/view-bills" element={<PatientsForBill />} />
-              <Route path="/viewPDFBill" element={<PayBillBefore />} />
-              <Route path="/chart" element={<Charts />} />
-              <Route path="/prescription" element={<Prescription />} />
-              <Route path="/lab-test-master" element={<LabTestMaster />} />
-              <Route path="/location-master" element={<LocationMaster />} />
-              <Route path="/pharmacy-item-master" element={<PharmacyItemMaster />} />
-              <Route path="/facility-master" element={<FacilityMaster />} />
-              <Route path="/doctor-master" element={<DoctorMaster />} />
-            </Routes>
-          </Layout>
-        } />
+<Route path="/login" element={<Login />} />
+
+<Route path="*" element={
+  <ProtectedRoute>
+    <Layout>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/user-list" element={<UserList />} />
+        <Route path="/new-user" element={<Newuser />} />
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/change-password" element={<ChangePassword />} />
+        <Route path="/doctor" element={<Doctor />} />
+        <Route path="/newdoctor" element={<NewDoctorPopUp />} />
+        <Route path="/new-doctor" element={<NewDoctorPopUp />} />
+        <Route path="/patient" element={<NewPatient />} />
+        <Route path="/registration" element={<Registration />} />
+        <Route path="/test" element={<Test />} />
+        <Route path="/result" element={<Result />} />
+        <Route path="/pdf" element={<PDF />} />
+        <Route path="/doctor-wise-reg" element={<DoctorWiseRegistration />} />
+        <Route path="/patient-state-wise" element={<PatientReportStateWise />} />
+        <Route path="/dept-test-doc" element={<DeptTestDocFees />} />
+        <Route path="/dept-doc" element={<DeptDocFees />} />
+        <Route path="/referral-doc" element={<ReferralDocReport />} />
+        <Route path="/consultation" element={<DoctorConsultation />} />
+        <Route path="/medical-item" element={<MedicalItem />} />
+        <Route path="/service" element={<PatientCharge />} />
+        <Route path="/admission" element={<Admission />} />
+        <Route path="/appointment" element={<Appointment />} />
+        <Route path="/view-bills" element={<PatientsForBill />} />
+        <Route path="/payment" element={<PayBillBefore />} />
+        <Route path="/chart" element={<Charts />} />
+        <Route path="/prescription" element={<Prescription />} />
+        <Route path="/lab-test-master" element={<LabTestMaster />} />
+        <Route path="/location-master" element={<LocationMaster />} />
+        <Route path="/pharmacy-item-master" element={<PharmacyItemMaster />} />
+        <Route path="/facility-master" element={<FacilityMaster />} />
+        <Route path="/doctor-master" element={<DoctorMaster />} />
+      </Routes>
+    </Layout>
+  </ProtectedRoute>
+} />
       </Routes>
     </Router>
   );

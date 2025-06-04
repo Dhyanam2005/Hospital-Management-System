@@ -56,13 +56,13 @@ function ResultGrid({ regId }){
         <div>
             <h2 className="mx-auto text-center">Test for Registration Id : {regId}</h2>
             <table className="border border-gray-300 w-full">
-                <thead className="border border-gray-300">
+                <thead className="border border-gray-300 bg-gray-100">
                     <tr className="border border-gray-300">
+                        <td className="border border-gray-300 font-bold">Test Date</td>
                         <td className="border border-gray-300 font-bold">Test Name</td>
                         <td className="border border-gray-300 font-bold">Test Category</td>
                         <td className="border border-gray-300 font-bold">Range</td>
                         <td className="border border-gray-300 font-bold">Result</td>
-                        <td className="border border-gray-300 font-bold">Test Date</td>
                     </tr>
                 </thead>
                 <tbody>
@@ -74,13 +74,13 @@ function ResultGrid({ regId }){
                     {resultData.length > 0 && 
                         resultData.map((res,index) => (
                             <tr key={index}>
+                                <td className="border border-gray-300">{res.test_date}</td>
                                 <td className="border border-gray-300">{res.test_name}</td>
                                 <td className="border border-gray-300">{res.test_category_name}</td>
                                 <td className="border border-gray-300">{res.reference_result || "-"}</td>
                                 <td className="border border-gray-300">
                                     <input type="text" value={res.result_char || res.result_num} onChange={(e) => handleResultChange (index,e.target.value)}/>
                                 </td>
-                                <td className="border border-gray-300">{res.test_date}</td>
                             </tr>
                         ))
                     }

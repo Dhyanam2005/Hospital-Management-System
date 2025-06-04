@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import GenericMasterTableView from "../components/MasterDataTable";
+import { Container } from "@mui/material";
 
 function FacilityMaster(){
     const [data,setData] = useState([]);
@@ -39,7 +40,9 @@ function FacilityMaster(){
 
     return(
         <div>
-            {<GenericMasterTableView columns={columns} rows={data} title={"Facility Master"}/>}
+            <Container maxWidth="lg">
+                {<GenericMasterTableView columns={columns} rows={data} title={"Facility Master"}/>}
+            </Container>
         </div>
     )
 }

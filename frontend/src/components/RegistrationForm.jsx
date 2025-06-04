@@ -8,6 +8,7 @@ function RegistrationForm({ patientId }) {
   const [inHouseDoc, setInHouseDoc] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [oldRegistrations,setOldRegistrations] = useState([]);
 
   useEffect(() => {
     setRegCharges('');
@@ -33,6 +34,29 @@ function RegistrationForm({ patientId }) {
     };
     fetchDoctors();
   }, []);
+
+    useEffect(() => {
+    const fetchRegistration = async () => {
+      try {
+        const res = await fetch(`http://localhost:3000/fetch-registration?patientId=${patientId}`);
+        const data = await res.json();
+
+        if (res.ok) {
+          const withId = data.map((item, index) => ({
+            id: item.patient_id || index,
+            ...item,
+          }));
+          setOldRegistrations(withId);
+        } else {
+          console.log("res is not ok");
+        }
+      } catch (err) {
+        console.log("Error in try statement");
+      }
+    };
+    fetchRegistration();
+    console.log(oldRegistrations);
+  },[patientId]);
 
   const handleRegisterSubmit = async (e) => {
     e.preventDefault();
@@ -67,7 +91,66 @@ function RegistrationForm({ patientId }) {
     <div className={styles.registration}>
       {errorMessage && <div className={styles.errorMsg}>{errorMessage}</div>}
       {successMessage && <div className={styles.successMsg}>{successMessage}</div>}
-      <form onSubmit={handleRegisterSubmit} className={styles.loginForm}>
+{oldRegistrations.length > 0 && (
+  <div className={styles.registration}>
+    <h3 style={{ marginTop: "2rem" ,textAlign:"center"}}>Previous Registrations</h3>
+    {oldRegistrations.map((reg, index) => (
+      <div
+        key={index}
+        className={styles.loginForm}
+        style={{
+          marginBottom: "1rem",
+          border: "1px solid #ccc",
+          padding: "1rem",
+          borderRadius: "8px",
+          background: "#f9f9f9",
+        }}
+      >
+        <div className={styles.indivInp}>
+          <label>Date</label>
+          <input
+            type="text"
+            value={new Date(reg.reg_date).toLocaleString()}
+            disabled
+            className={styles.indivInpInput}
+          />
+        </div>
+
+        <div className={styles.indivInp}>
+          <label>Doctor ID</label>
+          <input
+            type="text"
+            value={reg.doc_id}
+            disabled
+            className={styles.indivInpInput}
+          />
+        </div>
+
+        <div className={styles.indivInp}>
+          <label>Registration Fees</label>
+          <input
+            type="text"
+            value={reg.reg_charges}
+            disabled
+            className={styles.indivInpInput}
+          />
+        </div>
+
+        <div className={styles.indivInp}>
+          <label>Patient Type</label>
+          <input
+            type="text"
+            value={reg.patient_type === 'I' ? 'In-Patient' : 'Out-Patient'}
+            disabled
+            className={styles.indivInpInput}
+          />
+        </div>
+      </div>
+    ))}
+  </div>
+)}
+
+      <form id="registrationForm" onSubmit={handleRegisterSubmit} className={styles.loginForm}>
         <div>
           <div className={styles.indivInp}>
             <label htmlFor="regCharges">Registration Fees</label>
@@ -100,7 +183,7 @@ function RegistrationForm({ patientId }) {
         </div>
         <div>
           <div className={styles.indivSelect}>
-            <label htmlFor="docId">Doctor Type</label>
+            <label htmlFor="docId">Doctor</label>
             <select
               id="docId"
               value={docId}
@@ -118,12 +201,12 @@ function RegistrationForm({ patientId }) {
             </select>
           </div>
         </div>
+      </form>
         <div className={styles['buttons']}>
-          <button type="submit" className={styles["save-btn"]}>
-            Register
+          <button form='registrationForm' type="submit" className={styles["save-btn"]}>
+            Save
           </button>
         </div>
-      </form>
     </div>
   );
 }

@@ -58,8 +58,8 @@ function TestGrid({ regId }) {
     setRows([
       ...rows,
       {
-        doctor: inHouseDoctor[0], // full doctor object
-        test: tests[0],
+        doctor: null,
+        test: null,
       },
     ]);
   };
@@ -108,12 +108,14 @@ const saveData = async () => {
           <FontAwesomeIcon icon={faPlus} onClick={addRow} disabled={loading} className={styles["title-icon-i"]}></FontAwesomeIcon>
         </button>
       </div>
+      {rows.length > 0 && 
+      <div>
       <table border="1" cellPadding="10" style={{ borderCollapse: "collapse", width: "100%" }} className={`${styles["table"]} table-auto border border-gray-300 w-full`}>
-        <thead>
+        <thead className="bg-gray-100">
           <tr>
+            <th className="border border-gray-300">Test Date</th>
             <th className="border border-gray-300">Doctor Name</th>
             <th className="border border-gray-300">Test Name</th>
-            <th className="border border-gray-300">Test Date</th>
             <th className="border border-gray-300"></th>
           </tr>
         </thead>
@@ -121,10 +123,18 @@ const saveData = async () => {
           {rows.map((row, idx) => (
             <tr key={idx}>
               <td className="border border-gray-300">
-                <select value={row.doctor?.doc_id || ""} onChange={(e) => {
-    const selectedDoc = inHouseDoctor.find((doc) => doc.doc_id.toString() === e.target.value);
-    updateRow(idx, "doctor", selectedDoc);
-  }}>
+                <input
+                  type="date"
+                  value={testDate}
+                  onChange={(e) => setTestDate(e.target.value)}
+                />
+              </td>
+              <td className="border border-gray-300">
+                <select value={row.doctor?.doc_id || ""} 
+                onChange={(e) => {const selectedDoc = inHouseDoctor.find((doc) => doc.doc_id.toString() === e.target.value);
+                updateRow(idx, "doctor", selectedDoc);
+                }}>
+                  <option value="" disabled hidden>Select Doctor</option>
                   {inHouseDoctor.map((doc, i) => (
                     <option key={i} value={doc.doc_id}>
                       {doc.name}
@@ -137,19 +147,13 @@ const saveData = async () => {
     const selectedTest = tests.find((t) => t.test_id.toString() === e.target.value);
     updateRow(idx, "test", selectedTest);
   }} >
+                <option value="" disabled hidden>Select Test</option>
                   {tests.map((t, i) => (
                     <option key={i} value={t.test_id}>
                       {t.test_name}
                     </option>
                   ))}
                 </select>
-              </td>
-              <td className="border border-gray-300">
-                <input
-                  type="date"
-                  value={testDate}
-                  onChange={(e) => setTestDate(e.target.value)}
-                />
               </td>
               <td className="border border-gray-300" >
                 <button onClick={() => deleteRow(idx)} className={styles["delete-btn-test"]}>
@@ -167,6 +171,8 @@ const saveData = async () => {
              Save
             </button>
           </div>
+      </div>
+      }
     </div>
   );
 }

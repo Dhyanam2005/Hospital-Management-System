@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import GenericMasterTableView from "../components/MasterDataTable";
+import { Container } from '@mui/material';
+
 
 function LocationMaster(){
     const [data,setData] = useState([]);
@@ -36,7 +38,9 @@ function LocationMaster(){
 
     return(
         <div>
-            {<GenericMasterTableView columns={columns} rows={data} title={"Location Master"}/>}
+            <Container maxWidth="lg">
+                {<GenericMasterTableView columns={columns} rows={data} title={"Location Master"}/>}
+            </Container>
         </div>
     )
 }

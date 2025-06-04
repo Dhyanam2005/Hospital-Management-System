@@ -22,10 +22,20 @@ function PrescriptionForm({ selectedDoctor, selectedDate, selectedPatientRegId }
     ];
 
       useEffect(() => {
-        const resetData = () => {
-          setRows([]);
+        const fetchData = async () => {
+          try{
+            let res = await fetch(`http://localhost:3000/fetch-prescription?doc=${selectedDoctor}&date=${selectedDate}&reg=${selectedPatientRegId}`);
+            let data = await res.json();
+            if(res.ok){
+                setRows(data);
+            }else{
+                console.log("Res is not ok");
+            }
+          }catch(err){
+            console.error("Error is ",err);
+          }
         };
-        resetData();
+        fetchData();
       },[selectedDate,selectedDoctor,selectedPatientRegId]);
 
     useEffect(() => {
@@ -46,7 +56,7 @@ function PrescriptionForm({ selectedDoctor, selectedDate, selectedPatientRegId }
     }, []);
 
     const addRow = () => {
-        setRows((prev) => [...prev, { drugId: "", dosageId: "", foodId: "" }]);
+        setRows((prev) => [...prev, { drug_id: "", dosage_schedule_id: "", food_instruction_id: "" }]);
     };
 
     const deleteRow = (index) => {
@@ -63,9 +73,9 @@ function PrescriptionForm({ selectedDoctor, selectedDate, selectedPatientRegId }
 
     const handleSave = async () => {
         const formattedPrescriptions = rows.map((row) => ({
-            drug_id: row.drugId,
-            dosage_schedule_id: row.dosageId,
-            food_instruction_id: row.foodId
+            drug_id: row.drug_id,
+            dosage_schedule_id: row.dosage_schedule_id,
+            food_instruction_id: row.food_instruction_id
         }));
         console.log("FormattedPresviptions is ",formattedPrescriptions)
         try {
@@ -116,8 +126,8 @@ function PrescriptionForm({ selectedDoctor, selectedDate, selectedPatientRegId }
                         <tr key={index}>
                             <td className="border border-gray-300">
                                 <select
-                                    value={row.drugId || ""}
-                                    onChange={(e) => handleChange(index, "drugId", e.target.value)}
+                                    value={row.drug_id || ""}
+                                    onChange={(e) => handleChange(index, "drug_id", e.target.value)}
                                 >
                                     <option value="">Select Drug</option>
                                     {medicine.map((med) => (
@@ -129,8 +139,8 @@ function PrescriptionForm({ selectedDoctor, selectedDate, selectedPatientRegId }
                             </td>
                             <td className="border border-gray-300">
                                 <select
-                                    value={row.dosageId || ""}
-                                    onChange={(e) => handleChange(index, "dosageId", e.target.value)}
+                                    value={row.dosage_schedule_id || ""}
+                                    onChange={(e) => handleChange(index, "dosage_schedule_id", e.target.value)}
                                 >
                                     <option value="">Select Dosage</option>
                                     {dosageSchedules.map((ds) => (
@@ -142,8 +152,8 @@ function PrescriptionForm({ selectedDoctor, selectedDate, selectedPatientRegId }
                             </td>
                             <td className="border border-gray-300">
                                 <select
-                                    value={row.foodId || ""}
-                                    onChange={(e) => handleChange(index, "foodId", e.target.value)}
+                                    value={row.food_instruction_id || ""}
+                                    onChange={(e) => handleChange(index, "food_instruction_id", e.target.value)}
                                 >
                                     <option value="">Select Instruction</option>
                                     {foodInstructions.map((fi) => (

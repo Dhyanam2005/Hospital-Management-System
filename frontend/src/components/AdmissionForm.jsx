@@ -147,7 +147,7 @@ function NewAdmission({ regId }) {
       {errorMessage && (
         <div className={styles.errorMessage}>{errorMessage}</div>
       )}
-      <form onSubmit={handleNewAdmissionForm} className={styles.admissionForm}>
+      <form id="admissionForm" onSubmit={handleNewAdmissionForm} className={styles.admissionForm}>
         <div className={styles.formGroup}>
           <div className={styles.indivInput}>
             <label htmlFor="admission_date">Admission Date</label>
@@ -244,13 +244,12 @@ function NewAdmission({ regId }) {
             />
           </div>
         </div>
-
+      </form>
         <div className={styles.buttons}>
-          <button type="submit" className={styles.saveBtn}>
+          <button form="admissionForm" type="submit" className={styles.saveBtn}>
             Save
           </button>
         </div>
-      </form>
     </div>
   );
 }

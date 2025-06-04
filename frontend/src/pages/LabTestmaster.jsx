@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import GenericMasterTableView from "../components/MasterDataTable";
+import { Container } from "@mui/material";
 
 function LabTestMaster(){
     const [data,setData] = useState([]);
@@ -40,7 +41,9 @@ function LabTestMaster(){
 
     return(
         <div>
-            {<GenericMasterTableView columns={columns} rows={data} title={"Lab Test Master"}/>}
+            <Container maxWidth="lg">
+                {<GenericMasterTableView columns={columns} rows={data} title={"Lab Test Master"}/>}
+            </Container>
         </div>
     )
 }

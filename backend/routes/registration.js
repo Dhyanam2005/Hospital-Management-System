@@ -17,6 +17,16 @@ function authenticateJWT(req, res, next) {
     });
 }
 
+router.get("/fetch-registration",(req,res) => {
+    let {patientId} = req.query;
+    db.query(
+        `SELECT * from registration where patient_id = ?`,[patientId],(err,result) => {
+            if(err) return res.json({ message : "Error fetching Registration "});
+            res.json(result);
+        }
+    )
+})
+
 router.post("/registration",authenticateJWT,(req,res) => {
     let { regCharges , patientType , docId , patientId} = req.body;
     let userId = req.user.id;

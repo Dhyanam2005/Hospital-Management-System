@@ -40,7 +40,7 @@ function ChangePassword() {
 
   return (
         <div>
-            <div className="change-password-container">
+            <div className="change-password-container ml-[20%]">
             {errorMessage && (
                 <div className="mt-5 p-3 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded w-72 text-center mt-2 mx-auto block">
                     {errorMessage}

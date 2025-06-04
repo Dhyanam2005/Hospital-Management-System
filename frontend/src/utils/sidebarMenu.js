@@ -3,9 +3,17 @@ import { faHospitalUser } from '@fortawesome/free-solid-svg-icons';
 import { faTable } from '@fortawesome/free-solid-svg-icons';
 import { faKitMedical } from '@fortawesome/free-solid-svg-icons';
 import { faMoneyBill } from '@fortawesome/free-solid-svg-icons';
-import { faFileAlt } from '@fortawesome/free-solid-svg-icons';
+import { faFileAlt ,faUser } from '@fortawesome/free-solid-svg-icons';
 
 const sidebarMenu = [
+  {
+    title: "User",
+    submenu: [
+      { label: "New User", link: "/new-user" },
+      { label: "User List", link: "/user-list" },
+    ],
+    icon : faUser
+  },
   {
     title: "Master",
     submenu: [
@@ -31,8 +39,8 @@ const sidebarMenu = [
     submenu: [
       { label: "Test", link: "/test" },
       { label: "Test Results", link: "/result" },
-      { label: "Pharmacy Items", link: "/medicalItem" },
-      { label: "Service", link: "/patientCharge" },
+      { label: "Pharmacy Items", link: "/medical-item" },
+      { label: "Service", link: "/service" },
       { label : "Appointment ", link : "/appointment"},
     ],
     icon : faKitMedical
@@ -41,7 +49,7 @@ const sidebarMenu = [
     title: "Doctor",
     submenu: [
       { label: "New Doctor", link: "/new-doctor" },
-      { label: "Doctor Consultations", link: "/docConsultation" },
+      { label: "Doctor Consultations", link: "/consultation" },
       { label: "Prescriptions", link: "/prescription" },
       { label : "Appointments" , link : "/appointment"},
     ],
@@ -51,7 +59,7 @@ const sidebarMenu = [
     title: "Billing",
     submenu: [
       { label: "View Bills", link: "/view-bills" },
-      { label: "Record Payment", link: "/viewPDFBill" },
+      { label: "Record Payment", link: "/payment" },
     ],
     icon : faMoneyBill
   },

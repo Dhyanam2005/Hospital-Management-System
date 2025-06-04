@@ -23,7 +23,7 @@ function Login (){
 
             if(res.ok){
                 localStorage.setItem('token',data.token);
-                navigate('/home');
+                navigate('/');
             }else{
                 setErrorMessage('Invalid credentials');
             }

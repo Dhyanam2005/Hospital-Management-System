@@ -14,44 +14,63 @@ router.get("/fetchLatestRegPatient",(req,res) => {
     )
 })
 
+router.get("/fetch-prescription",(req,res) => {
+    const { prescriptions, date, doc, reg } = req.query;
+    console.log(req.query);
+    db.query(
+        `select pd.drug_id,pd.dosage_schedule_id ,pd.food_instruction_id,? as Date,? as doc_id,? as reg_id
+from prescription p,prescription_detail pd
+where p.prescription_id = pd.prescription_id
+and p.reg_id = ?
+and p.doc_id = ?
+and p.prescription_date = ?`,[date,doc,reg,reg,doc,date],(err,result) => {
+    if(err){
+        console.error(err);
+        return res.json({ message : "Error in fetching prescription"});
+    }
+    res.json(result);
+}
+    )
+})
+
 router.post("/prescription", (req, res) => {
     const { prescriptions, selectedDate, selectedDoctor, selectedPatientRegId } = req.body;
 
-    const insertPrescriptionQuery = `
-        INSERT INTO prescription (reg_id, doc_id, prescription_date)
-        VALUES (?, ?, ?)
+    const checkQuery = `
+        SELECT prescription_id FROM prescription
+        WHERE reg_id = ? AND doc_id = ? AND prescription_date = ?
     `;
 
-    db.query(insertPrescriptionQuery, [selectedPatientRegId, selectedDoctor, selectedDate], (err, result) => {
-        if (err) {
-            return res.status(500).json({ message: "Error inserting into prescription" });
-        }
+    db.query(checkQuery, [selectedPatientRegId, selectedDoctor, selectedDate], (err, result) => {
+        if (err) return res.status(500).json({ message: "Error checking prescription" });
 
-        const prescriptionId = result.insertId;
+        if (result.length === 0) return res.status(400).json({ message: "Prescription does not exist" });
 
-        const prescriptionDetails = prescriptions.map(item => [
-            prescriptionId,
-            item.drug_id,
-            item.dosage_schedule_id,
-            item.food_instruction_id
-        ]);
-        console.log(prescriptionDetails);
+        const prescriptionId = result[0].prescription_id;
 
-        if (prescriptionDetails.length === 0) {
-            return res.status(200).json({ message: "Prescription saved without any details." });
-        }
+        const deleteQuery = `DELETE FROM prescription_detail WHERE prescription_id = ?`;
 
-        const insertDetailQuery = `
-            INSERT INTO prescription_detail (prescription_id, drug_id, dosage_schedule_id, food_instruction_id)
-            VALUES ?
-        `;
+        db.query(deleteQuery, [prescriptionId], (err2) => {
+            if (err2) return res.status(500).json({ message: "Error deleting old details" });
 
-        db.query(insertDetailQuery, [prescriptionDetails], (err2, result2) => {
-            if (err2) {
-                return res.status(500).json({ message: "Error inserting into prescription_detail" });
-            }
+            if (prescriptions.length === 0) return res.status(200).json({ message: "Prescription cleared successfully." });
 
-            res.status(200).json({ message: "Prescription saved successfully." });
+            const insertDetailQuery = `
+                INSERT INTO prescription_detail (prescription_id, drug_id, dosage_schedule_id, food_instruction_id)
+                VALUES ?
+            `;
+
+            const prescriptionDetails = prescriptions.map(item => [
+                prescriptionId,
+                item.drug_id,
+                item.dosage_schedule_id,
+                item.food_instruction_id
+            ]);
+
+            db.query(insertDetailQuery, [prescriptionDetails], (err3) => {
+                if (err3) return res.status(500).json({ message: "Error inserting new details" });
+                res.status(200).json({ message: "Prescription updated successfully." });
+            });
         });
     });
 });

@@ -145,10 +145,10 @@ function PatientChargeForm({ regId}){
                 <table className='border -border-gray-300 w-full'>
                     <thead>
                         <tr >
-                            <th className='border -border-gray-300'>Service</th>
-                            <th className='border -border-gray-300'>Service Date</th>
-                            <th className='border -border-gray-300'>Service Amount</th>
-                            <th className='border -border-gray-300'>Doctor</th>
+                            <th className='border -border-gray-300 text-left bg-gray-100'>Service</th>
+                            <th className='border -border-gray-300 text-left bg-gray-100'>Service Date</th>
+                            <th className='border -border-gray-300 text-left bg-gray-100'>Service Amount</th>
+                            <th className='border -border-gray-300 text-left bg-gray-100'>Doctor</th>
                         </tr>
                     </thead>
                    <tbody>
@@ -159,7 +159,7 @@ function PatientChargeForm({ regId}){
           value={row.service_id}
           onChange={(e) => handleChange(index, "service_id", e.target.value)}
         >
-          <option value=" ">Select Medicine</option>
+          <option value="" disabled hidden>Select Service</option>
           {services.map((service,i) => (
             <option key={service.service_id} value={service.service_id}>
               {service.service_name}

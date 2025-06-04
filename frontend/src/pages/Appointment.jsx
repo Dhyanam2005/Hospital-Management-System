@@ -79,7 +79,8 @@ function Appointment() {
     }
   };
 
-  const saveAppointment = async () => {
+  const saveAppointment = async (e) => {
+    e.preventDefault();
     const token = localStorage.getItem('token');
     try {
       const res = await fetch(`http://localhost:3000/appointment`, {
@@ -99,6 +100,7 @@ function Appointment() {
 
       if (res.ok) {
         alert("Data saved successfully");
+        await handleAppointMents();
       } else {
         alert("Error saving data");
       }
@@ -144,7 +146,7 @@ function Appointment() {
 
         {isSearched && appointment.length > 0 && (
           <div>
-            <form onSubmit={saveAppointment}>
+            <form id = "appointment-form">
               <table className="border border-gray-300 w-3/4">
                 <thead>
                   <tr>
@@ -201,15 +203,15 @@ function Appointment() {
                   })}
                 </tbody>
               </table>
-              <button
-                className="block text-center mx-auto pt-3 pb-3"
-                type="button"
-                onClick={saveAppointment}
-              >
-                💾 Save
-              </button>
+                  <div>
+                  </div>
             </form>
+          <div className={styles["buttons"]}>
+            <button form="appointment-form" onClick={saveAppointment} className={styles["save-btn"]}>
+             Save
+            </button>
           </div>
+        </div>
         )}
       </div>
     </div>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import GenericMasterTableView from "../components/MasterDataTable";
+import { Container } from "@mui/material";
 
 function PharmacyItemMaster(){
     const [data,setData] = useState([]);
@@ -32,7 +33,9 @@ function PharmacyItemMaster(){
 
     return(
         <div>
-            {<GenericMasterTableView columns={columns} rows={data} title={"Pharmacy Item Master"}/>}
+            <Container maxWidth="lg">
+                {<GenericMasterTableView columns={columns} rows={data} title={"Pharmacy Item Master"}/>}
+            </Container>
         </div>
     )
 }

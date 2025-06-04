@@ -11,6 +11,12 @@ function PayBill({ regId }) {
 
     useEffect(() => {
         const fetchBillInfo = async () => {
+            setDiscount("");
+            setPaymentMode("");
+            setPaymentDetail("");
+            setPaymentDate("");
+            setBillInfo("");
+            setPaymentData("");
             try {
                 let res = await fetch(`http://localhost:3000/payBill?regId=${regId}`);
                 let data = await res.json();
@@ -68,21 +74,71 @@ function PayBill({ regId }) {
         <div>
             <form>
                 <div className={styles["form-group"]}>
-                    <div className={styles["indiv-inp"]}><label>Registration Charges</label><input type="text" value={paymentData?.REGN_CHARGES || billInfo.reg_charges || ''} readOnly /></div>
-                    <div className={styles["indiv-inp"]}><label>Admission Charges</label><input type="text" value={paymentData?.ADMISSION_CHARGES || billInfo.admission_charges || ''} readOnly /></div>
-                    <div className={styles["indiv-inp"]}><label>Test Charges</label><input type="text" value={paymentData?.TEST_FEE || billInfo.test_charges || ''} readOnly /></div>
-                    <div className={styles["indiv-inp"]}><label>Service Charges</label><input type="text" value={paymentData?.SERVICE_CHARGES || billInfo.services_charges || ''} readOnly /></div>
+                    <div   className={`
+    ${styles["indiv-inp"]}
+    ${paymentData
+      ? 'bg-gray-100 text-gray-500 border-dashed cursor-not-allowed'
+      : 'bg-white text-black border-solid'}
+  `}><label>Registration Charges</label><input type="text" value={paymentData?.REGN_CHARGES || billInfo.reg_charges || ''} readOnly /></div>
+                    <div   className={`
+    ${styles["indiv-inp"]}
+    ${paymentData
+      ? 'bg-gray-100 text-gray-500 border-dashed cursor-not-allowed'
+      : 'bg-white text-black border-solid'}
+  `}><label>Admission Charges</label><input type="text" value={paymentData?.ADMISSION_CHARGES || billInfo.admission_charges || ''} readOnly /></div>
+                    <div   className={`
+    ${styles["indiv-inp"]}
+    ${paymentData
+      ? 'bg-gray-100 text-gray-500 border-dashed cursor-not-allowed'
+      : 'bg-white text-black border-solid'}
+  `}><label>Test Charges</label><input type="text" value={paymentData?.TEST_FEE || billInfo.test_charges || ''} readOnly /></div>
+                    <div   className={`
+    ${styles["indiv-inp"]}
+    ${paymentData
+      ? 'bg-gray-100 text-gray-500 border-dashed cursor-not-allowed'
+      : 'bg-white text-black border-solid'}
+  `}><label>Service Charges</label><input type="text" value={paymentData?.SERVICE_CHARGES || billInfo.services_charges || ''} readOnly /></div>
 
                 </div>
                 <div className={styles["form-group"]}>
-                    <div className={styles["indiv-inp"]}><label>Consultation Charges</label><input type="text" value={billInfo.consultation_charges || ''} readOnly /></div>
-                    <div className={styles["indiv-inp"]}><label>Medical Charges</label><input type="text" value={paymentData?.DOC_FEE || billInfo.medical_charges || ''} readOnly /></div>
-                    <div className={styles["indiv-inp"]}><label>Ward Charges</label><input type="text" value={paymentData?.WARD_CHARGES || billInfo.ward_charges || ''} readOnly /></div>
-                    <div className={styles["indiv-inp"]}><label>Total Charges</label><input type="text" value={totalCharges} readOnly /></div>
+                    <div   className={`
+    ${styles["indiv-inp"]}
+    ${paymentData
+      ? 'bg-gray-100 text-gray-500 border-dashed cursor-not-allowed'
+      : 'bg-white text-black border-solid'}
+  `}><label>Consultation Charges</label><input type="text" value={billInfo.consultation_charges || ''} readOnly /></div>
+                    <div   className={`
+    ${styles["indiv-inp"]}
+    ${paymentData
+      ? 'bg-gray-100 text-gray-500 border-dashed cursor-not-allowed'
+      : 'bg-white text-black border-solid'}
+  `}><label>Medical Charges</label><input type="text" value={paymentData?.DOC_FEE || billInfo.medical_charges || ''} readOnly /></div>
+                    <div   className={`
+    ${styles["indiv-inp"]}
+    ${paymentData
+      ? 'bg-gray-100 text-gray-500 border-dashed cursor-not-allowed'
+      : 'bg-white text-black border-solid'}
+  `}><label>Ward Charges</label><input type="text" value={paymentData?.WARD_CHARGES || billInfo.ward_charges || ''} readOnly /></div>
+                    <div   className={`
+    ${styles["indiv-inp"]}
+    ${paymentData
+      ? 'bg-gray-100 text-gray-500 border-dashed cursor-not-allowed'
+      : 'bg-white text-black border-solid'}
+  `}><label>Total Charges</label><input type="text" value={totalCharges} readOnly /></div>
                 </div>
                 <div className={styles["form-group"]}>
-                    <div className={styles["indiv-inp"]}><label>Discount</label><input type="text" placeholder="Enter discount" value={paymentData?.DISCOUNT || discount} onChange={(e) => setDiscount(e.target.value)} readOnly={!!paymentData} /></div>
-                    <div className={styles["indiv-inp"]}><label>Total Payable</label><input type="text" value={paymentData?.AMT_TO_PAY || totalPayable} readOnly /></div>
+                    <div   className={`
+    ${styles["indiv-inp"]}
+    ${paymentData
+      ? 'bg-gray-100 text-gray-500 border-dashed cursor-not-allowed'
+      : 'bg-white text-black border-solid'}
+  `}><label>Discount</label><input type="text" placeholder="Enter discount" value={paymentData?.DISCOUNT || discount} onChange={(e) => setDiscount(e.target.value)} readOnly={!!paymentData} /></div>
+                    <div   className={`
+    ${styles["indiv-inp"]}
+    ${paymentData
+      ? 'bg-gray-100 text-gray-500 border-dashed cursor-not-allowed'
+      : 'bg-white text-black border-solid'}
+  `}><label>Total Payable</label><input type="text" value={paymentData?.AMT_TO_PAY || totalPayable} readOnly /></div>
                 </div>
                 <div className={styles["form-group"]}>
                 </div>
@@ -96,8 +152,18 @@ function PayBill({ regId }) {
                             <option value="card">Card</option>
                         </select>
                     </div>
-                    <div className={styles["indiv-inp"]}><label>Payment Detail</label><input type="text" value={paymentData?.PAYMENT_DETAIL || paymentDetail} onChange={(e) => setPaymentDetail(e.target.value)} readOnly={!!paymentData} /></div>
-                    <div className={styles["indiv-inp"]}><label>Payment Date</label><input type="date" value={paymentData?.PAYMENT_DATE ? new Date(paymentData.PAYMENT_DATE).toISOString().split('T')[0] : paymentDate} onChange={(e) => setPaymentDate(e.target.value)} readOnly={!!paymentData} /></div>
+                    <div   className={`
+    ${styles["indiv-inp"]}
+    ${paymentData
+      ? 'bg-gray-100 text-gray-500 border-dashed cursor-not-allowed'
+      : 'bg-white text-black border-solid'}
+  `}><label>Payment Detail</label><input type="text" value={paymentData?.PAYMENT_DETAIL || paymentDetail} onChange={(e) => setPaymentDetail(e.target.value)} readOnly={!!paymentData} /></div>
+                    <div   className={`
+    ${styles["indiv-inp"]}
+    ${paymentData
+      ? 'bg-gray-100 text-gray-500 border-dashed cursor-not-allowed'
+      : 'bg-white text-black border-solid'}
+  `}><label>Payment Date</label><input type="date" value={paymentData?.PAYMENT_DATE ? new Date(paymentData.PAYMENT_DATE).toISOString().split('T')[0] : paymentDate} onChange={(e) => setPaymentDate(e.target.value)} readOnly={!!paymentData} /></div>
                 </div>
                 {!paymentData && 
                     <div className={styles["buttons"]}>

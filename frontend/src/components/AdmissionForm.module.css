@@ -45,6 +45,12 @@
   margin-top: 0.25rem;
 }
 
+.buttons{
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
 .saveBtn {
   background-color: #008cba;
   color: white;

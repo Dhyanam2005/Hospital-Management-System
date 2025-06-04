@@ -11,11 +11,12 @@ function PrintableBill({ patientInfo, bill }) {
   return (
     <div style={{ padding: "30px", fontFamily: "Arial", fontSize: "14px" }}>
       <h2 style={{ textAlign: "center", marginBottom: "20px" }}>
-        Clinical Laboratory - Lab Report
+        Patient Invoice
       </h2>
 
       <div style={{ marginBottom: "20px" }}>
         <p><strong>Patient ID:</strong> {patientInfo.patient_id}</p>
+        <p><strong>Registration No:</strong> {patientInfo.reg_id}</p>
         <p><strong>Name:</strong> {patientInfo.name}</p>
         <p><strong>Sex:</strong> {patientInfo.sex}</p>
         <p><strong>Age:</strong> {patientInfo.age}</p>
@@ -100,9 +101,6 @@ function ViewPatientBill({ regId }) {
     <div className="view-patient-bill" style={{ padding: 20 }}>
       {Object.keys(patientInfo).length > 0 && bill.length > 0 && (
         <>
-          <button onClick={handlePrint} style={{ marginBottom: 20 , border : "1px solid black" , padding : "0.5rem",borderRadius : "0.25rem"}} className="block mx-auto">
-            Display Patient Bill
-          </button>
 
           <div ref={componentRef}>
             <PrintableBill patientInfo={patientInfo} bill={bill} />

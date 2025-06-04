@@ -1,9 +1,11 @@
 import React from 'react';
 import { DataGrid } from '@mui/x-data-grid';
+import { Container } from '@mui/material';
+
 
 const GenericMasterTableView = ({ columns, rows, title }) => {
   return (
-    <div style={{ padding: '1rem', marginLeft: '20%' }}>
+    <div style={{ marginLeft: '20%' }}>
       <h3>{title}</h3>
       <div
         style={{
