@@ -32,10 +32,9 @@ router.post("/patient", authenticateJWT, (req, res) => {
     const {
         patientName, dob, phone, address, email,
         pincode, gender, nextOfKinName,
-        nextOfKinPhone, cityId, refferedBy
+        nextOfKinPhone, cityId
     } = req.body;
 
-    console.log("Reffered by is ", refferedBy);
 
     if (!patientName || !dob || !phone || !address || !email || !pincode || !gender || !nextOfKinName || !nextOfKinPhone || !cityId) {
         return res.status(400).json({ message: "Invalid Credentials" });
@@ -66,13 +65,13 @@ if (!dobRegex.test(dob)) {
 
         const insertQuery = `
             INSERT INTO patient 
-            (name, date_of_birth, age, phone, address, email, pincode, sex, next_of_kin_name, next_of_kin_phone, city_id, referred_by, created_at,user_id)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)
+            (name, date_of_birth, age, phone, address, email, pincode, sex, next_of_kin_name, next_of_kin_phone, city_id, created_at,user_id)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)
         `;
 
         const values = [
             patientName, dob, age, phone, address, email, pincode, gender,
-            nextOfKinName, nextOfKinPhone, cityId, refferedBy || null,new Date(), userId
+            nextOfKinName, nextOfKinPhone, cityId,new Date(), userId
         ];
 
         db.query(insertQuery, values, (err, insertResult) => {

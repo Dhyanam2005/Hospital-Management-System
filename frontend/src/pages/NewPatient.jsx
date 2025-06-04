@@ -15,10 +15,8 @@ function NewPatient(){
   const[nextOfKinName,setNextOfKinName] = useState('');
   const[nextOfKinPhone,setNextOfKinPhone] = useState('');
   const[cityId,setCityId] = useState('');
-  const[refferedBy,setRefferedBy] = useState('');
   const [errorMessage,setErrorMessage] = useState('');
   const [cities,setCities] = useState([]);
-  const [refferedDoctors,setRefferedDoctors] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() =>{
@@ -34,18 +32,7 @@ function NewPatient(){
     fetchCities();
   } ,[]);
 
-  useEffect(() =>{
-    const fetchReferredDoctors = async() => {
-      let res = await fetch('http://localhost:3000/refferedby');
-      let data = await res.json();
-      if(res.ok){
-        setRefferedDoctors(data);
-      }else{
-        console.log("Error has occured")
-      }
-    };
-    fetchReferredDoctors();
-  } ,[]);
+  
 
   const handleNewPatientForm = async (e) =>{
     e.preventDefault();
@@ -61,7 +48,7 @@ function NewPatient(){
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify({ patientName,dob,phone,address,email,pincode,gender,nextOfKinName,nextOfKinPhone,cityId,refferedBy })
+        body: JSON.stringify({ patientName,dob,phone,address,email,pincode,gender,nextOfKinName,nextOfKinPhone,cityId })
       });
       let data = await res.json();
       if(res.ok){
@@ -215,22 +202,6 @@ function NewPatient(){
                 {cities.map((city) => (
                   <option key={city.CITY_ID} value={city.CITY_ID}>
                     {city.CITY_NAME}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className={styles['indiv-select']}>
-              <label>Referred Doctor</label>
-              <select
-                value={refferedBy}
-                onChange={(e) => setRefferedBy(e.target.value)}
-                className="w-full p-2 mt-2 border border-gray-300 rounded-lg bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-blue-400 transition-all"
-              >
-                <option value="">Select</option>
-                {refferedDoctors.map((doctor) => (
-                  <option key={doctor.doc_id} value={doctor.doc_id}>
-                    {doctor.name}
                   </option>
                 ))}
               </select>
