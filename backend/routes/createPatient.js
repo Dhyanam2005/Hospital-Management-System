@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const db = require('../config/db');
+const { insertIntoAuditLog } = require('./auditLog');
 
 function authenticateJWT(req, res, next) {
     const token = req.header('Authorization')?.split(' ')[1];
@@ -79,7 +80,34 @@ if (!dobRegex.test(dob)) {
                 console.error("Insert error:", err);
                 return res.status(500).json({ message: 'Error inserting patient' });
             }
-            return res.status(200).json({ message: 'Patient created successfully' });
+            const auditData = {
+                user_id: userId,
+                action: 'Insert',
+                table_name: 'patient',
+                record_id: insertResult.insertId,
+                old_data: null,
+                new_data: {
+                    name: patientName,
+                    date_of_birth: dob,
+                    age,
+                    phone,
+                    address,
+                    email,
+                    pincode,
+                    sex: gender,
+                    next_of_kin_name: nextOfKinName,
+                    next_of_kin_phone: nextOfKinPhone,
+                    city_id: cityId,
+                }
+            };
+
+            insertIntoAuditLog(db,auditData,(auditErr) => {
+                if(auditErr){
+                    console.error("Error is ",auditErr);
+                    return res.json({ message : "Audit Error"});
+                }
+                res.json({ message : "Error occured"});
+            })
         });
     });
 });

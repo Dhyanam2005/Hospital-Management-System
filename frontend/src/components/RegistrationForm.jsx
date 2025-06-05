@@ -63,9 +63,7 @@
               ...item,
             }));
             setOldRegistrations(withId);
-            const notEdit = withId.slice(1);
-            setNonEditable(notEdit);
-            if (withId.length > 1) {
+            if (withId.length === 1) {
               setEditableDocId(withId[0].doc_id);
               setEditablePatType(withId[0].patient_type);
               setEditbaleCharges(withId[0].reg_charges);
@@ -93,7 +91,7 @@
         let data = await res.json();
 
         if (res.ok) {
-          setSuccessMessage('Successfully UPDATED OR registered');
+          setSuccessMessage('Successfully  registered');
           setRegCharges('');
           setPatientType('');
           setDocId('');
@@ -225,63 +223,8 @@
             </div>
           </div>
         )}
-
-        {nonEditable.length > 0 && (
-          <div className={styles.registration}>
-            <h3 style={{ marginTop: '2rem', textAlign: 'center' }}>Previous Registrations</h3>
-            {nonEditable.map((reg, index) => (
-              <div
-                key={index}
-                className={styles.loginForm}
-                style={{
-                  marginBottom: '1rem',
-                  border: '1px solid #ccc',
-                  padding: '1rem',
-                  borderRadius: '8px',
-                  background: '#f9f9f9',
-                }}
-              >
-                <div className={styles.indivInp}>
-                  <label>Date</label>
-                  <input
-                    type="text"
-                    value={new Date(reg.reg_date).toLocaleString()}
-                    disabled
-                    className={styles.indivInpInput}
-                  />
-                </div>
-                <div className={styles.indivInp}>
-                  <label>Doctor ID</label>
-                  <input
-                    type="text"
-                    value={reg.doc_id}
-                    disabled
-                    className={styles.indivInpInput}
-                  />
-                </div>
-                <div className={styles.indivInp}>
-                  <label>Registration Fees</label>
-                  <input
-                    type="text"
-                    value={reg.reg_charges}
-                    disabled
-                    className={styles.indivInpInput}
-                  />
-                </div>
-                <div className={styles.indivInp}>
-                  <label>Patient Type</label>
-                  <input
-                    type="text"
-                    value={reg.patient_type === 'I' ? 'In-Patient' : 'Out-Patient'}
-                    disabled
-                    className={styles.indivInpInput}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
+        {oldRegistrations.length === 0 &&
+        <div> 
         <form id="registrationForm" onSubmit={handleRegisterSubmit} className={styles.loginForm}>
           <span className='block text-center'>Enter a new registration</span>
           <div>
@@ -354,6 +297,8 @@
             Save
           </button>
         </div>
+        </div>
+        }
       </div>
     );
   }

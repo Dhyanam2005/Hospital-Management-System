@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const db = require("../config/db");
+const { insertIntoAuditLog } = require('./auditLog');
+const { authenticateJWT } = require("./authenticateJWT");
 
 router.get("/payBill", (req, res) => {
     const { regId } = req.query;
@@ -51,53 +53,77 @@ router.get("/payBill", (req, res) => {
     );
 });
 
-router.post("/payBill", (req, res) => {
+router.post("/payBill", authenticateJWT, (req, res) => {
     const { regId } = req.query;
     const { billInfo, discount, paymentMode, paymentDetail, paymentDate } = req.body;
+    const userId = req.user.id;
 
     const totalPayable = Number(billInfo.total_payable) || 0;
     const discountAmount = Number(discount) || 0;
     const amountToPay = totalPayable - discountAmount;
 
-    const query = `
-        INSERT INTO payment
-        (reg_id, payment_date, regn_charges, admission_charges, doc_fee, test_fee, service_charges, ward_charges, total_payable, discount, amt_to_pay, payment_mode, payment_detail)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
-
-        UPDATE ward_room_bed AS w
-        SET w.bed_status = "A"
-        WHERE w.bed_id = (
-            SELECT a.bed_id FROM admission AS a WHERE a.reg_id = ?
-        );
-
-        UPDATE registration SET reg_status = ? WHERE reg_id = ?;
-    `;
-
-    const params = [
-        regId,
-        paymentDate,
-        Number(billInfo.reg_charges) || 0,
-        Number(billInfo.admission_charges) || 0,
-        Number(billInfo.consultation_charges) || 0,
-        Number(billInfo.test_charges) || 0,
-        Number(billInfo.services_charges) || 0,
-        Number(billInfo.ward_charges) || 0,
-        totalPayable,
-        discountAmount,
-        amountToPay,
-        paymentMode,
-        paymentDetail,
-        regId,
-        "D",
-        regId,
-    ];
-
-    db.query(query, params, (err, result) => {
+    const getOldStatusQuery = "SELECT reg_status FROM registration WHERE reg_id = ?";
+    db.query(getOldStatusQuery, [regId], (err, result1) => {
         if (err) {
-            console.error("Payment insert error:", err);
-            return res.status(500).json({ message: "Error during payment update" });
+            console.error("Error fetching old reg_status:", err);
+            return res.status(500).json({ message: "Failed to fetch registration status" });
         }
-        res.json({ message: "Payment recorded successfully" });
+
+        const oldStatus = result1[0]?.reg_status || null;
+
+        const query = `
+            INSERT INTO payment
+            (reg_id, payment_date, regn_charges, admission_charges, doc_fee, test_fee, service_charges, ward_charges, total_payable, discount, amt_to_pay, payment_mode, payment_detail)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+            UPDATE ward_room_bed AS w
+            SET w.bed_status = "A"
+            WHERE w.bed_id = (
+                SELECT a.bed_id FROM admission AS a WHERE a.reg_id = ?
+            );
+
+            UPDATE registration SET reg_status = ? WHERE reg_id = ?;
+        `;
+
+        const params = [
+            regId,
+            paymentDate,
+            Number(billInfo.reg_charges) || 0,
+            Number(billInfo.admission_charges) || 0,
+            Number(billInfo.consultation_charges) || 0,
+            Number(billInfo.test_charges) || 0,
+            Number(billInfo.services_charges) || 0,
+            Number(billInfo.ward_charges) || 0,
+            totalPayable,
+            discountAmount,
+            amountToPay,
+            paymentMode,
+            paymentDetail,
+            regId,
+            "D",
+            regId
+        ];
+
+        db.query(query, params, (err2, result2) => {
+            if (err2) {
+                console.error("Payment insert error:", err2);
+                return res.status(500).json({ message: "Error during payment update" });
+            }
+
+            insertIntoAuditLog(db, {
+                user_id: userId,
+                action: "UPDATE",
+                table_name: "payment",
+                record_id: regId,
+                old_data: { reg_status: oldStatus },
+                new_data: { reg_status: "D" }
+            }, (err3) => {
+                if (err3) {
+                    console.error("Audit log insert failed:", err3);
+                }
+                return res.status(200).json({ message: "Payment completed and audit logged." });
+            });
+        });
     });
 });
 

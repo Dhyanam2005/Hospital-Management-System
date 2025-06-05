@@ -9,7 +9,9 @@ function PatientChargeForm({ regId}){
     const [services, setServices] = useState([]);
     const [doctors,setDoctors] = useState([]);
     const [rows, setRows] = useState([]);
+    const [errorMessage,setErrorMessage] = useState('');
     const token = localStorage.getItem('token');
+    const [regStatus , setRegStatus] = useState('');
 
     useEffect(() => {
 
@@ -17,12 +19,15 @@ function PatientChargeForm({ regId}){
           try {
             const servicesRes = await fetch("http://localhost:3000/fetchServices");    
             const doctorRes = await fetch("http://localhost:3000/doctor");
+            const regStatusRes = await fetch(`http://localhost:3000/regStatus?regId=${regId}`);
+            const regData = await regStatusRes.json();
             const services = await servicesRes.json();
             const doctors = await doctorRes.json();
     
-            if (servicesRes.ok && doctorRes.ok) {
+            if (servicesRes.ok && doctorRes.ok && regStatusRes.ok) {
               setServices(services);
               setDoctors(doctors);
+              setRegStatus(regData[0].reg_status);
               console.log("Services fetched successfully");
             } else {
               console.log("Error in fetching services");
@@ -78,12 +83,15 @@ function PatientChargeForm({ regId}){
         setRows(updatedRows);
       }
 
-      const savePatientCharges = async() => {
+      const savePatientCharges = async(e) => {
+        const token = localStorage.getItem('token');
+        e.preventDefault();
         try{
           let res = await fetch('http://localhost:3000/patientCharges',{
             method: "POST",
             headers: { 
               "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`,
              },
             body: JSON.stringify({ regId , patientCharges : rows })
           });
@@ -91,10 +99,10 @@ function PatientChargeForm({ regId}){
           let data = await res.json();
 
           if(res.ok){
-            alert("Consultations Saved Successfully");
+            setErrorMessage("");
             fetchPatientCharges();
           }else{
-            alert("Failed to save consultations");
+            setErrorMessage(data.message)
           }
         }catch(err){
           console.error("Error is ",err);
@@ -109,14 +117,16 @@ function PatientChargeForm({ regId}){
           setRows(updatedRows);
           return;
         }
-                const confirmed = window.confirm("Are you sure you want to delete this record?");
+        const token = localStorage.getItem('token');
+        const confirmed = window.confirm("Are you sure you want to delete this record?");
         if(!confirmed) return;
-        console.log("DeleteRows is called and id is ",id);
+        console.log("Delete Rows is called and id is ",id);
         try{
           let res = await fetch(`http://localhost:3000/patientcharge/${id}`,{
             method: "DELETE",
             headers: { 
               "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`,
              },
           });
 
@@ -135,6 +145,11 @@ function PatientChargeForm({ regId}){
 
     return(
         <div>
+        {errorMessage && (
+          <div className="p-3 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded w-72 text-center mb-4 mx-auto block">
+            {errorMessage}
+          </div>
+        )}
             <form>
         <div className={styles["title-icon"]}>
   <h1>Consultation for Registered ID: {regId}</h1>
@@ -158,6 +173,7 @@ function PatientChargeForm({ regId}){
         <select
           value={row.service_id}
           onChange={(e) => handleChange(index, "service_id", e.target.value)}
+          disabled={regStatus === 'D'}
         >
           <option value="" disabled hidden>Select Service</option>
           {services.map((service,i) => (
@@ -172,6 +188,8 @@ function PatientChargeForm({ regId}){
           type="date"
           value={row.service_date || ""}
           onChange={(e) => handleChange(index, "service_date", e.target.value)}
+          disabled={regStatus === 'D'}
+          style={{ width: "100%" }}
         />
       </td>
       <td className='border -border-gray-300'>
@@ -179,12 +197,15 @@ function PatientChargeForm({ regId}){
           type="number"
           value={row.service_amt || ""}
           onChange={(e) => handleChange(index, "service_amt", e.target.value)}
+          disabled={regStatus === 'D'}
+          style={{ width: "100%" }}
         />
       </td>
       <td className='border border-gray-300'>
                 <select
           value={row.doc_id}
           onChange={(e) => handleChange(index, "doc_id", e.target.value)}
+          disabled={regStatus === 'D'}
           
         >
           <option value=" ">Select Doctor</option>
@@ -211,7 +232,7 @@ function PatientChargeForm({ regId}){
 
         <div>
           <div className={styles["buttons"]}>
-            <button onClick={savePatientCharges} disabled={rows.length === 0} className={styles["save-btn"]}>
+            <button type='button' onClick={savePatientCharges} disabled={rows.length === 0} className={styles["save-btn"]}>
              Save
             </button>
           </div>

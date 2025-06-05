@@ -40,7 +40,10 @@ router.post("/docConsultation",authenticateJWT, async (req,res) =>{
     try{
         let {regId , consultation} = req.body;
         console.log(regId);
-        console.log(consultation);
+        console.log("Consultation is " ,consultation);
+        const Invalid = consultation.filter(c => c.doc_id === ' ' || c.date === ' ' || c.fee === ' ');
+        console.log("Invalid is ",Invalid);
+        if(Invalid.length > 0) return res.status(400).json({ message : "Mandatory fields missing" });
         const udpates = consultation.filter(c => c.update_flag != "No");
         const updatedPromises = udpates.map(c => {
         return new Promise((resolve,reject) => {

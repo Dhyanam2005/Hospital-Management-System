@@ -2,7 +2,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const router = express.Router();
 const db = require("../config/db");
-const { use } = require('react');
+const { insertIntoAuditLog } = require('./auditLog');
 
 function authenticateJWT(req, res, next) {
     const token = req.header('Authorization')?.split(' ')[1];
@@ -42,67 +42,140 @@ router.get("/fetchMedicalItems  ",(req,res) => {
     )
 })
 
-router.post("/medicalItems", async (req,res) =>{
+function formatDateToYYYYMMDD(date) {
+  if (!date) return null;
+  const d = new Date(date);
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+router.post("/medicalItems",authenticateJWT, async (req,res) =>{
     try{
         let {regId , medicalItems} = req.body;
-        console.log(regId);
-        console.log(medicalItems);
+        const invalidItems = medicalItems.filter(c => 
+            !c.drug_id || !c.date || !c.quantity || !c.price
+        );
+        if(invalidItems.length > 0){
+            return res.status(400).json({ message : "Mandatory fields missing "});
+        }
         const udpates = medicalItems.filter(c => c.update_flag != "No");
         const updatedPromises = udpates.map(c => {
-        return new Promise((resolve,reject) => {
-            db.query(`UPDATE medical_item
-                    SET drug_id = ?,issue_date = ?,item_qty = ?,reg_id = ?,item_price = ?
-                    where medical_item_id = ?`,
-                [c.drug_id,c.date,c.quantity,regId,c.price,c.medical_item_id],(err,result) => {
-                    if(err) reject(err);
-                    resolve(result);
+            return new Promise((resolve,reject) => {
+                db.query(`SELECT * FROM medical_item WHERE medical_item_id = ?`, [c.medical_item_id], (err, rows) => {
+                    if(err) return reject(err);
+                            const oldDataRaw = rows[0];
+                              const oldData = {
+                                    drug_id: oldDataRaw.DRUG_ID,
+                                    issue_date: formatDateToYYYYMMDD(oldDataRaw.ISSUE_DATE),
+                                    item_qty: String(oldDataRaw.ITEM_QTY),
+                                    reg_id: oldDataRaw.REG_ID,
+                                    item_price: oldDataRaw.ITEM_PRICE,
+                                };
+
+                    const newData = {
+                        drug_id: c.drug_id,
+                        issue_date: c.date,
+                        item_qty: c.quantity,
+                        reg_id: regId,
+                        item_price: c.price
+                    };
+                    console.log(newData)
+                    console.log(oldData);
+                    const changedFields = {};
+                    for (const key in newData) {
+                        if (newData[key] != oldData[key]) {
+                            changedFields[key] = newData[key];
+                        }
+                    }
+
+                    db.query(`UPDATE medical_item
+                            SET drug_id = ?,issue_date = ?,item_qty = ?,reg_id = ?,item_price = ?
+                            WHERE medical_item_id = ?`,
+                        [c.drug_id,c.date,c.quantity,regId,c.price,c.medical_item_id],(err,result) => {
+                            if(err) return reject(err);
+                            insertIntoAuditLog(db, {
+                                user_id: req.user.id,
+                                action: 'UPDATE',
+                                table_name: 'medical_item',
+                                record_id: c.medical_item_id,
+                                old_data: oldData,
+                                new_data: changedFields
+                            }, () => resolve(result));
+                        }
+                    )
+                })
             })
         })
-    })
-    const newRows = medicalItems.filter(c => !c.medical_item_id);
-    console.log("New Rows is ",newRows);
-    const newPromises = newRows.map(c => {
-        return new Promise((resolve,reject) =>{
-            db.query(
-                `INSERT INTO medical_item
-                (drug_id,reg_id,issue_date,item_qty,item_price,created_at)
-                VALUES (?,?,?,?,?,NOW())`,
-                [c.drug_id,regId,c.date,c.quantity,c.price],(err,result) => {
-                    if(err) reject(err);
-                    resolve(result);
-                }
-            )
-        }
-        )
-    })
+        const newRows = medicalItems.filter(c => !c.medical_item_id);
+        const newPromises = newRows.map(c => {
+            return new Promise((resolve,reject) =>{
+                db.query(
+                    `INSERT INTO medical_item
+                    (drug_id,reg_id,issue_date,item_qty,item_price,created_at)
+                    VALUES (?,?,?,?,?,NOW())`,
+                    [c.drug_id,regId,c.date,c.quantity,c.price],(err,result) => {
+                        if(err) reject(err);
+                        insertIntoAuditLog(db, {
+                            user_id: req.user.id,
+                            action: 'INSERT',
+                            table_name: 'medical_item',
+                            record_id: result.insertId,
+                            old_data: null,
+                            new_data: {
+                                drug_id: c.drug_id,
+                                issue_date: c.date,
+                                item_qty: c.quantity,
+                                reg_id: regId,
+                                item_price: c.price
+                            }
+                        }, () => resolve(result));
+                    }
+                )
+            })
+        })
 
-    await Promise.all([...updatedPromises,...newPromises]);
-    res.json({ message : "All data saved successfully"});
-    
+        await Promise.all([...updatedPromises,...newPromises]);
+        res.json({ message : "All data saved successfully"});
     }catch(err){
         console.error("Error is ",err);
         res.json({ message : "Error in posting info "});
     }
 })
 
-router.delete("/docmedicalItems/:id",(req,res) => {
-    let id  = req.params.id;
-    console.log(id);
-    if(!id){
-        
-    }else{
-        console.log("Called old");
-        db.query(`
-            DELETE FROM medical_item
-            WHERE medical_item_id = ?`,
-            [id],(err,result) => {
-                if(err){
-                    return res.json({ message : "Error in deleteion of old row"});
-                }
-                return res.json(result);
-            })
-    }
-})
+
+router.delete("/docmedicalItems/:id",authenticateJWT, (req, res) => {
+  const id = req.params.id;
+  if (!id) {
+    return res.status(400).json({ message: "ID is required" });
+  }
+  db.query(`SELECT * FROM medical_item WHERE medical_item_id = ?`, [id], (err, rows) => {
+    if (err) return res.status(500).json({ message: "Error fetching record before deletion" });
+    if (!rows.length) return res.status(404).json({ message: "Record not found" });
+
+    const oldDataRaw = rows[0];
+    db.query(
+      `DELETE FROM medical_item WHERE medical_item_id = ?`,
+      [id],
+      (err, result) => {
+        if (err) return res.status(500).json({ message: "Error deleting record" });
+
+        insertIntoAuditLog(db, {
+          user_id: req.user.id || null,
+          action: "DELETE",
+          table_name: "medical_item",
+          record_id: id,
+          old_data: oldDataRaw,
+          new_data: null,
+        }, (logErr) => {
+          if (logErr) console.error("Audit log error:", logErr);
+          res.json({ message: "Record deleted successfully" });
+        });
+      }
+    );
+  });
+});
 
 module.exports = router;
 

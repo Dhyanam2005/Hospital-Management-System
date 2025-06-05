@@ -54,7 +54,7 @@ function NewPatient(){
       if(res.ok){
         navigate("/home");
       }else{
-        setErrorMessage(data.message || "Res not ok");
+        setErrorMessage(data.message || " ");
       }
     }catch(err){
       console.log("Error is",err);

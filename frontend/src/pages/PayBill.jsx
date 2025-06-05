@@ -8,6 +8,7 @@ function PayBill({ regId }) {
     const [paymentDetail, setPaymentDetail] = useState('');
     const [paymentDate, setPaymentDate] = useState('');
     const [paymentData, setPaymentData] = useState(null);
+    const [regStatus , setRegStatus] = useState('');
 
     useEffect(() => {
         const fetchBillInfo = async () => {
@@ -19,13 +20,16 @@ function PayBill({ regId }) {
             setPaymentData("");
             try {
                 let res = await fetch(`http://localhost:3000/payBill?regId=${regId}`);
+                const regStatusRes = await fetch(`http://localhost:3000/regStatus?regId=${regId}`);
+                const regData = await regStatusRes.json();
                 let data = await res.json();
-                if (res.ok) {
+                if (res.ok && regStatusRes.ok) {
                     if (data.PAYMENT_ID) {
                         setPaymentData(data);
                     } else {
                         setBillInfo(data);
                     }
+                    setRegStatus(regData[0].reg_status);
                 }
             } catch (err) {
                 console.error("Error fetching bill info:", err);
@@ -46,10 +50,14 @@ function PayBill({ regId }) {
     const totalPayable = totalCharges - (Number(discount) || Number(paymentData?.DISCOUNT) || 0);
 
     const saveInfo = async () => {
+        const token = localStorage.getItem('token');
         try {
             let res = await fetch(`http://localhost:3000/payBill?regId=${regId}`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { 
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
                 body: JSON.stringify({
                     billInfo,
                     discount,
@@ -124,7 +132,7 @@ function PayBill({ regId }) {
     ${paymentData
       ? 'bg-gray-100 text-gray-500 border-dashed cursor-not-allowed'
       : 'bg-white text-black border-solid'}
-  `}><label>Total Charges</label><input type="text" value={totalCharges} readOnly /></div>
+  `}><label>Total Charges</label><input disabled={regStatus === 'D'} type="text" value={totalCharges} readOnly /></div>
                 </div>
                 <div className={styles["form-group"]}>
                     <div   className={`
@@ -132,7 +140,7 @@ function PayBill({ regId }) {
     ${paymentData
       ? 'bg-gray-100 text-gray-500 border-dashed cursor-not-allowed'
       : 'bg-white text-black border-solid'}
-  `}><label>Discount</label><input type="text" placeholder="Enter discount" value={paymentData?.DISCOUNT || discount} onChange={(e) => setDiscount(e.target.value)} readOnly={!!paymentData} /></div>
+  `}><label>Discount</label><input disabled={regStatus === 'D'} type="text" placeholder="Enter discount" value={paymentData?.DISCOUNT || discount} onChange={(e) => setDiscount(e.target.value)} readOnly={!!paymentData} /></div>
                     <div   className={`
     ${styles["indiv-inp"]}
     ${paymentData
@@ -145,7 +153,7 @@ function PayBill({ regId }) {
                 <div className={styles["form-group"]}>
                     <div className={styles["indiv-inp-select"]}>
                         <label>Mode of Payment</label>
-                        <select value={paymentData?.PAYMENT_MODE || paymentMode} onChange={(e) => setPaymentMode(e.target.value) } disabled={!!paymentData}>
+                        <select value={paymentData?.PAYMENT_MODE || paymentMode} onChange={(e) => setPaymentMode(e.target.value) } disabled={!!paymentData || regStatus === 'D'}>
                             <option value="" disabled>Select Mode of Payment</option>
                             <option value="cash">Cash</option>
                             <option value="cheque">Cheque</option>
@@ -157,17 +165,17 @@ function PayBill({ regId }) {
     ${paymentData
       ? 'bg-gray-100 text-gray-500 border-dashed cursor-not-allowed'
       : 'bg-white text-black border-solid'}
-  `}><label>Payment Detail</label><input type="text" value={paymentData?.PAYMENT_DETAIL || paymentDetail} onChange={(e) => setPaymentDetail(e.target.value)} readOnly={!!paymentData} /></div>
+  `}><label>Payment Detail</label><input disabled={regStatus === 'D'} type="text" value={paymentData?.PAYMENT_DETAIL || paymentDetail} onChange={(e) => setPaymentDetail(e.target.value)} readOnly={!!paymentData} /></div>
                     <div   className={`
     ${styles["indiv-inp"]}
     ${paymentData
       ? 'bg-gray-100 text-gray-500 border-dashed cursor-not-allowed'
       : 'bg-white text-black border-solid'}
-  `}><label>Payment Date</label><input type="date" value={paymentData?.PAYMENT_DATE ? new Date(paymentData.PAYMENT_DATE).toISOString().split('T')[0] : paymentDate} onChange={(e) => setPaymentDate(e.target.value)} readOnly={!!paymentData} /></div>
+  `}><label>Payment Date</label><input disabled={regStatus === 'D'} type="date" value={paymentData?.PAYMENT_DATE ? new Date(paymentData.PAYMENT_DATE).toISOString().split('T')[0] : paymentDate} onChange={(e) => setPaymentDate(e.target.value)} readOnly={!!paymentData} /></div>
                 </div>
-                {!paymentData && 
+                {!paymentData && regStatus !== "D" &&
                     <div className={styles["buttons"]}>
-                        <button onClick={saveInfo} className={styles["save-btn"]}>Save</button>
+                        <button type="button" onClick={saveInfo} className={styles["save-btn"]}>Save</button>
                     </div>
                 }
             </form>

@@ -37,7 +37,8 @@ import DoctorMaster from './pages/DoctorMaster';
 import PatientsForBill from './pages/PatientsForBill';
 import ProfileButton from './pages/ProfileButton';
 import ProtectedRoute from "./components/ProtectedRoute";
-
+import AuditMaster from './pages/AuditMaster';
+import DailyEarnings from './pages/DailyEarnings';
 
 function Layout({ children }) {
   return (
@@ -96,6 +97,8 @@ function App() {
         <Route path="/pharmacy-item-master" element={<PharmacyItemMaster />} />
         <Route path="/facility-master" element={<FacilityMaster />} />
         <Route path="/doctor-master" element={<DoctorMaster />} />
+        <Route path="/audit-master" element={<AuditMaster />} />
+        <Route path="/daily-earnings" element={<DailyEarnings />} />
       </Routes>
     </Layout>
   </ProtectedRoute>

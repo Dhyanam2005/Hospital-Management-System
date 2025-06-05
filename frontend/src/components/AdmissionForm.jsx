@@ -16,6 +16,7 @@ function NewAdmission({ regId }) {
   const [admissionCharges, setAdmissionCharges] = useState("");
   const [selectedBedName, setSelectedBedName] = useState("");
   const [fetchAdmission, setFetchAdmission] = useState(false);
+  const [regStatus , setRegStatus] = useState('');
 
   const navigate = useNavigate();
 
@@ -56,9 +57,11 @@ function NewAdmission({ regId }) {
             regId
           )}`
         );
+        const regStatusRes = await fetch(`http://localhost:3000/regStatus?regId=${regId}`);
+        const regData = await regStatusRes.json();
         const data = await res.json();
 
-        if (res.ok) {
+        if (res.ok && regStatusRes.ok) {
           const admission = data[0];
           if (admission && !admission.message) {
             setAdmissionDate(admission.admission_date || "");
@@ -71,6 +74,7 @@ function NewAdmission({ regId }) {
             setSelectedBedName(admission.bed || "");
             setFetchAdmission(true);
           }
+          setRegStatus(regData[0].reg_status);
         } else {
           console.error("Error fetching admission");
         }
@@ -157,6 +161,7 @@ function NewAdmission({ regId }) {
               placeholder="Enter admission date"
               value={admissionDate}
               onChange={(e) => setAdmissionDate(e.target.value)}
+              disabled={regStatus === 'D'}
             />
           </div>
           <div className={styles.indivInput}>
@@ -167,6 +172,7 @@ function NewAdmission({ regId }) {
               placeholder="Enter Admit Reason"
               value={admitReason}
               onChange={(e) => setAdmitReason(e.target.value)}
+              disabled={regStatus === 'D'}
             />
           </div>
         </div>
@@ -177,6 +183,7 @@ function NewAdmission({ regId }) {
             <select
               value={doctor}
               onChange={(e) => setDoctor(e.target.value)}
+              disabled={regStatus === 'D'}
             >
               <option value="">Select Doctor</option>
               {doctors.map((doc) => (
@@ -195,6 +202,7 @@ function NewAdmission({ regId }) {
               placeholder="Enter admission charges"
               value={admissionCharges}
               onChange={(e) => setAdmissionCharges(e.target.value)}
+              disabled={regStatus === 'D'}
             />
           </div>
         </div>
@@ -231,6 +239,7 @@ function NewAdmission({ regId }) {
               placeholder="Enter discharge date"
               value={dischargeDate}
               onChange={(e) => setDischargeDate(e.target.value)}
+              disabled={regStatus === 'D'}
             />
           </div>
           <div className={styles.indivInput}>
@@ -241,12 +250,13 @@ function NewAdmission({ regId }) {
               placeholder="Enter ward charges"
               value={wardCharges}
               onChange={(e) => setWardCharges(e.target.value)}
+              disabled={regStatus === 'D'}
             />
           </div>
         </div>
       </form>
         <div className={styles.buttons}>
-          <button form="admissionForm" type="submit" className={styles.saveBtn}>
+          <button form="admissionForm" type="submit" className={styles.saveBtn} disabled={regStatus === 'D'}>
             Save
           </button>
         </div>

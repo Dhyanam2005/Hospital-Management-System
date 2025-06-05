@@ -4,11 +4,14 @@ import styles from "./ResultGrid.module.css";
 function ResultGrid({ regId }){
 
     const [resultData , setResultData] = useState([]);
+    const [regStatus , setRegStatus] = useState('');
 
     useEffect(() => {
         const fetchResultData = async () => {
             try{
                 let res = await fetch(`http://localhost:3000/resultData?regId=${regId}`);
+                const regStatusRes = await fetch(`http://localhost:3000/regStatus?regId=${regId}`);
+                const regData = await regStatusRes.json();
                 let data = await res.json();
                 if(res.ok){
                     console.log("Data is filled" , data);
@@ -16,6 +19,7 @@ function ResultGrid({ regId }){
                 }else{
                     console.log("Error fetching data");
                 }
+                setRegStatus(regData[0].reg_status);
             }catch(err){
                 console.log(regId)
                 console.log("Error is ",err);
@@ -26,16 +30,20 @@ function ResultGrid({ regId }){
     },[regId]);
 
     const submitResults = async () => {
+        const token = localStorage.getItem('token');
         try{
             let res = await fetch('http://localhost:3000/result',{
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    "Authorization": `Bearer ${token}`,
+                },
                 body:JSON.stringify({
                     regId,
                     results : resultData
                 })
             })
-            let data = res.json();
+            let data = await res.json();
             if(res.ok){
                 console.log("Submmited results successfully");
             }else{
@@ -83,7 +91,7 @@ function ResultGrid({ regId }){
                                 <td className="border border-gray-300">{res.test_category_name}</td>
                                 <td className="border border-gray-300">{res.reference_result || "-"}</td>
                                 <td className="border border-gray-300">
-                                    <input type="text" value={res.result_char || res.result_num} onChange={(e) => handleResultChange (index,e.target.value)}/>
+                                    <input type="text" value={res.result_char || res.result_num} onChange={(e) => handleResultChange (index,e.target.value)} disabled = {regStatus === "D" } style={{ width: "100%" }}/>
                                 </td>
                             </tr>
                         ))

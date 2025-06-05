@@ -49,4 +49,26 @@ and r.ward_id = w.ward_id
     )
 })
 
+router.get("/audit-master",(req,res) => {
+    db.query(`SELECT * from audit_log`,(err,result) => {
+        if(err) return res.json({ messgae : "Error fetching info form audit log"});
+        res.json(result);
+    })
+})
+
+router.get("/daily-earnings",(req,res) => {
+    db.query(`SELECT 
+    PAYMENT_DATE, 
+    SUM(AMT_TO_PAY) AS total_amount 
+FROM 
+    payment 
+GROUP BY 
+    PAYMENT_DATE 
+ORDER BY 
+    PAYMENT_DATE;`,(err,result) => {
+        if(err) return res.json({ messgae : "Error fetching info form audit log"});
+        res.json(result);
+    })
+})
+
 module.exports = router;

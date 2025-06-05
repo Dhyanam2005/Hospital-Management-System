@@ -7,15 +7,20 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 function MedicalItemForm({ regId }) {
   const [medicines, setMedicines] = useState([]);
   const [rows, setRows] = useState([]);
+  const [errorMessage,setErrorMessage] = useState("");
+   const [regStatus , setRegStatus] = useState('');
   const token = localStorage.getItem('token');
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const medicineRes = await fetch("http://localhost:3000/fetchMedicines");
+        const regStatusRes = await fetch(`http://localhost:3000/regStatus?regId=${regId}`);
+        const regData = await regStatusRes.json();
         const medicines = await medicineRes.json();
-        if (medicineRes.ok) {
+        if (medicineRes.ok && regStatusRes.ok) {
           setMedicines(medicines);
+          setRegStatus(regData[0].reg_status);
           console.log("Medicines fetched successfully");
         } else {
           console.log("Error in fetching medicines");
@@ -77,11 +82,13 @@ function MedicalItemForm({ regId }) {
   };
 
   const saveMedicalItems = async () => {
+    const token = localStorage.getItem('token');
     try {
       const res = await fetch('http://localhost:3000/medicalItems', {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
         body: JSON.stringify({ regId, medicalItems: rows })
       });
@@ -89,10 +96,10 @@ function MedicalItemForm({ regId }) {
       const data = await res.json();
 
       if (res.ok) {
-        alert("Consultations Saved Successfully");
+        setErrorMessage("");
         fetchMedicalItems();
       } else {
-        alert("Failed to save consultations");
+        setErrorMessage(data.message);
       }
     } catch (err) {
       console.error("Error is", err);
@@ -115,6 +122,7 @@ function MedicalItemForm({ regId }) {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
       });
 
@@ -122,9 +130,9 @@ function MedicalItemForm({ regId }) {
 
       if (res.ok) {
         alert("Consultation deleted successfully");
+        setErrorMessage("");
         fetchMedicalItems();
       } else {
-        alert("Failed to delete consultation");
       }
     } catch (err) {
       console.error("Error is", err);
@@ -133,6 +141,11 @@ function MedicalItemForm({ regId }) {
 
   return (
     <div className="p-4">
+        {errorMessage && (
+          <div className="p-3 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded w-72 text-center mb-4 mx-auto block">
+            {errorMessage}
+          </div>
+        )}
       <form>
         <div className={styles["title-icon"]}>
   <h1>Consultation for Registered ID: {regId}</h1>
@@ -162,6 +175,7 @@ function MedicalItemForm({ regId }) {
                       value={row.drug_id}
                       onChange={(e) => handleChange(index, "drug_id", e.target.value)}
                       className="w-full border rounded px-2 py-1"
+                       disabled={regStatus === 'D'}
                     >
                       <option value="">Select Medicine</option>
                       {medicines.map((med) => (
@@ -177,6 +191,7 @@ function MedicalItemForm({ regId }) {
                       value={row.date || ""}
                       onChange={(e) => handleChange(index, "date", e.target.value)}
                       className="w-full border rounded px-2 py-1"
+                       disabled={regStatus === 'D'}
                     />
                   </td>
                   <td className="border px-3 py-2">
@@ -185,6 +200,7 @@ function MedicalItemForm({ regId }) {
                       value={row.quantity || ""}
                       onChange={(e) => handleChange(index, "quantity", e.target.value)}
                       className="w-full border rounded px-2 py-1"
+                       disabled={regStatus === 'D'}
                     />
                   </td>
                   <td className="border px-3 py-2">
@@ -193,6 +209,7 @@ function MedicalItemForm({ regId }) {
                       value={row.price || ""}
                       onChange={(e) => handleChange(index, "price", e.target.value)}
                       className="w-full border rounded px-2 py-1"
+                       disabled={regStatus === 'D'}
                     />
                   </td>
                   <td className="border px-3 py-2">{row.value}</td>
@@ -213,7 +230,7 @@ function MedicalItemForm({ regId }) {
 
         <div>
           <div className={styles["buttons"]}>
-            <button onClick={saveMedicalItems} disabled={rows.length === 0} className={styles["save-btn"]}>
+            <button type='button' onClick={saveMedicalItems} disabled={rows.length === 0} className={styles["save-btn"]}>
              Save
             </button>
           </div>

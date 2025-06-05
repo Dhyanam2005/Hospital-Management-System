@@ -27,7 +27,7 @@ function PrescriptionForm({ selectedDoctor, selectedDate, selectedPatientRegId }
             let res = await fetch(`http://localhost:3000/fetch-prescription?doc=${selectedDoctor}&date=${selectedDate}&reg=${selectedPatientRegId}`);
             let data = await res.json();
             if(res.ok){
-                setRows(data);
+               setRows(data.map(item => ({ ...item, update_flag: false })));
             }else{
                 console.log("Res is not ok");
             }
@@ -57,7 +57,7 @@ function PrescriptionForm({ selectedDoctor, selectedDate, selectedPatientRegId }
     }, []);
 
     const addRow = () => {
-        setRows((prev) => [...prev, { drug_id: "", dosage_schedule_id: "", food_instruction_id: "" }]);
+        setRows((prev) => [...prev, { drug_id: "", dosage_schedule_id: "", food_instruction_id: "" , update_flag : false }]);
     };
 
     const deleteRow = (index) => {
@@ -68,6 +68,7 @@ function PrescriptionForm({ selectedDoctor, selectedDate, selectedPatientRegId }
         setRows((prev) => {
             const updated = [...prev];
             updated[index] = { ...updated[index], [field]: value };
+            updated[index].update_flag = true
             return updated;
         });
     };
@@ -76,13 +77,20 @@ function PrescriptionForm({ selectedDoctor, selectedDate, selectedPatientRegId }
         const formattedPrescriptions = rows.map((row) => ({
             drug_id: row.drug_id,
             dosage_schedule_id: row.dosage_schedule_id,
-            food_instruction_id: row.food_instruction_id
+            food_instruction_id: row.food_instruction_id,
+            prescription_id : row.prescription_id,
+            update_flag : row.update_flag,
+            prescription_detail_id : row.prescription_detail_id,
         }));
         console.log("FormattedPresviptions is ",formattedPrescriptions)
         try {
+            const token = localStorage.getItem('token');
             const res = await fetch("http://localhost:3000/prescription", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { 
+                    "Content-Type": "application/json" ,
+                    "Authorization": `Bearer ${token}`,
+                },
                 body: JSON.stringify({
                     prescriptions: formattedPrescriptions,
                     selectedDate,
@@ -93,7 +101,7 @@ function PrescriptionForm({ selectedDoctor, selectedDate, selectedPatientRegId }
 
             if (res.ok) {
                 alert("Prescription saved successfully");
-                setRows([]);
+                window.location.reload();
             } else {
                 alert("Failed to save prescription");
             }
@@ -102,10 +110,20 @@ function PrescriptionForm({ selectedDoctor, selectedDate, selectedPatientRegId }
         }
     };
 
-const handleDelete = async () => {
+const handleDelete = async (i,id) => {
+    if(!id){
+        const updatedRows = rows.filter((_, idx) => idx !== i);
+        setRows(updatedRows);
+        return;
+        }
     try {
-        const res = await fetch(`http://localhost:3000/prescription?reg=${selectedPatientRegId}&doc=${selectedDoctor}&date=${selectedDate}`, {
-            method: "DELETE"
+        const token = localStorage.getItem('token');
+        const res = await fetch(`http://localhost:3000/prescription/${id}`, {
+            method: "DELETE",
+            headers: { 
+                    "Content-Type": "application/json" ,
+                    "Authorization": `Bearer ${token}`,
+            },
         });
         if (res.ok) {
             alert("Prescription deleted successfully");
@@ -182,7 +200,7 @@ const handleDelete = async () => {
                                 </select>
                             </td>
                             <td className="border border-gray-300">
-                                <button onClick={handleDelete} style={{ color: "red" }}>
+                                <button onClick={() => handleDelete(index,row.prescription_detail_id)} style={{ color: "red" }}>
                                     <img src={deleteIcon} alt="delete" style={{width:"40%",height:"40%"}}/>
                                 </button>
                             </td>

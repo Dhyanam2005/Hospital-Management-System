@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const db = require("../config/db");
+const { insertIntoAuditLog } = require('./auditLog');
+const { authenticateJWT } = require("./authenticateJWT");
 
 router.get("/fetchLatestRegPatient",(req,res) => {
     db.query(
@@ -15,15 +17,28 @@ router.get("/fetchLatestRegPatient",(req,res) => {
 })
 
 router.get("/fetch-prescription",(req,res) => {
-    const { prescriptions, date, doc, reg } = req.query;
+    const { date, doc, reg } = req.query;
     console.log(req.query);
+
     db.query(
-        `select pd.drug_id,pd.dosage_schedule_id ,pd.food_instruction_id,? as Date,? as doc_id,? as reg_id
-from prescription p,prescription_detail pd
-where p.prescription_id = pd.prescription_id
-and p.reg_id = ?
-and p.doc_id = ?
-and p.prescription_date = ?`,[date,doc,reg,reg,doc,date],(err,result) => {
+        `SELECT 
+  pd.drug_id,
+  pd.dosage_schedule_id,
+  pd.food_instruction_id,
+  pd.prescription_detail_id,
+  ? AS Date,
+  ? AS doc_id,
+  ? AS reg_id,
+  p.prescription_id
+FROM 
+  prescription p,
+  prescription_detail pd
+WHERE 
+  p.prescription_id = pd.prescription_id
+  AND p.reg_id = ?
+  AND p.doc_id = ?
+  AND p.prescription_date = ?
+`,[date,doc,reg,reg,doc,date],(err,result) => {
     if(err){
         console.error(err);
         return res.json({ message : "Error in fetching prescription"});
@@ -33,110 +48,92 @@ and p.prescription_date = ?`,[date,doc,reg,reg,doc,date],(err,result) => {
     )
 })
 
-router.post("/prescription", (req, res) => {
-    const { prescriptions, selectedDate, selectedDoctor, selectedPatientRegId } = req.body;
+router.post("/prescription", async (req, res) => {
+  const { prescriptions, selectedDate, selectedDoctor, selectedPatientRegId } = req.body;
+  console.log(req.body);
+  if (!prescriptions || !Array.isArray(prescriptions) || prescriptions.length === 0) {
+    return res.status(400).json({ message: "No prescriptions provided" });
+  }
 
-    const checkQuery = `
-        SELECT prescription_id FROM prescription
-        WHERE reg_id = ? AND doc_id = ? AND prescription_date = ?
-    `;
+  const values1 = [selectedPatientRegId, selectedDoctor, selectedDate];
 
-    db.query(checkQuery, [selectedPatientRegId, selectedDoctor, selectedDate], (err, result) => {
-        if (err) return res.status(500).json({ message: "Error checking prescription" });
-
-        if (result.length > 0) {
-            const prescriptionId = result[0].prescription_id;
-
-            const deleteQuery = `DELETE FROM prescription_detail WHERE prescription_id = ?`;
-
-            db.query(deleteQuery, [prescriptionId], (err2) => {
-                if (err2) return res.status(500).json({ message: "Error deleting old details" });
-
-                if (!prescriptions || prescriptions.length === 0) {
-                    return res.status(200).json({ message: "Prescription cleared successfully." });
-                }
-
-                const values = prescriptions.map(p => [
-                    prescriptionId,
-                    p.drug_id,
-                    p.dosage_schedule_id,
-                    p.food_instruction_id
-                ]);
-
-                const insertDetailsQuery = `
-                    INSERT INTO prescription_detail (prescription_id, drug_id, dosage_schedule_id, food_instruction_id)
-                    VALUES ?
-                `;
-
-                db.query(insertDetailsQuery, [values], (err3) => {
-                    if (err3) return res.status(500).json({ message: "Error inserting new details" });
-                    res.status(200).json({ message: "Prescription updated successfully." });
-                });
-            });
-        } else {
-            const insertPrescriptionQuery = `
-                INSERT INTO prescription (reg_id, doc_id, prescription_date)
-                VALUES (?, ?, ?)
-            `;
-
-            db.query(insertPrescriptionQuery, [selectedPatientRegId, selectedDoctor, selectedDate], (err4, result2) => {
-                if (err4) return res.status(500).json({ message: "Error inserting into prescription" });
-
-                const prescriptionId = result2.insertId;
-
-                if (!prescriptions || prescriptions.length === 0) {
-                    return res.status(200).json({ message: "Prescription saved with no details" });
-                }
-
-                const values = prescriptions.map(p => [
-                    prescriptionId,
-                    p.drug_id,
-                    p.dosage_schedule_id,
-                    p.food_instruction_id
-                ]);
-
-                const insertDetailsQuery = `
-                    INSERT INTO prescription_detail (prescription_id, drug_id, dosage_schedule_id, food_instruction_id)
-                    VALUES ?
-                `;
-
-                db.query(insertDetailsQuery, [values], (err5) => {
-                    if (err5) return res.status(500).json({ message: "Error inserting into prescription_detail" });
-                    res.status(200).json({ message: "Prescription and details saved successfully" });
-                });
-            });
-        }
+  const queryPromise = (sql, params) =>
+    new Promise((resolve, reject) => {
+      db.query(sql, params, (err, results) => {
+        if (err) reject(err);
+        else resolve(results);
+      });
     });
-});
 
-router.delete("/prescription", (req, res) => {
-    const { reg, doc, date } = req.query;
+  try {
+    let existingPrescription = await queryPromise(
+      `SELECT prescription_id FROM prescription WHERE reg_id = ? AND doc_id = ? AND prescription_date = ?`,
+      values1
+    );
 
-    const getQuery = `
-        SELECT prescription_id FROM prescription
-        WHERE reg_id = ? AND doc_id = ? AND prescription_date = ?
-    `;
+    let prescriptionId;
 
-    db.query(getQuery, [reg, doc, date], (err, result) => {
-        if (err) return res.status(500).json({ message: "Error fetching prescription ID" });
+    if (existingPrescription.length === 0) {
+      const insertResult = await queryPromise(
+        `INSERT INTO prescription (reg_id, doc_id, prescription_date) VALUES (?, ?, ?)`,
+        values1
+      );
 
-        if (result.length === 0) return res.status(404).json({ message: "Prescription not found" });
+      prescriptionId = insertResult.insertId;
+    } else {
+      prescriptionId = existingPrescription[0].prescription_id;
+    }
 
-        const prescriptionId = result[0].prescription_id;
+    const newPrescriptions = prescriptions.filter((p) => !p.prescription_detail_id);
+    console.log("insert");
+    console.log(newPrescriptions);
 
-        const deleteDetails = `DELETE FROM prescription_detail WHERE prescription_id = ?`;
-        db.query(deleteDetails, [prescriptionId], (err2) => {
-            if (err2) return res.status(500).json({ message: "Error deleting details" });
-
-            const deletePrescription = `DELETE FROM prescription WHERE prescription_id = ?`;
-            db.query(deletePrescription, [prescriptionId], (err3) => {
-                if (err3) return res.status(500).json({ message: "Error deleting prescription" });
-                res.status(200).json({ message: "Prescription deleted successfully" });
-            });
-        });
+    const insertPromises = newPrescriptions.map((p) => {
+      const insertSql = `
+        INSERT INTO prescription_detail (prescription_id, drug_id, dosage_schedule_id, food_instruction_id)
+        VALUES (?, ?, ?, ?)
+      `;
+      const insertValues = [prescriptionId, p.drug_id, p.dosage_schedule_id, p.food_instruction_id];
+      return queryPromise(insertSql, insertValues);
     });
+
+    const insertResults = await Promise.all(insertPromises);
+
+
+    const updatePrescriptions = prescriptions.filter((p) => p.prescription_detail_id && p.update_flag);
+    console.log("Update")
+    console.log(updatePrescriptions);
+    const updatePromises = updatePrescriptions.map((p) => {
+      const updateSql = `
+        UPDATE prescription_detail
+        SET drug_id = ?, dosage_schedule_id = ?, food_instruction_id = ?
+        WHERE prescription_detail_id = ?
+      `;
+      const updateValues = [p.drug_id, p.dosage_schedule_id, p.food_instruction_id, p.prescription_detail_id];
+      return queryPromise(updateSql, updateValues);
+    });
+
+    await Promise.all(updatePromises);
+
+    res.json({ message: "Prescription details processed successfully", insertResults });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error processing prescription" });
+  }
 });
 
 
+
+router.delete("/prescription/:id", (req, res) =>{
+  let prescription_detail_id = req.params.id;
+  db.query(`DELETE FROM prescription_detail where prescription_detail_id = ?`,[prescription_detail_id],(err,result) => {
+    if(err){
+      console.error(err);
+      return res.json({ message : "Error in deletion "});
+    }
+
+    res.json(result);
+  })
+});
 
 module.exports = router;

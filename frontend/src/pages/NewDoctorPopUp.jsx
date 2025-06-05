@@ -61,7 +61,7 @@ function NewDoctorPopUp() {
         const data = await res.json();
 
         if (res.ok) {
-            alert("Doctor created successfully");
+            setErrorMessage("");
         } else {
             setErrorMessage(data.message || 'Something went wrong');
         }
@@ -74,6 +74,11 @@ function NewDoctorPopUp() {
     <div>
       <div className= 'ml-[20%]'>
         <h1 className="font-bold text-3xl text-center">Create a New Doctor</h1>
+        {errorMessage && (
+          <div className="p-3 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded w-72 text-center mb-4 mx-auto block">
+            {errorMessage}
+          </div>
+        )}
       <form onSubmit={handleDoctorFormSubmit}>
         <div className= {styles["form-group"]}>
           <div className={styles['indiv-inp']}>
