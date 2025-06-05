@@ -1,139 +1,15 @@
-const express = require('express');
-const router = express.Router();
-const db = require("../config/db");
-const { insertIntoAuditLog } = require('./auditLog');
-const { authenticateJWT } = require("./authenticateJWT");
-
-router.get("/fetchLatestRegPatient",(req,res) => {
-    db.query(
-        `select r.patient_id , MAX(r.reg_id) as reg_id , p.name
-        from registration r,patient p
-        where r.patient_id = p.patient_id
-        GROUP BY r.patient_id,p.name`,(err,result) => {
-            if(err) return res.json({ message : "Error fetching max reg_id for each patient "});
-            res.json(result);
-        }
-    )
-})
-
-router.get("/fetch-prescription",(req,res) => {
-    const { prescriptions, date, doc, reg } = req.query;
-    console.log(req.query);
-    db.query(
-        `select pd.drug_id,pd.dosage_schedule_id ,pd.food_instruction_id,? as Date,? as doc_id,? as reg_id
-from prescription p,prescription_detail pd
-where p.prescription_id = pd.prescription_id
-and p.reg_id = ?
-and p.doc_id = ?
-and p.prescription_date = ?`,[date,doc,reg,reg,doc,date],(err,result) => {
-    if(err){
-        console.error(err);
-        return res.json({ message : "Error in fetching prescription"});
-    }
-    res.json(result);
-}
-    )
-})
-
-router.post("/prescription", (req, res) => {
-    const { prescriptions ,selectedDate,selectedDoctor,selectedPatientRegId } = req.body;
-    console.log(req.body);
-    const checkPrescriptionID = `SELECT * from prescription where reg_id = ? and doc_id = ? and prescription_date = ?`;
-    const values1 = [selectedPatientRegId,selectedDoctor,selectedDate];
-    db.query(checkPrescriptionID,values1,(err,result1) => {
-      if(err){
-        console.error(err);
-        return res.json({ message : "Error finding prescription"});
-      }
-      if(result1.length === 0){
-        const insertPrescription = `INSERT INTO prescription (reg_id,doc_id,prescription_date) VALUES (?,?,?)`;
-        db.query(insertPrescription,values1,(err,result2) => {
-          if(err){
-            console.error(err);
-            return res.json({ message : "Error inserting into prescription"});
-          }
-          const selectPrescriptionID = `SELECT prescription_id from prescription where reg_id = ? and doc_id = ? and prescription_date = ?`;
-          db.query(selectPrescriptionID,values1,(err,result3) => {
-            if(err){
-              console.error(err);
-              return res.json({ message : "Error searching from prescription"});
-            }
-          const prescriptionId = result3[0].prescription_id;
-          console.log("Prescirption id is ",prescriptionId);
-            const insertPrescriptionDetail = `INSERT INTO prescription_detail 
-            (prescription_id,drug_id,dosage_schedule_id,food_instruction_id)
-            VALUES (?,?,?,?)`
-            let values2 = [prescriptionId,prescriptions[0].drug_id,prescriptions[0].dosage_schedule_id,prescriptions[0].food_instruction_id];
-            db.query(insertPrescriptionDetail,values2,(err,result4) => {
-              if(err){
-                console.error(err);
-                return res.json({ message : "Error inserting into prescription detail"});
-              }
-              console.log("Inserted into prescirption detail");
-              return res.json(result4);
-            })            
-          })
-        })
-      }else{
-          const selectPrescriptionID = `SELECT prescription_id from prescription where reg_id = ? and doc_id = ? and prescription_date = ?`;
-          db.query(selectPrescriptionID,values1,(err,result3) => {
-            if(err){
-              console.error(err);
-              return res.json({ message : "Error searching from prescription"});
-            }
-            const prescriptionId = result3[0].prescription_id;
-            console.log("Prescirption id is ",prescriptionId);
-            const updatePrescriptionDetail = `UPDATE prescription_detail 
-            SET drug_id = ?, dosage_schedule_id = ?,food_instruction_id = ?
-            where prescription_id = ?
-`;
-const updateValues = [
-  prescriptions[0].drug_id,
-  prescriptions[0].dosage_schedule_id,
-  prescriptions[0].food_instruction_id,
-  prescriptionId
-];
-console.log(updateValues);
-            db.query(updatePrescriptionDetail,updateValues,(err,result) => {
-              if(err){
-                console.error(err);
-                return res.json({ message : "Error updating into prescription detail"});
-              }
-              return res.json(result);
-            })
-      })
-      }
-    })
-});
-
-router.delete("/prescription", (req, res) => {
-    const { reg, doc, date } = req.query;
-
-    const getQuery = `
-        SELECT prescription_id FROM prescription
-        WHERE reg_id = ? AND doc_id = ? AND prescription_date = ?
-    `;
-
-    db.query(getQuery, [reg, doc, date], (err, result) => {
-        if (err) return res.status(500).json({ message: "Error fetching prescription ID" });
-
-        if (result.length === 0) return res.status(404).json({ message: "Prescription not found" });
-
-
-
-        const deleteDetails = `DELETE FROM prescription_detail WHERE prescription_id = ?`;
-        db.query(deleteDetails, [prescriptionId], (err2) => {
-            if (err2) return res.status(500).json({ message: "Error deleting details" });
-
-            const deletePrescription = `DELETE FROM prescription WHERE prescription_id = ?`;
-            db.query(deletePrescription, [prescriptionId], (err3) => {
-                if (err3) return res.status(500).json({ message: "Error deleting prescription" });
-                res.status(200).json({ message: "Prescription deleted successfully" });
-            });
-        });
-    });
-});
-
-
-
-module.exports = router;
+SELECT 
+PAYMENT_DATE ,
+ SUM(REGN_CHARGES),  
+ SUM(ADMISSION_CHARGES),
+ SUM(DOC_FEE),    
+ SUM(TEST_FEE),        
+ SUM(SERVICE_CHARGES),
+ SUM(WARD_CHARGES),
+ SUM(TOTAL_PAYABLE), 
+ SUM(DISCOUNT),    
+ SUM(AMT_TO_PAY)  as total amount
+from payment
+GROUP BY
+payment_date
+  

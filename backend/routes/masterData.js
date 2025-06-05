@@ -57,16 +57,20 @@ router.get("/audit-master",(req,res) => {
 })
 
 router.get("/daily-earnings",(req,res) => {
-    db.query(`SELECT 
-    PAYMENT_DATE, 
-    SUM(AMT_TO_PAY) AS total_amount 
-FROM 
-    payment 
-GROUP BY 
-    PAYMENT_DATE 
-ORDER BY 
-    PAYMENT_DATE;`,(err,result) => {
-        if(err) return res.json({ messgae : "Error fetching info form audit log"});
+    db.query(`SELECT payment_date,
+       Sum(regn_charges) as r,
+       Sum(admission_charges) as a,
+       Sum(doc_fee) as d,
+       Sum(test_fee) as t,
+       Sum(service_charges) as s,
+       Sum(ward_charges) as w,
+       Sum(total_payable) as tot,
+       Sum(discount) as di,
+       Sum(amt_to_pay) AS total_amount
+FROM   payment
+GROUP  BY payment_date 
+  `,(err,result) => {
+        if(err) return res.json({ messgae : "Error fetching info from daily earnings"});
         res.json(result);
     })
 })

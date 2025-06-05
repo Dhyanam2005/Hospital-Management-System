@@ -72,7 +72,9 @@ const sidebarMenu = [
           { label: "Doctor Collection", link: "/doctor-wise-reg" },
           { label: "Lab Performance", link: "/dept-test-doc" },
           { label: "Referral Doctor Summary", link: "/referral-doc" },
-          { label: "Doctor Test Collection", link: "/dept-doc" }
+          { label: "Doctor Test Collection", link: "/dept-doc" },
+          { label : "Audit Log",link : "/audit-master"},
+          { label : "Daily Collection",link : "/daily-earnings"},
       ]
     },
     {label : "Charts" , link : "/chart"}
