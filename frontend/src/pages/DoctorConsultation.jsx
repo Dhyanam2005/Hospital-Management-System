@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
 import DoctorConsultationForm from "../components/DoctorConsultationForm";
 import GenericMasterTableViewForRegistration from "../components/GenericTableForReg";
-import API_BASE_URL from './apiConfig';
+import API_BASE_URL from '../apiConfig';
 
 
 function DoctorConsultation(){

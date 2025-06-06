@@ -7,7 +7,7 @@ import {
   View,
 } from "@react-pdf/renderer";
 import styles from "./pdfStyles";
-import API_BASE_URL from './apiConfig';
+import API_BASE_URL from '../apiConfig';
 
 
 const MyDoc = ({ patientInfo, testDetails}) => {

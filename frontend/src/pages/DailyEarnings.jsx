@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import GenericMasterTableView from "../components/MasterDataTable";
 import { Container } from '@mui/material';
 import { format } from "date-fns";
-import API_BASE_URL from './apiConfig';
+import API_BASE_URL from '../apiConfig';
 
 function DailyEarnings() {
     const [data, setData] = useState([]);

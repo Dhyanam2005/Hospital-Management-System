@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './ChangePassword.css';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/SidebarMenu';
-import API_BASE_URL from './apiConfig';
+import API_BASE_URL from '../apiConfig';
 
 
 

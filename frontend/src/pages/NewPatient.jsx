@@ -2,7 +2,7 @@ import React , { useEffect, useState } from "react";
 import styles from './NewPatient.module.css';
 import Sidebar from "../components/SidebarMenu";
 import { useNavigate } from "react-router-dom";
-import API_BASE_URL from './apiConfig';
+import API_BASE_URL from '../apiConfig';
 
 function NewPatient(){
 

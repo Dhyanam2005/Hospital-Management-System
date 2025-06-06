@@ -4,7 +4,7 @@ import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
 import ViewPatientBill from "./ViewPatientBill";
 import GenericMasterTableViewForRegistration from "../components/GenericTableForReg";
 import styles from "./Test.module.css"; 
-import API_BASE_URL from './apiConfig';
+import API_BASE_URL from '../apiConfig';
 
 function PatientsForBill(){
 

@@ -5,7 +5,7 @@ import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
 import PayBill from "./PayBill";
 import GenericMasterTableViewForRegistration from "../components/GenericTableForReg";
 import styles from "./Test.module.css";
-import API_BASE_URL from './apiConfig';
+import API_BASE_URL from '../apiConfig';
 
 function PayBillBefore(){
     const [patientName,setPatientName] = useState('');

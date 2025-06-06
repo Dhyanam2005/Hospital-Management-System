@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./AdmissionForm.module.css";
-import API_BASE_URL from './apiConfig';
+import API_BASE_URL from '../apiConfig';
 
 
 function NewAdmission({ regId }) {

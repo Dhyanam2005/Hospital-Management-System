@@ -5,7 +5,7 @@ import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import NavBar from "../components/SidebarMenu";
 import NewAdmission from "../components/AdmissionForm";
 import GenericMasterTableViewForRegistration from '../components/GenericTableForReg';
-import API_BASE_URL from './apiConfig';
+import API_BASE_URL from '../apiConfig';
 
 function Admission() {
     const [patientName, setPatientName] = useState('');

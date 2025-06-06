@@ -5,7 +5,7 @@ import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import GenericMasterTableViewForRegistration from "../components/GenericTableForReg";
 import MedicalItemForm from "../components/MedicalItemForm";
 import NavBar from "../components/SidebarMenu";
-import API_BASE_URL from './apiConfig';
+import API_BASE_URL from '../apiConfig';
 
 
 function MedicalItem(){

@@ -3,7 +3,7 @@ import styles from "./Prescription.module.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import PrescriptionForm from "./PresrciptionForm.jsx"; 
-import API_BASE_URL from './apiConfig';
+import API_BASE_URL from '../apiConfig';
 
 
 function Prescription() {

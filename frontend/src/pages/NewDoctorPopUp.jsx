@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import styles from "./NewDoctorPopUp.module.css";
 import Sidebar from '../components/SidebarMenu';
-import API_BASE_URL from './apiConfig';
+import API_BASE_URL from '../apiConfig';
 
 
 function NewDoctorPopUp() {

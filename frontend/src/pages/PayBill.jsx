@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "./PayBill.module.css";
-import API_BASE_URL from './apiConfig';
+import API_BASE_URL from '../apiConfig';
 
 function PayBill({ regId }) {
     const [billInfo, setBillInfo] = useState({});

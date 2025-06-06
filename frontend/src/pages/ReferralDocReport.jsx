@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import styles from "./ReportQueries.module.css";
 import DatePicker from "react-datepicker";
-import API_BASE_URL from './apiConfig';
+import API_BASE_URL from '../apiConfig';
 
 function ReferralDocReport() {
   const [data, setData] = useState([]);

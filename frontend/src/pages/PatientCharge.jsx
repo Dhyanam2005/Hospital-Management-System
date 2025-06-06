@@ -5,7 +5,7 @@ import PatientChargeForm from "../components/PatientChargeForm";
 import NavBar from "../components/SidebarMenu";
 import styles from "./PatientCharge.module.css";
 import GenericMasterTableViewForRegistration from "../components/GenericTableForReg";
-import API_BASE_URL from './apiConfig';
+import API_BASE_URL from '../apiConfig';
 
 
 function PatientCharge(){

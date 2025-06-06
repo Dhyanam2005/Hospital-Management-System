@@ -5,7 +5,7 @@ import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import ResultGrid from "../components/ResultGrid";
 import styles from "./Result.module.css";
 import GenericMasterTableViewForRegistration from "../components/GenericTableForReg";
-import API_BASE_URL from './apiConfig';
+import API_BASE_URL from '../apiConfig';
 
 function Result(){
 

@@ -3,7 +3,7 @@ import styles from "../components/MedicalItemForm.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {faPlus } from "@fortawesome/free-solid-svg-icons";
 import deleteIcon from "../images/delete-icon.png";
-import API_BASE_URL from './apiConfig';
+import API_BASE_URL from '../apiConfig';
 
 
 function PrescriptionForm({ selectedDoctor, selectedDate, selectedPatientRegId }) {

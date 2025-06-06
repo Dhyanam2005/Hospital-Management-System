@@ -1,7 +1,7 @@
 import React, { useState , useEffect } from 'react';
 import "./Doctor.css";
 import Sidebar from '../components/SidebarMenu';
-import API_BASE_URL from './apiConfig';
+import API_BASE_URL from '../apiConfig';
 
 
 function Doctor(){

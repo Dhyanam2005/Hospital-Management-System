@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useLocation } from 'react-router-dom';
-import API_BASE_URL from './apiConfig';
+import API_BASE_URL from '../apiConfig';
 
 
 const pathLabels = {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import "./UserList.css"
 import Navbar from '../components/SidebarMenu';
-import API_BASE_URL from './apiConfig';
+import API_BASE_URL from '../apiConfig';
 
 function UserList() {
 

@@ -5,7 +5,7 @@ import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import RegistrationForm from '../components/RegistrationForm';
 import GenericMasterTableViewForRegistration from '../components/GenericTableForReg';
 import styles from "./Registration.module.css";
-import API_BASE_URL from './apiConfig';
+import API_BASE_URL from '../apiConfig';
 
 
 function Registration() {

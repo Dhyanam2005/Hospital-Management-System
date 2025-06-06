@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useReactToPrint } from "react-to-print";
 import NavBar from "../components/SidebarMenu";
-import API_BASE_URL from './apiConfig';
+import API_BASE_URL from '../apiConfig';
 
 function PrintableBill({ patientInfo, bill }) {
   const totalAmount = bill.reduce(
