@@ -34,6 +34,7 @@ const chartRouter = require("./routes/charts");
 const prescriptionRouter = require("./routes/prescription");
 const masterDataRouter = require("./routes/masterData");
 const regStatusRouter = require("./routes/reg_status");
+const app = express();
 
 const PORT = process.env.PORT || 3000;
 
