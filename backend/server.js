@@ -38,7 +38,7 @@ const app = express();
 
 const PORT = process.env.PORT || 3000;
 const allowedOrigins = ['https://hospital-management-system-ten-pi.vercel.app',  'http://localhost:3000',
-  'http://localhost:3001','https://hospital-management-system-filp.vercel.app','https://hospital-management-system-filp-50gjztevk.vercel.app/'];
+  'http://localhost:3001','https://hospital-management-system-filp.vercel.app','https://hospital-management-system-filp-50gjztevk.vercel.app'];
 
 const corsOptions = {
   origin: function (origin, callback) {
