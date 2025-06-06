@@ -12,7 +12,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getVisibleMenuByRole } from "../utils/sidebarFilter";
 import getUserRole from "../utils/auth";
 import sidebarMenu from '../utils/sidebarMenu';
-import API_BASE_URL from './apiConfig';
+import API_BASE_URL from '../apiConfig';
 
 
 function Sidebar() {
