@@ -1,6 +1,7 @@
 import React, { useState , useEffect } from 'react';
 import "./Doctor.css";
 import Sidebar from '../components/SidebarMenu';
+import API_BASE_URL from './apiConfig';
 
 
 function Doctor(){
@@ -10,7 +11,7 @@ function Doctor(){
     useEffect(() => {
         const fetchDoctor = async () => {
             try{
-                let res = await fetch('http://localhost:3000/doctor');
+                let res = await fetch(`${API_BASE_URL}/doctor`);
                 let data = await res.json();
                 console.log("Data fetched : ",data);
                 if(res.ok){

@@ -37,9 +37,21 @@ const regStatusRouter = require("./routes/reg_status");
 const app = express();
 
 const PORT = process.env.PORT || 3000;
+const allowedOrigins = ['https://hospital-management-system-ten-pi.vercel.app',  'http://localhost:3000',
+  'http://localhost:3001',];
 
-app.use(cors());
-app.use(express.json());
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
+};
+
+app.use(cors(corsOptions));app.use(express.json());
 
 app.use("/",regStatusRouter);
 app.use("/",masterDataRouter);

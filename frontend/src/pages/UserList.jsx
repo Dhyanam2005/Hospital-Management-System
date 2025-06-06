@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import "./UserList.css"
 import Navbar from '../components/SidebarMenu';
-
+import API_BASE_URL from './apiConfig';
 
 function UserList() {
 
@@ -11,7 +11,7 @@ function UserList() {
     useEffect(() => {
         const fecthUsers = async () => {
             try{
-                const res = await fetch('http://localhost:3000/users');
+                const res = await fetch(`${API_BASE_URL}/users`);
                 const data = await res.json();
                 console.log('Fetched data:', data);
                 setUsers(Array.isArray(data) ? data : []);

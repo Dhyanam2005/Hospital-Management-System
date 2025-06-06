@@ -3,6 +3,7 @@ import styles from "./TestGrid.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faP, faPlus } from "@fortawesome/free-solid-svg-icons";
 import deleteIcon from "../images/delete-icon.png";
+import API_BASE_URL from './apiConfig';
 
 function TestGrid({ regId }) {
   const [inHouseDoctor, setInHouseDoctor] = useState([]);
@@ -25,9 +26,9 @@ function TestGrid({ regId }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const doctorRes = await fetch("http://localhost:3000/fetchInHouseDoctors");
-        const testRes = await fetch("http://localhost:3000/fetchTests");
-        const regStatusRes = await fetch(`http://localhost:3000/regStatus?regId=${regId}`);
+        const doctorRes = await fetch(`${API_BASE_URL}/fetchInHouseDoctors`);
+        const testRes = await fetch(`${API_BASE_URL}/fetchTests`);
+        const regStatusRes = await fetch(`${API_BASE_URL}/regStatus?regId=${regId}`);
         const regData = await regStatusRes.json();
 
         const doctors = await doctorRes.json();
@@ -84,7 +85,7 @@ const saveData = async () => {
   const token = localStorage.getItem('token');
   console.log("Token is ",token);
   try {
-    const response = await fetch("http://localhost:3000/saveTestGridData", {
+    const response = await fetch(`${API_BASE_URL}/saveTestGridData`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

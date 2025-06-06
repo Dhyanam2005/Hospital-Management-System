@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import './ChangePassword.css';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/SidebarMenu';
+import API_BASE_URL from './apiConfig';
+
 
 
 function ChangePassword() {
@@ -16,7 +18,7 @@ function ChangePassword() {
     e.preventDefault();
     const token = localStorage.getItem('token');
     try{
-        const res = await fetch('http://localhost:3000/changepassword',{
+        const res = await fetch(`${API_BASE_URL}/changepassword`,{
             method : 'POST',
             headers : { 
                 'Content-Type': 'application/json',

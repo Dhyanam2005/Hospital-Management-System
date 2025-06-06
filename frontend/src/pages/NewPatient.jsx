@@ -2,6 +2,7 @@ import React , { useEffect, useState } from "react";
 import styles from './NewPatient.module.css';
 import Sidebar from "../components/SidebarMenu";
 import { useNavigate } from "react-router-dom";
+import API_BASE_URL from './apiConfig';
 
 function NewPatient(){
 
@@ -21,7 +22,7 @@ function NewPatient(){
 
   useEffect(() =>{
     const fetchCities = async() => {
-      let res = await fetch('http://localhost:3000/cities');
+      let res = await fetch(`${API_BASE_URL}/cities`);
       let data = await res.json();
       if(res.ok){
         setCities(data);
@@ -42,7 +43,7 @@ function NewPatient(){
       return;
     }
     try{
-      let res = await fetch('http://localhost:3000/patient',{
+      let res = await fetch(`${API_BASE_URL}/patient`,{
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

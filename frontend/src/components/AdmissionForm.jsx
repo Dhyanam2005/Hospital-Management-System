@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./AdmissionForm.module.css";
+import API_BASE_URL from './apiConfig';
+
 
 function NewAdmission({ regId }) {
   const [doctor, setDoctor] = useState("");
@@ -23,7 +25,7 @@ function NewAdmission({ regId }) {
   useEffect(() => {
     async function fetchDoctors() {
       try {
-        const res = await fetch("http://localhost:3000/fetchInHouseDoctors");
+        const res = await fetch(`${API_BASE_URL}/fetchInHouseDoctors`);
         const data = await res.json();
         if (res.ok) {
           setDoctors(data);
@@ -53,11 +55,11 @@ function NewAdmission({ regId }) {
     setErrorMessage("");
       try {
         const res = await fetch(
-          `http://localhost:3000/fetchAdmission?regId=${encodeURIComponent(
+          `${API_BASE_URL}/fetchAdmission?regId=${encodeURIComponent(
             regId
           )}`
         );
-        const regStatusRes = await fetch(`http://localhost:3000/regStatus?regId=${regId}`);
+        const regStatusRes = await fetch(`${API_BASE_URL}/regStatus?regId=${regId}`);
         const regData = await regStatusRes.json();
         const data = await res.json();
 
@@ -91,7 +93,7 @@ function NewAdmission({ regId }) {
   useEffect(() => {
     async function fetchBeds() {
       try {
-        const res = await fetch("http://localhost:3000/beds");
+        const res = await fetch(`${API_BASE_URL}/beds`);
         const data = await res.json();
         if (res.ok) {
           setVacantBeds(data);
@@ -115,7 +117,7 @@ function NewAdmission({ regId }) {
     }
 
     try {
-      const res = await fetch("http://localhost:3000/admission", {
+      const res = await fetch(`${API_BASE_URL}/admission`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

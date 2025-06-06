@@ -1,5 +1,6 @@
 import React , { useEffect, useState} from "react";
 import styles from "./ResultGrid.module.css";
+import API_BASE_URL from './apiConfig';
 
 function ResultGrid({ regId }){
 
@@ -9,8 +10,8 @@ function ResultGrid({ regId }){
     useEffect(() => {
         const fetchResultData = async () => {
             try{
-                let res = await fetch(`http://localhost:3000/resultData?regId=${regId}`);
-                const regStatusRes = await fetch(`http://localhost:3000/regStatus?regId=${regId}`);
+                let res = await fetch(`${API_BASE_URL}/resultData?regId=${regId}`);
+                const regStatusRes = await fetch(`${API_BASE_URL}/regStatus?regId=${regId}`);
                 const regData = await regStatusRes.json();
                 let data = await res.json();
                 if(res.ok){
@@ -32,7 +33,7 @@ function ResultGrid({ regId }){
     const submitResults = async () => {
         const token = localStorage.getItem('token');
         try{
-            let res = await fetch('http://localhost:3000/result',{
+            let res = await fetch(`${API_BASE_URL}/result`,{
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json',

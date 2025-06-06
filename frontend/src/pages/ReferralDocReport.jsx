@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import styles from "./ReportQueries.module.css";
 import DatePicker from "react-datepicker";
+import API_BASE_URL from './apiConfig';
 
 function ReferralDocReport() {
   const [data, setData] = useState([]);
@@ -21,7 +22,7 @@ function ReferralDocReport() {
         const endDateFormatted = endDate ? format(endDate, "yyyy-MM-dd") : "";
 
         let res = await fetch(
-          `http://localhost:3000/referralDoc?startDate=${startDateFormatted}&endDate=${endDateFormatted}`
+          `${API_BASE_URL}/referralDoc?startDate=${startDateFormatted}&endDate=${endDateFormatted}`
         );
 
         const data = await res.json();

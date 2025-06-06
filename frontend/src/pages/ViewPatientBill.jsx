@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useReactToPrint } from "react-to-print";
 import NavBar from "../components/SidebarMenu";
+import API_BASE_URL from './apiConfig';
 
 function PrintableBill({ patientInfo, bill }) {
   const totalAmount = bill.reduce(
@@ -82,8 +83,8 @@ function ViewPatientBill({ regId }) {
     const fetchPatAndBillDetails = async () => {
       console.log("regId received:", regId);
       try {
-        const res1 = await fetch(`http://localhost:3000/patientpdf?regId=${regId}`);
-        const res2 = await fetch(`http://localhost:3000/patientBill?regId=${regId}`);
+        const res1 = await fetch(`${API_BASE_URL}/patientpdf?regId=${regId}`);
+        const res2 = await fetch(`${API_BASE_URL}/patientBill?regId=${regId}`);
         const data = await res1.json();
         const data2 = await res2.json();
         if (res1.ok && data.length > 0 && res2.ok) {

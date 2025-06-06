@@ -3,6 +3,8 @@ import styles from "./MedicalItemForm.module.css";
 import deleteIcon from "../images/delete-icon.png";
 import { faP, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import API_BASE_URL from './apiConfig';
+
 
 function MedicalItemForm({ regId }) {
   const [medicines, setMedicines] = useState([]);
@@ -14,8 +16,8 @@ function MedicalItemForm({ regId }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const medicineRes = await fetch("http://localhost:3000/fetchMedicines");
-        const regStatusRes = await fetch(`http://localhost:3000/regStatus?regId=${regId}`);
+        const medicineRes = await fetch(`${API_BASE_URL}/fetchMedicines`);
+        const regStatusRes = await fetch(`${API_BASE_URL}/regStatus?regId=${regId}`);
         const regData = await regStatusRes.json();
         const medicines = await medicineRes.json();
         if (medicineRes.ok && regStatusRes.ok) {
@@ -41,7 +43,7 @@ function MedicalItemForm({ regId }) {
 
   const fetchMedicalItems = async () => {
     try {
-      const res = await fetch(`http://localhost:3000/fetchMedicalItems?regId=${encodeURIComponent(regId)}`);
+      const res = await fetch(`${API_BASE_URL}/fetchMedicalItems?regId=${encodeURIComponent(regId)}`);
       const data = await res.json();
       if (res.ok) {
         setRows(data.map(item => ({
@@ -84,7 +86,7 @@ function MedicalItemForm({ regId }) {
   const saveMedicalItems = async () => {
     const token = localStorage.getItem('token');
     try {
-      const res = await fetch('http://localhost:3000/medicalItems', {
+      const res = await fetch(`${API_BASE_URL}/medicalItems`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -118,7 +120,7 @@ function MedicalItemForm({ regId }) {
     if (!confirmed) return;
 
     try {
-      const res = await fetch(`http://localhost:3000/docmedicalItems/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/docmedicalItems/${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

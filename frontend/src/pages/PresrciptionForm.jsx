@@ -3,6 +3,8 @@ import styles from "../components/MedicalItemForm.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {faPlus } from "@fortawesome/free-solid-svg-icons";
 import deleteIcon from "../images/delete-icon.png";
+import API_BASE_URL from './apiConfig';
+
 
 function PrescriptionForm({ selectedDoctor, selectedDate, selectedPatientRegId }) {
     const [rows, setRows] = useState([]);
@@ -24,7 +26,7 @@ function PrescriptionForm({ selectedDoctor, selectedDate, selectedPatientRegId }
       useEffect(() => {
         const fetchData = async () => {
           try{
-            let res = await fetch(`http://localhost:3000/fetch-prescription?doc=${selectedDoctor}&date=${selectedDate}&reg=${selectedPatientRegId}`);
+            let res = await fetch(`${API_BASE_URL}/fetch-prescription?doc=${selectedDoctor}&date=${selectedDate}&reg=${selectedPatientRegId}`);
             let data = await res.json();
             if(res.ok){
                setRows(data.map(item => ({ ...item, update_flag: false })));
@@ -42,7 +44,7 @@ function PrescriptionForm({ selectedDoctor, selectedDate, selectedPatientRegId }
     useEffect(() => {
         const fetchMedicine = async () => {
             try {
-                const res = await fetch("http://localhost:3000/fetchMedicines");
+                const res = await fetch("${API_BASE_URL}/fetchMedicines");
                 if (res.ok) {
                     const data = await res.json();
                     setMedicine(data || []);
@@ -85,7 +87,7 @@ function PrescriptionForm({ selectedDoctor, selectedDate, selectedPatientRegId }
         console.log("FormattedPresviptions is ",formattedPrescriptions)
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch("http://localhost:3000/prescription", {
+            const res = await fetch("${API_BASE_URL}/prescription", {
                 method: "POST",
                 headers: { 
                     "Content-Type": "application/json" ,
@@ -118,7 +120,7 @@ const handleDelete = async (i,id) => {
         }
     try {
         const token = localStorage.getItem('token');
-        const res = await fetch(`http://localhost:3000/prescription/${id}`, {
+        const res = await fetch(`${API_BASE_URL}/prescription/${id}`, {
             method: "DELETE",
             headers: { 
                     "Content-Type": "application/json" ,

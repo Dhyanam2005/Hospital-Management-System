@@ -3,6 +3,8 @@ import styles from "./MedicalItemForm.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faP, faPlus } from "@fortawesome/free-solid-svg-icons";
 import deleteIcon from "../images/delete-icon.png";
+import API_BASE_URL from './apiConfig';
+
 
 function DoctorConsultationForm({ regId}){
 
@@ -22,9 +24,9 @@ function DoctorConsultationForm({ regId}){
     useEffect(() => {
         const fetchData = async () => {
           try {
-            const doctorRes = await fetch("http://localhost:3000/fetchInHouseDoctors");    
+            const doctorRes = await fetch(`${API_BASE_URL}/fetchInHouseDoctors`);    
             const doctors = await doctorRes.json();
-            const regStatusRes = await fetch(`http://localhost:3000/regStatus?regId=${regId}`);
+            const regStatusRes = await fetch(`${API_BASE_URL}/regStatus?regId=${regId}`);
             const regData = await regStatusRes.json();
     
             if (doctorRes.ok && regStatusRes.ok) {
@@ -50,7 +52,7 @@ function DoctorConsultationForm({ regId}){
 
         const fetchConsultations = async () => {
           try{
-              let res = await fetch(`http://localhost:3000/fetchConsultations?regId=${encodeURIComponent(regId)}`);
+              let res = await fetch(`${API_BASE_URL}/fetchConsultations?regId=${encodeURIComponent(regId)}`);
               let data = await res.json();
               if(res.ok){
                 console.log("Length of data is ",data.length);
@@ -83,7 +85,7 @@ function DoctorConsultationForm({ regId}){
 
       const saveConsultations = async() => {
         try{
-          let res = await fetch('http://localhost:3000/docConsultation',{
+          let res = await fetch(`${API_BASE_URL}/docConsultation`,{
             method: "POST",
             headers: { 
               "Content-Type": "application/json",
@@ -117,7 +119,7 @@ function DoctorConsultationForm({ regId}){
 
         console.log("DeleteRows is called and id is ",id);
         try{
-          let res = await fetch(`http://localhost:3000/docConsultation/${id}`,{
+          let res = await fetch(`${API_BASE_URL}/docConsultation/${id}`,{
             method: "DELETE",
             headers: { 
               "Content-Type": "application/json",

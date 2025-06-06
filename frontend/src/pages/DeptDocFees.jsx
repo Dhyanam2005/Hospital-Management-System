@@ -7,6 +7,7 @@ import "./PatientReportStateWise.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import styles from "./ReportQueries.module.css";
+import API_BASE_URL from './apiConfig';
 
 
 function DeptDocFees(){
@@ -20,7 +21,7 @@ function DeptDocFees(){
                 return;
             }
             try{
-                let res = await fetch(`http://localhost:3000/deptDocFees?startDate=${startDate}&endDate=${endDate}`);
+                let res = await fetch(`${API_BASE_URL}/deptDocFees?startDate=${startDate}&endDate=${endDate}`);
                 const data = await res.json();
                 if (res.ok) {
                     if (Array.isArray(data)) {

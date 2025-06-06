@@ -1,5 +1,7 @@
   import React, { useEffect, useState } from 'react';
   import styles from './RegistrationForm.module.css';
+  import API_BASE_URL from './apiConfig';
+
 
   function RegistrationForm({ patientId }) {
     const [regCharges, setRegCharges] = useState('');
@@ -29,7 +31,7 @@
     useEffect(() => {
       const fetchDoctors = async () => {
         try {
-          let res = await fetch('http://localhost:3000/fetchInHouseDoctors');
+          let res = await fetch(`${API_BASE_URL}/fetchInHouseDoctors`);
           let data = await res.json();
           if (res.ok) {
             setInHouseDoc(data);
@@ -43,7 +45,7 @@
 
     useEffect(() => {
       const fetchReferredDoctors = async () => {
-        let res = await fetch('http://localhost:3000/refferedby');
+        let res = await fetch(`${API_BASE_URL}/refferedby`);
         let data = await res.json();
         if (res.ok) {
           setRefferedDoctors(data);
@@ -55,7 +57,7 @@
     useEffect(() => {
       const fetchRegistration = async () => {
         try {
-          const res = await fetch(`http://localhost:3000/fetch-registration?patientId=${patientId}`);
+          const res = await fetch(`${API_BASE_URL}/fetch-registration?patientId=${patientId}`);
           const data = await res.json();
           if (res.ok) {
             const withId = data.map((item, index) => ({
@@ -79,7 +81,7 @@
       e.preventDefault();
       const token = localStorage.getItem('token');
       try {
-        let res = await fetch('http://localhost:3000/registration', {
+        let res = await fetch(`${API_BASE_URL}/registration`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -109,7 +111,7 @@
       e.preventDefault();
       const token = localStorage.getItem('token');
       try {
-        let res = await fetch('http://localhost:3000/registration', {
+        let res = await fetch(`${API_BASE_URL}/registration`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

@@ -4,6 +4,7 @@ import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
 import ViewPatientBill from "./ViewPatientBill";
 import GenericMasterTableViewForRegistration from "../components/GenericTableForReg";
 import styles from "./Test.module.css"; 
+import API_BASE_URL from './apiConfig';
 
 function PatientsForBill(){
 
@@ -14,7 +15,7 @@ function PatientsForBill(){
 
     const handleSearch = async () => {
     try{
-        let res = await fetch(`http://localhost:3000/consultationDoc?patientName=${encodeURIComponent(patientName)}`,{
+        let res = await fetch(`${API_BASE_URL}/consultationDoc?patientName=${encodeURIComponent(patientName)}`,{
             method : 'GET',
             headers: { 'Content-Type': 'application/json' },
         });

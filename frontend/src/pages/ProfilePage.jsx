@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import Navbar from '../components/SidebarMenu';
+import API_BASE_URL from './apiConfig';
 
 
 
@@ -24,7 +25,7 @@ function ProfilePage(){
             return;
         }
 
-    axios.get('http://localhost:3000/user', {
+    axios.get(`${API_BASE_URL}/user`, {
         headers: {
             Authorization: `Bearer ${token}`,
         }

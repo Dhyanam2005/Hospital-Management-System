@@ -6,7 +6,6 @@ function ProfileButton() {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
 
-  // Close dropdown on outside click
   useEffect(() => {
     function handleClickOutside(event) {
       if (ref.current && !ref.current.contains(event.target)) {

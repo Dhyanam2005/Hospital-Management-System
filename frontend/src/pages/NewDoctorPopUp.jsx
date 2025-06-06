@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import styles from "./NewDoctorPopUp.module.css";
 import Sidebar from '../components/SidebarMenu';
+import API_BASE_URL from './apiConfig';
+
 
 function NewDoctorPopUp() {
   const [doctorName, setDoctorName] = useState('');
@@ -21,7 +23,7 @@ function NewDoctorPopUp() {
   useEffect(() => {
   const fetchSpecializations = async () => {
     try {
-      const res = await fetch('http://localhost:3000/specializations');
+      const res = await fetch(`${API_BASE_URL}/specializations`);
       const data = await res.json();
       if (res.ok) {
         setSpecializations(data);
@@ -47,7 +49,7 @@ function NewDoctorPopUp() {
     }
 
     try {
-        const res = await fetch('http://localhost:3000/doctor', {
+        const res = await fetch(`${API_BASE_URL}/doctor`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

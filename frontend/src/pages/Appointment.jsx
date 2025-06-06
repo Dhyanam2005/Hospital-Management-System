@@ -7,6 +7,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import Navbar from "../components/SidebarMenu";
 import delteIcon from "../images/delete-icon.png";
+import API_BASE_URL from './apiConfig';
+
 
 function Appointment() {
   const [selectedDate, setSelectedDate] = useState('');
@@ -19,8 +21,8 @@ function Appointment() {
   useEffect(() => {
     const fetchInHouseDoctorsAndPatients = async () => {
       try {
-        const res1 = await fetch('http://localhost:3000/fetchInHouseDoctors');
-        const res2 = await fetch('http://localhost:3000/fetchAllPatients');
+        const res1 = await fetch(`${API_BASE_URL}/fetchInHouseDoctors`);
+        const res2 = await fetch(`${API_BASE_URL}/fetchAllPatients`);
         const data1 = await res1.json();
         const data2 = await res2.json();
 
@@ -43,7 +45,7 @@ function Appointment() {
 
     try {
       const formattedDate = format(selectedDate, 'yyyy-MM-dd');
-      const res = await fetch(`http://localhost:3000/appointmentlist?doc_id=${selectedDoctor}&appointment_date=${formattedDate}`);
+      const res = await fetch(`${API_BASE_URL}/appointmentlist?doc_id=${selectedDoctor}&appointment_date=${formattedDate}`);
       const data = await res.json();
 
       if (res.ok) {
@@ -59,7 +61,7 @@ function Appointment() {
 
   const deleteAppointment = async (id) => {
     try {
-      const res = await fetch(`http://localhost:3000/appointment/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/appointment/${id}`, {
         method: "DELETE",
         headers: {
           'Content-Type': 'application/json',
@@ -83,7 +85,7 @@ function Appointment() {
     e.preventDefault();
     const token = localStorage.getItem('token');
     try {
-      const res = await fetch(`http://localhost:3000/appointment`, {
+      const res = await fetch(`${API_BASE_URL}/appointment`, {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',

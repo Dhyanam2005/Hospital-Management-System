@@ -5,6 +5,7 @@ import "./PatientReportStateWise.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import styles from "./ReportQueries.module.css";
+import API_BASE_URL from './apiConfig';
 
 
 function PatientReportStateWise(){
@@ -18,7 +19,7 @@ function PatientReportStateWise(){
                 return;
             }
             try{
-                let res = await fetch(`http://localhost:3000/patientReportStateWise?startDate=${startDate}&endDate=${endDate}`);
+                let res = await fetch(`${API_BASE_URL}/patientReportStateWise?startDate=${startDate}&endDate=${endDate}`);
                 const data = await res.json();
                 if (res.ok) {
                     if (Array.isArray(data)) {

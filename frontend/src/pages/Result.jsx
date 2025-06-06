@@ -5,6 +5,7 @@ import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import ResultGrid from "../components/ResultGrid";
 import styles from "./Result.module.css";
 import GenericMasterTableViewForRegistration from "../components/GenericTableForReg";
+import API_BASE_URL from './apiConfig';
 
 function Result(){
 
@@ -16,7 +17,7 @@ function Result(){
 
     const handleSearch = async () => {
     try{
-        let res = await fetch(`http://localhost:3000/fetchpatreg?patientName=${encodeURIComponent(patientName)}`,{
+        let res = await fetch(`${API_BASE_URL}/fetchpatreg?patientName=${encodeURIComponent(patientName)}`,{
             method : 'GET',
             headers: { 'Content-Type': 'application/json' },
         });

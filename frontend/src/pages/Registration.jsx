@@ -5,6 +5,8 @@ import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import RegistrationForm from '../components/RegistrationForm';
 import GenericMasterTableViewForRegistration from '../components/GenericTableForReg';
 import styles from "./Registration.module.css";
+import API_BASE_URL from './apiConfig';
+
 
 function Registration() {
   const [patientName, setPatientName] = useState('');
@@ -13,7 +15,7 @@ function Registration() {
 
   const handleSearch = async () => {
     try {
-      const res = await fetch(`http://localhost:3000/fetchpat?patientName=${encodeURIComponent(patientName)}`);
+      const res = await fetch(`${API_BASE_URL}/fetchpat?patientName=${encodeURIComponent(patientName)}`);
       const data = await res.json();
 
       if (res.ok) {

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "./PayBill.module.css";
+import API_BASE_URL from './apiConfig';
 
 function PayBill({ regId }) {
     const [billInfo, setBillInfo] = useState({});
@@ -19,8 +20,8 @@ function PayBill({ regId }) {
             setBillInfo("");
             setPaymentData("");
             try {
-                let res = await fetch(`http://localhost:3000/payBill?regId=${regId}`);
-                const regStatusRes = await fetch(`http://localhost:3000/regStatus?regId=${regId}`);
+                let res = await fetch(`${API_BASE_URL}/payBill?regId=${regId}`);
+                const regStatusRes = await fetch(`${API_BASE_URL}/regStatus?regId=${regId}`);
                 const regData = await regStatusRes.json();
                 let data = await res.json();
                 if (res.ok && regStatusRes.ok) {
@@ -52,7 +53,7 @@ function PayBill({ regId }) {
     const saveInfo = async () => {
         const token = localStorage.getItem('token');
         try {
-            let res = await fetch(`http://localhost:3000/payBill?regId=${regId}`, {
+            let res = await fetch(`${API_BASE_URL}/payBill?regId=${regId}`, {
                 method: "POST",
                 headers: { 
                     "Content-Type": "application/json",

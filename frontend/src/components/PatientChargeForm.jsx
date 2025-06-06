@@ -3,6 +3,7 @@ import styles from "./MedicalItemForm.module.css";
 import deleteIcon from "../images/delete-icon.png";
 import { faP, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import API_BASE_URL from './apiConfig';
 
 function PatientChargeForm({ regId}){
 
@@ -17,9 +18,9 @@ function PatientChargeForm({ regId}){
 
         const fetchData = async () => {
           try {
-            const servicesRes = await fetch("http://localhost:3000/fetchServices");    
-            const doctorRes = await fetch("http://localhost:3000/doctor");
-            const regStatusRes = await fetch(`http://localhost:3000/regStatus?regId=${regId}`);
+            const servicesRes = await fetch(`${API_BASE_URL}/fetchServices`);    
+            const doctorRes = await fetch(`${API_BASE_URL}/doctor`);
+            const regStatusRes = await fetch(`${API_BASE_URL}/regStatus?regId=${regId}`);
             const regData = await regStatusRes.json();
             const services = await servicesRes.json();
             const doctors = await doctorRes.json();
@@ -48,7 +49,7 @@ function PatientChargeForm({ regId}){
 
         const fetchPatientCharges = async () => {
           try{
-              let res = await fetch(`http://localhost:3000/fetchPatientCharges?regId=${encodeURIComponent(regId)}`);
+              let res = await fetch(`${API_BASE_URL}/fetchPatientCharges?regId=${encodeURIComponent(regId)}`);
               let data = await res.json();
               if(res.ok){
                 console.log("Length of data is ",data);
@@ -87,7 +88,7 @@ function PatientChargeForm({ regId}){
         const token = localStorage.getItem('token');
         e.preventDefault();
         try{
-          let res = await fetch('http://localhost:3000/patientCharges',{
+          let res = await fetch(`${API_BASE_URL}/patientCharges`,{
             method: "POST",
             headers: { 
               "Content-Type": "application/json",
@@ -122,7 +123,7 @@ function PatientChargeForm({ regId}){
         if(!confirmed) return;
         console.log("Delete Rows is called and id is ",id);
         try{
-          let res = await fetch(`http://localhost:3000/patientcharge/${id}`,{
+          let res = await fetch(`${API_BASE_URL}/patientcharge/${id}`,{
             method: "DELETE",
             headers: { 
               "Content-Type": "application/json",

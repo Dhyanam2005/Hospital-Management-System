@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import GenericMasterTableViewForRegistration from '../components/GenericTableForReg';
 import TestGrid from "../components/TestGrid";
+import API_BASE_URL from './apiConfig';
 
 function Admission() {
     const [patientName, setPatientName] = useState('');
@@ -13,7 +14,7 @@ function Admission() {
 
     const handleSearch = async () => {
         try {
-            let res = await fetch(`http://localhost:3000/consultationDoc?patientName=${encodeURIComponent(patientName)}`, {
+            let res = await fetch(`${API_BASE_URL}/consultationDoc?patientName=${encodeURIComponent(patientName)}`, {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' },
             });

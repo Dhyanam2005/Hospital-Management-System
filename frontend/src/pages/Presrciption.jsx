@@ -3,6 +3,8 @@ import styles from "./Prescription.module.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import PrescriptionForm from "./PresrciptionForm.jsx"; 
+import API_BASE_URL from './apiConfig';
+
 
 function Prescription() {
     const [doctors, setDoctors] = useState([]);
@@ -15,8 +17,8 @@ function Prescription() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                let res1 = await fetch(`http://localhost:3000/doctor`);
-                let res2 = await fetch(`http://localhost:3000/fetchLatestRegPatient`);
+                let res1 = await fetch(`${API_BASE_URL}/doctor`);
+                let res2 = await fetch(`${API_BASE_URL}/fetchLatestRegPatient`);
                 if (res1.ok && res2.ok) {
                     let data1 = await res1.json();
                     let data2 = await res2.json();

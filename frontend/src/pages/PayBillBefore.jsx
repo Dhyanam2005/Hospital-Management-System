@@ -5,6 +5,7 @@ import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
 import PayBill from "./PayBill";
 import GenericMasterTableViewForRegistration from "../components/GenericTableForReg";
 import styles from "./Test.module.css";
+import API_BASE_URL from './apiConfig';
 
 function PayBillBefore(){
     const [patientName,setPatientName] = useState('');
@@ -15,7 +16,7 @@ function PayBillBefore(){
     
     const handleSearch = async () => {
     try{
-        let res = await fetch(`http://localhost:3000/fetchpatreg?patientName=${encodeURIComponent(patientName)}`,{
+        let res = await fetch(`${API_BASE_URL}/fetchpatreg?patientName=${encodeURIComponent(patientName)}`,{
             method : 'GET',
             headers: { 'Content-Type': 'application/json' },
         });
