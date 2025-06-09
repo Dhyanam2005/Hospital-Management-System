@@ -92,4 +92,55 @@ GROUP By sex;`,(err,result) => {
         }
     )
 })
+
+router.get("/sixthChart",(req,res) => {
+    db.query(
+        `select
+        count(*) as admission_count,
+        DATE_FORMAT(admission_date,'%Y-%m-%d') as date
+        from admission
+        GROUP BY date;
+
+
+        select
+        count(*) as discharge_count,
+        CASE
+        WHEN discharge_date is not NULL THEN discharge_date
+        ELSE 'Pending'
+        END as date
+        from admission
+        GROUP BY discharge_date;`,(err,result) => {
+            if(err) return res.json({ message : "Error fetching sixth chart detail"})
+            return res.json(result)
+        }
+    )
+})
+
+router.get("/seventhChart",(req,res) => {
+    db.query(
+        `SELECT 
+        CASE 
+            WHEN age < 10 THEN '0-10'
+            WHEN age < 20 THEN '10-20'
+            WHEN age < 30 THEN '20-30'
+            WHEN age < 40 THEN '30-40'
+            WHEN age < 50 THEN '40-50'
+            WHEN age < 60 THEN '50-60'
+            WHEN age < 70 THEN '60-70'
+            WHEN age < 80 THEN '70-80'
+            WHEN age < 90 THEN '80-90'
+            ELSE '90-100'
+        END AS age_group,
+        sex,
+        s.state_name as state_name
+        FROM patient p,state s,city c
+        where p.city_id = c.city_id
+        and c.state_id = s.state_id;
+`,(err,result) => {
+            if(err) return res.json({ message : "Error fetching sixth chart detail"})
+            return res.json(result)
+        }
+    )
+})
+
 module.exports = router;

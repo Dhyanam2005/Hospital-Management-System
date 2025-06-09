@@ -18,14 +18,15 @@ function Login (){
             const res = await fetch(`${API_BASE_URL}/login`,{
                 method : 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password }),
+                body: JSON.stringify({ user_name : username, password }),
             })
 
             const data = await res.json();
-
+            
             if(res.ok){
-                localStorage.setItem('token',data.token);
-                navigate('/');
+                console.log(data);
+                localStorage.setItem("userId", data.userId);
+                navigate("/otp", { state: { userId: data.userId } });
             }else{
                 setErrorMessage('Invalid credentials');
             }
