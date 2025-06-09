@@ -28,7 +28,7 @@ function Login (){
                 localStorage.setItem("userId", data.userId);
                 navigate("/otp", { state: { userId: data.userId } });
             }else{
-                setErrorMessage('Invalid credentials');
+                setErrorMessage(data.message);
             }
         }catch(err){
             setErrorMessage('Service Error');

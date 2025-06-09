@@ -32,7 +32,10 @@ router.post("/login", async (req, res) => {
   try {
     const result = await new Promise((resolve, reject) => {
       db.query("SELECT * FROM user WHERE user_name = ?", [user_name], (err, results) => {
-        if (err) reject(err);
+        if (err){
+          console.error(err);
+          reject(err)
+        }
         else resolve(results);
       });
     });
@@ -43,13 +46,49 @@ router.post("/login", async (req, res) => {
 
     const user = result[0];
 
+    if (user.lockout_until && new Date(user.lockout_until) > new Date()) {
+      const waitMinutes = Math.ceil((new Date(user.lockout_until) - new Date()) / 60000);
+      return res.status(403).json({ message: `Account locked. Try again in ${waitMinutes} minutes.` });
+    }
+    LOCK_TIME = 60000;
+
     const isPasswordValid = await bcrypt.compare(password, user.password);
+    let failed_attempts = user.failed_attempts;
+    let lockOut = null;
     if (!isPasswordValid) {
-      return res.status(401).json({ message: "Invalid password" });
+      failed_attempts++;
+      if(failed_attempts >= 3){
+        lockOut = new Date(Date.now() + 60*1000);
+        failed_attempts = 0; 
+      }
+      console.log(failed_attempts);
+      console.log(lockOut);
+      await new Promise((resolve, reject) => {
+        db.query(
+          "UPDATE user SET failed_attempts = ?, lockout_until = ? WHERE user_id = ?",
+          [failed_attempts, lockOut, user.user_id],
+          (err, results) => {
+            if (err) reject(err);
+            else resolve(results);
+          }
+        );
+      });
+      return res.status(401).json({ message: failed_attempts === 0 ? `Account locked for ${LOCK_TIME / 60000} minutes due to too many failed attempts.` : "Invalid password" });
     }
 
+      await new Promise((resolve, reject) => {
+        db.query(
+          "UPDATE user SET failed_attempts = ?, lockout_until = ? WHERE user_id = ?",
+          [0, null, user.user_id],
+          (err, results) => {
+            if (err) reject(err);
+            else resolve(results);
+          }
+        );
+      });
+
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    const otpExpiry = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes from now
+    const otpExpiry = new Date(Date.now() + 5 * 60 * 1000);
 
     await new Promise((resolve, reject) => {
       db.query(
