@@ -180,6 +180,7 @@ function NewDoctorPopUp() {
             type="text"
             placeholder="Type license number"
             value={licenseNumber}
+            maxLength={10}
             className={styles['indiv-inp-sizeOfInput']}
             onChange={(e) => setLicenseNumber(e.target.value)}
           />

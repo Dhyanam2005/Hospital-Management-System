@@ -97,7 +97,7 @@ const saveData = async () => {
     const result = await response.json();
 
     if (response.ok) {
-      setErrorMessage("");
+      setRows([]);
     } else {
       setErrorMessage(result.message)
     }

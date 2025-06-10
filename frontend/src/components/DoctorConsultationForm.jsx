@@ -73,7 +73,7 @@ function DoctorConsultationForm({ regId}){
 
 
       const addRow = () => {
-        setRows([...rows,{ doc_id : " " , date : " ", fee : " " ,}]);
+        setRows([...rows,{ doc_id : "" , date : " ", fee : " " ,}]);
       };
 
       const handleChange = (index,field,value) => {
@@ -177,7 +177,7 @@ function DoctorConsultationForm({ regId}){
                         value={row.doc_id || ""}
                         onChange={(e) => handleChange(index, "doc_id", e.target.value)}
                       >
-                        <option value="" disabled>
+                        <option value="" disabled selected hidden>
                           Select Doctor
                         </option>
                         {inHouseDoctor.map((doctor) => (

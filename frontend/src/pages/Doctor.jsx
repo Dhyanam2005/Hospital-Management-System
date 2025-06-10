@@ -40,6 +40,7 @@ function Doctor(){
           <th>Phone</th>
           <th>Address</th>
           <th>Qualification</th>
+          <th>Type</th>
           <th>Specialization</th>
           <th>License Number</th>
           <th>User Name</th>
@@ -55,6 +56,7 @@ function Doctor(){
             <td>{doctor.phone}</td>
             <td>{doctor.address}</td>
             <td>{doctor.qualification}</td>
+            <td>{(doctor.doc_type === "I" ? "InHouse" : "Referral")}</td>
             <td>{doctor.specialization}</td>
             <td>{doctor.medical_license_number}</td>
             <td>{doctor.user_name}</td>

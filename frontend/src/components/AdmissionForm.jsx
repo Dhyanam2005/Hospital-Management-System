@@ -138,7 +138,7 @@ function NewAdmission({ regId }) {
       const data = await res.json();
 
       if (res.ok) {
-        navigate("/home");
+        navigate("/");
       } else {
         setErrorMessage(data.message || "Submission failed");
       }

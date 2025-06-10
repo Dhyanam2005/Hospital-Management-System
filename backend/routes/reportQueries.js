@@ -103,12 +103,13 @@ router.get("/referralDoc",(req,res) => {
     console.log(endDateFormatted);
     db.query(
         ` SELECT DATE_FORMAT(STR_TO_DATE(Month, '%e %b %Y'), '%d-%m-%Y') AS Date,
+        Month,
        Doctor,
        \`Test Fees\`,
        \`Registration Fees\`,
        \`Total Fees\`
 FROM v_referralDoc
-WHERE STR_TO_DATE(Month, '%e %b %Y') BETWEEN ? AND ?;
+WHERE STR_TO_DATE(Month, '%e %M %Y') BETWEEN ? AND ?;
 `,[startDateFormatted,endDateFormatted]
         ,(err,result) =>{
             if(err){

@@ -20,7 +20,8 @@ function Charts() {
   const [fourthInfo, setFourthInfo] = useState([]);
   const [fifthInfo,setFifthInfo] = useState([]);
   const [date,setDate] = useState([]);
-  const [age,setAge] = useState([]);
+  const [seventhInfo,setSeventhInfo] = useState([]);
+  const [eighthInfo,setEighthInfo] = useState([]);
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
   const renderCustomizedLabel = ({ name, percent }) => {
@@ -42,29 +43,6 @@ const setAdmittedAndDischarged = (admitted,discharged) =>{
   return Object.values(dataMap).sort((a, b) => new Date(a.date) - new Date(b.date));
 }
 
-const setAgeData = (data) => {
-  const groupedData = {};
-
-  data.forEach(({ age_group, sex, state_name }) => {
-    const key = `Age Group - ${age_group} State ${state_name}`;
-    if (!groupedData[key]) {
-      groupedData[key] = {
-        key,
-        male_count: 0,
-        female_count: 0
-      };
-    }
-
-    if (sex === 'M') {
-      groupedData[key].male_count++;
-    } else if (sex === 'F') {
-      groupedData[key].female_count++;
-    }
-  });
-
-  return Object.values(groupedData);
-};
-
 
   useEffect(() => {
     async function fetchData() {
@@ -75,8 +53,9 @@ const setAgeData = (data) => {
         const res4 = await fetch('http://localhost:3000/fourthChart');
         const res5 = await fetch('http://localhost:3000/fifthChart');
         const res6 = await fetch('http://localhost:3000/sixthChart');
-        const res7 = await fetch('http://localhost:3000/seventhChart')
-        if (res1.ok && res2.ok && res3.ok && res4.ok && res5.ok && res6.ok && res7.ok) {
+        const res7 = await fetch('http://localhost:3000/seventhChart');
+        const res8 = await fetch(`http://localhost:3000/eighthChart`);
+        if (res1.ok && res2.ok && res3.ok && res4.ok && res5.ok && res6.ok && res7.ok && res8.ok) {
           const data1 = await res1.json();
           const data2 = await res2.json();
           const data3 = await res3.json();
@@ -84,6 +63,7 @@ const setAgeData = (data) => {
           const data5 = await res5.json();
           const data6 = await res6.json();
           const data7 = await res7.json();
+          const data8 = await res8.json();
           const parsedData4 = data4.map((d) => ({
             ...d,
             total_fee: Number(d.total_fee),
@@ -96,11 +76,10 @@ const setAgeData = (data) => {
           setFifthInfo(data5);
           const admittedData = data6[0];
           const dischargedData = data6[1];
-        const merged = setAdmittedAndDischarged(admittedData, dischargedData);
-        setDate(merged);
-        const merged2 = setAgeData(data7);
-        setAge(merged2);
-        console.log("Merged date data: ", merged , merged2);
+          const merged = setAdmittedAndDischarged(admittedData, dischargedData);
+          setDate(merged);
+          setSeventhInfo(data7);
+          setEighthInfo(data8);
         } else {
           console.log('One or more responses are not OK');
         }
@@ -109,6 +88,7 @@ const setAgeData = (data) => {
       }
     }
     fetchData();
+    console.log("Seventh info is ",seventhInfo)
   }, []);
 
   return (
@@ -206,16 +186,15 @@ const setAgeData = (data) => {
         <h2 className="text-xl font-bold mb-4">Daily Patient Census Dashboard</h2>
         <ResponsiveContainer width="100%" height={350}>
           <BarChart
-            data={date}
+            data={seventhInfo}
             margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-            key="sixthChart"
+            key="seventhChart"
           >
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="date" />
+            <XAxis dataKey="city_name" />
             <YAxis />
             <Tooltip />
-            <Bar dataKey="admission_count" name="Admitted" fill="#ff7300" />
-            <Bar dataKey="discharge_count" fill="#387908" name="Discharged" />
+            <Bar dataKey="count" name="Count" fill="#ff7300" />
           </BarChart>
         </ResponsiveContainer>
       </div>
@@ -223,16 +202,15 @@ const setAgeData = (data) => {
         <h2 className="text-xl font-bold mb-4">Daily Patient Census Dashboard</h2>
         <ResponsiveContainer width="100%" height={350}>
           <BarChart
-            data={age}
+            data={eighthInfo}
             margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-            key="seventhChart"
+            key="eightChart"
           >
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="key" />
+            <XAxis dataKey="age_group" />
             <YAxis />
             <Tooltip />
-            <Bar dataKey="male_count" name="Males" fill="#ff7300" />
-            <Bar dataKey="female_count" fill="#387908" name="Females" />
+            <Bar dataKey="count" name="Count" fill="#ff7300" />
           </BarChart>
         </ResponsiveContainer>
       </div>

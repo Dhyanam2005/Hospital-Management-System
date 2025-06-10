@@ -64,7 +64,7 @@ function UserList() {
                                 <td className="border border-gray-300 px-4 py-2">
                                     {user.user_type === 1 && "Admin"}
                                     {user.user_type === 2 && "Doctor"}
-                                    {user.user_type === 3 && "Patient"}
+                                    {user.user_type === 3 && "Operator"}
                                 </td>
                                 <td className="border border-gray-300 px-4 py-2">{new Date(user.created_at).toLocaleString()}</td>
                             </tr>

@@ -118,6 +118,19 @@ router.get("/sixthChart",(req,res) => {
 
 router.get("/seventhChart",(req,res) => {
     db.query(
+        `select c.city_name,count(*) as count
+from city c,patient p,state s
+where p.city_id = c.city_id
+and c.state_id = s.state_id
+group by c.city_name;`,(err,result) => {
+            if(err) return res.json({ message : "Error fetching seventh chart detail"})
+            return res.json(result)
+        }
+    )
+})
+
+router.get("/eighthChart",(req,res) => {
+    db.query(
         `SELECT 
         CASE 
             WHEN age < 10 THEN '0-10'
@@ -131,13 +144,10 @@ router.get("/seventhChart",(req,res) => {
             WHEN age < 90 THEN '80-90'
             ELSE '90-100'
         END AS age_group,
-        sex,
-        s.state_name as state_name
-        FROM patient p,state s,city c
-        where p.city_id = c.city_id
-        and c.state_id = s.state_id;
-`,(err,result) => {
-            if(err) return res.json({ message : "Error fetching sixth chart detail"})
+        count(*) as count
+        FROM patient p
+group by age_group;`,(err,result) => {
+            if(err) return res.json({ message : "Error fetching eight chart detail"})
             return res.json(result)
         }
     )

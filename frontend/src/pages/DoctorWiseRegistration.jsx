@@ -96,7 +96,7 @@ function DoctorWiseRegistration(){
                     </tbody>
                 </table>
                         <div className={styles["buttons"]}>
-                            <button type="button" onClick={() => exportToExcel(data)} className={styles["save-btn"]}>Save</button>
+                            <button type="button" onClick={() => exportToExcel(data)} className={styles["save-btn"]}>Export</button>
                         </div>
                 </div>
                 }

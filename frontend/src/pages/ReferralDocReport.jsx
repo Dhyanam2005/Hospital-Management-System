@@ -15,13 +15,14 @@ function ReferralDocReport() {
   const [endDate, setEndDate] = useState(null);
 
     const fetchData = async (startDate,endDate) => {
+      console.log("Fetching data from API...");
       if(!startDate || !endDate){
         alert("Enter start date and end date"); return;
       }
       try {
         const startDateFormatted = startDate ? format(startDate, "yyyy-MM-dd") : "";
         const endDateFormatted = endDate ? format(endDate, "yyyy-MM-dd") : "";
-
+        console.log(startDateFormatted + " " + endDateFormatted)
         let res = await fetch(
           `${API_BASE_URL}/referralDoc?startDate=${startDateFormatted}&endDate=${endDateFormatted}`
         );
@@ -30,6 +31,7 @@ function ReferralDocReport() {
 
         if (res.ok) {
           if (Array.isArray(data)) {
+            console.log(data);
             setData(data);
           } else {
             console.log("Expected an array but got:", data);
@@ -69,14 +71,19 @@ function ReferralDocReport() {
           </div>
                     <div>
                         <button
-                            onClick={() => fetchData(startDate, endDate)}
+                            onClick={() => {
+                              fetchData(startDate, endDate)
+                              console.log("Data is ",data);
+                            }}
                             className="bg-blue-500 text-white px-4 py-2 rounded flex items-center gap-2"
                         >
                             <FontAwesomeIcon icon={faMagnifyingGlass} />
                         </button>
                     </div>
         </div>
-
+        {data.length == 0 &&
+        <div>No data</div>
+        }
         {data.length > 0 &&
         <div>
         <table className="table-auto w-full mt-5 border border-gray-300">
@@ -92,7 +99,7 @@ function ReferralDocReport() {
           <tbody>
             {data.map((item, index) => (
               <tr key={index}>
-                <td className="border border-gray-300">{item.Date}</td>
+                <td className="border border-gray-300">{item.Month}</td>
                 <td className="border border-gray-300">{item.Doctor}</td>
                 <td className="border border-gray-300">{item["Registration Fees"]}</td>
                 <td className="border border-gray-300">{item["Test Fees"]}</td>
@@ -102,7 +109,7 @@ function ReferralDocReport() {
           </tbody>
         </table>
                         <div className={styles["buttons"]}>
-                            <button type="button" onClick={() => exportToExcel(data)} className={styles["save-btn"]}>Save</button>
+                            <button type="button" onClick={() => exportToExcel(data)} className={styles["save-btn"]}>Export</button>
                         </div>
         </div>
         }

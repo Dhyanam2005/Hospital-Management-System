@@ -5,6 +5,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { format } from "date-fns";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from 'react-router-dom';
 import Navbar from "../components/SidebarMenu";
 import delteIcon from "../images/delete-icon.png";
 import API_BASE_URL from '../apiConfig';
@@ -17,6 +18,7 @@ function Appointment() {
   const [inHousedoctors, setInHouseDoctors] = useState([]);
   const [patient, setPatient] = useState([]);
   const [appointment, setAppointments] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchInHouseDoctorsAndPatients = async () => {
@@ -66,13 +68,21 @@ function Appointment() {
         headers: {
           'Content-Type': 'application/json',
         },
+        
       });
 
       const data = await res.json();
 
       if (res.ok) {
         alert("Data deleted successfully");
-        setAppointments(prev => prev.filter(app => app.APPOINTMENT_ID !== id)); // refresh UI
+        appointment.forEach(a => {
+          if(a.APPOINTMENT_ID === id){
+            a.patient_id = null;
+            a.patient_name = null;
+          }
+        })
+        setAppointments(appointment);
+        await handleAppointMents();
       } else {
         alert("Error deleting data");
       }
@@ -178,6 +188,7 @@ function Appointment() {
                               handleChange(index, "patient_id", e.target.value)
                             }
                             className={styles["select-doctor-time"]}
+                            disabled={app.APPOINTMENT_ID}
                           >
                             <option value="">Select Patient</option>
                             {remainingPatients.map((pat) => (
