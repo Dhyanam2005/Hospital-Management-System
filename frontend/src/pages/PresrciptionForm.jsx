@@ -44,10 +44,10 @@ function PrescriptionForm({ selectedDoctor, selectedDate, selectedPatientRegId }
     useEffect(() => {
         const fetchMedicine = async () => {
             try {
-                const res = await fetch("${API_BASE_URL}/fetchMedicines");
+                const res = await fetch(`${API_BASE_URL}/fetchMedicines`);
                 if (res.ok) {
                     const data = await res.json();
-                    setMedicine(data || []);
+                    setMedicine(data);
                 } else {
                     console.error("Failed to fetch medical items");
                 }
