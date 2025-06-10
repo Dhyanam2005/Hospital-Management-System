@@ -31,7 +31,7 @@ function ChangePassword() {
 
         if(res.ok){
             console.log("Password changed");
-            navigate("/home");
+            navigate("/");
         }else{
             setErrorMessage(data.errorMessage || 'Invalid Credentials')
         }

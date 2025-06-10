@@ -53,7 +53,7 @@ function NewPatient(){
       });
       let data = await res.json();
       if(res.ok){
-        navigate("/home");
+        navigate("/");
       }else{
         setErrorMessage(data.message || " ");
       }
