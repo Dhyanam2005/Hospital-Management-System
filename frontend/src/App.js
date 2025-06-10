@@ -39,8 +39,8 @@ import ProfileButton from './pages/ProfileButton';
 import AuditMaster from './pages/AuditMaster';
 import DailyEarnings from './pages/DailyEarnings';
 import OTP from './pages/OTP';
+import NotFound from './pages/PageNotFound';
 
-// ProtectedRoute inline
 const ProtectedRoute = ({ children }) => {
   const isAuthenticated = !!localStorage.getItem("token");
   return isAuthenticated ? children : <Navigate to="/login" replace />;
@@ -103,6 +103,7 @@ function App() {
           <Route path="/doctor-master" element={<DoctorMaster />} />
           <Route path="/audit-master" element={<AuditMaster />} />
           <Route path="/daily-earnings" element={<DailyEarnings />} />
+          <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
     </Router>
