@@ -35,7 +35,7 @@ function ProfileButton() {
           <a href="/change-password" className="block px-4 py-2 hover:bg-gray-100">
             Change Password
           </a>
-          <a href="/login" className="block px-4 py-2 hover:bg-gray-100">
+          <a href="/login" onClick={() => localStorage.removeItem("token")} className="block px-4 py-2 hover:bg-gray-100">
             Logout
           </a>
         </div>

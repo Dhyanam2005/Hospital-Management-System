@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Outlet } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Outlet, Navigate } from 'react-router-dom';
 import Login from './pages/LoginPage';
 import Home from "./pages/HomePage";
 import UserList from './pages/UserList';
@@ -36,10 +36,15 @@ import FacilityMaster from './pages/FacilityMaster';
 import DoctorMaster from './pages/DoctorMaster';
 import PatientsForBill from './pages/PatientsForBill';
 import ProfileButton from './pages/ProfileButton';
-import ProtectedRoute from "./components/ProtectedRoute";
 import AuditMaster from './pages/AuditMaster';
 import DailyEarnings from './pages/DailyEarnings';
 import OTP from './pages/OTP';
+
+// ProtectedRoute inline
+const ProtectedRoute = ({ children }) => {
+  const isAuthenticated = !!localStorage.getItem("token");
+  return isAuthenticated ? children : <Navigate to="/login" replace />;
+};
 
 function Layout() {
   return (
