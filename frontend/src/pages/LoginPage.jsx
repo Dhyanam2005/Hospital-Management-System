@@ -26,7 +26,9 @@ function Login (){
             if(res.ok){
                 console.log(data);
                 localStorage.setItem("userId", data.userId);
-                navigate("/otp", { state: { userId: data.userId } });
+                localStorage.setItem("expiry",data.password_expiry_days*86400000);
+                localStorage.setItem("last_logged",data.updated_at)
+                navigate("/otp", { state: { userId: data.userId , expiry : data.password_expiry_days*86400000,last_logged: data.updated_at  } });
             }else{
                 setErrorMessage(data.message);
             }

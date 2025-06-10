@@ -1,11 +1,11 @@
 import React , { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import "./PatientReportStateWise.css";
+import styles from "./PatientReportStateWise.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
-import styles from "./ReportQueries.module.css";
 import API_BASE_URL from '../apiConfig';
+import exportToExcel from "../components/ExcelForTabularReport";
 
 
 function PatientReportStateWise(){
@@ -70,26 +70,31 @@ function PatientReportStateWise(){
                     </div>
                 </div>
                 {data.length > 0 &&
-                <table className="table-auto w-full mt-5 border border-gray-300">
-                    <thead>
-                        <tr>
-                            <td className="border border-gray-300 text-left font-bold">Month</td>
-                            <td className="border border-gray-300 text-left font-bold">State</td>
-                            <td className="border border-gray-300 text-left font-bold">City</td>
-                            <td className="border border-gray-300 text-left font-bold">No of Patients</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {data.map((item,index) => (
-                            <tr key={index}>
-                                <td className="border border-gray-300">{item.Date}</td>
-                                <td className="border border-gray-300">{item.State}</td>
-                                <td className="border border-gray-300"> {item.City}</td>
-                                <td className="border border-gray-300">{item["No of Patients"]}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+                    <div>
+                        <table className="table-auto w-full mt-5 border border-gray-300">
+                            <thead>
+                                <tr>
+                                    <td className="border border-gray-300 text-left font-bold">Month</td>
+                                    <td className="border border-gray-300 text-left font-bold">State</td>
+                                    <td className="border border-gray-300 text-left font-bold">City</td>
+                                    <td className="border border-gray-300 text-left font-bold">No of Patients</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {data.map((item,index) => (
+                                    <tr key={index}>
+                                        <td className="border border-gray-300">{item.Date}</td>
+                                        <td className="border border-gray-300">{item.State}</td>
+                                        <td className="border border-gray-300"> {item.City}</td>
+                                        <td className="border border-gray-300">{item["No of Patients"]}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                        <div className={styles["buttons"]}>
+                            <button type="button" onClick={() => exportToExcel(data)} className={styles["save-btn"]}>Save</button>
+                        </div>
+                    </div>
                 }
             </div>
         </div>

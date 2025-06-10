@@ -1,0 +1,15 @@
+.save-btn{
+    border: 1px solid black;
+    width: 8rem;
+    height: 2rem;
+    text-align: center;
+    border-radius: 1rem;
+    margin-top: 2rem;
+    background-color: #008CBA;
+}
+
+.buttons{
+    display: flex;
+    justify-content: flex-end;
+    gap : 1rem
+}

@@ -3,10 +3,10 @@ import NavBar from "../components/SidebarMenu"
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { format } from "date-fns";
-import "./PatientReportStateWise.css";
+import styles from "./PatientReportStateWise.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
-import styles from "./ReportQueries.module.css";
+import exportToExcel from "../components/ExcelForTabularReport";
 import API_BASE_URL from '../apiConfig';
 
 
@@ -74,6 +74,7 @@ function DeptTestDocFees(){
                     </div>
                 </div>
                 {data.length > 0 && 
+                <div>
                 <table className="table-auto w-full mt-5">
                     <thead>
                         <tr>
@@ -96,6 +97,10 @@ function DeptTestDocFees(){
                         ))}
                     </tbody>
                 </table>
+                        <div className={styles["buttons"]}>
+                            <button type="button" onClick={() => exportToExcel(data)} className={styles["save-btn"]}>Save</button>
+                        </div>
+                </div>
                 }
             </div>
         </div>

@@ -44,7 +44,7 @@ function Sidebar() {
     }
 
     return(
-        <div className="w-64 bg-gray-900 text-white h-screen overflow-y-auto p-4 sidebar-menu">
+        <div className="container w-64 bg-gray-900 text-white h-screen overflow-y-auto p-4 sidebar-menu">
             {visibleMenu.map((menu,index) => (
                 <div key={index}>
                     <div

@@ -7,6 +7,8 @@ function OTP() {
   const [otp, setOtp] = useState("");
   const [message, setMessage] = useState("");
   const userId = localStorage.getItem('userId');
+  const expiry = localStorage.getItem('expiry');
+  const last_logged = localStorage.getItem('last_logged');
   const navigate = useNavigate();
   const handleVerify = async () => {
     console.log(userId+" "+otp)
@@ -18,7 +20,11 @@ function OTP() {
       setMessage("Verified! Token: " + res.data.token);
       localStorage.setItem('token',res.data.token);
       localStorage.removeItem('userId');
-      navigate("/");
+      if(new Date(expiry + last_logged) > new Date()){
+        navigate("/change-password");
+      }else{
+        navigate("/");
+      }
     } catch (err) {
       setMessage("Error: " + (err.response?.data?.message || err.message));
     }

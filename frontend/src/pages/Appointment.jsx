@@ -47,7 +47,7 @@ function Appointment() {
       const formattedDate = format(selectedDate, 'yyyy-MM-dd');
       const res = await fetch(`${API_BASE_URL}/appointmentlist?doc_id=${selectedDoctor}&appointment_date=${formattedDate}`);
       const data = await res.json();
-
+      console.log("Fetched Appointment Data:", data);
       if (res.ok) {
         setAppointments(data);
         setIsSearched(true);
