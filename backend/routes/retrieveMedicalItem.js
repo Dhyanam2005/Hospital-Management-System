@@ -60,7 +60,8 @@ router.post("/medicalItems",authenticateJWT, async (req,res) =>{
         if(invalidItems.length > 0){
             return res.status(400).json({ message : "Mandatory fields missing "});
         }
-        const udpates = medicalItems.filter(c => c.update_flag != "No");
+        const udpates = medicalItems.filter(c => c.update_flag != "No" && c.medical_item_id);
+        console.log(udpates);
         const updatedPromises = udpates.map(c => {
             return new Promise((resolve,reject) => {
                 db.query(`SELECT * FROM medical_item WHERE medical_item_id = ?`, [c.medical_item_id], (err, rows) => {
