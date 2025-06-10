@@ -39,12 +39,38 @@ A full-stack hospital management system built with React, Node.js, Express, and 
 
 ---
 
-## 🛠️ Tech Stack
+🛠️ Tech Stack
+Frontend:
 
-- **Frontend:** React, Material UI, React Router
-- **Backend:** Node.js, Express.js
-- **Database:** MySQL
-- **Authentication:** JSON Web Tokens (JWT)
-- **Others:** dotenv, cors, nodemon
+React.js
 
+React Router
+
+Material UI
+
+Axios (for HTTP requests)
+
+Backend:
+
+Node.js
+
+Express.js
+
+Nodemailer (for sending emails)
+
+Database:
+
+MySQL
+
+Authentication & Security:
+
+JSON Web Tokens (JWT)
+
+dotenv (for environment variable management)
+
+CORS (for handling cross-origin requests)
+
+Development Tools:
+
+Nodemon (for automatic server reloading during development)
 
