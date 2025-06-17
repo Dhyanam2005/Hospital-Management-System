@@ -24,7 +24,7 @@ import PatientCharge from './pages/PatientCharge';
 import Admission from './pages/Admission';
 import Appointment from './pages/Appointment';
 import PayBillBefore from './pages/PayBillBefore';
-import ViewPatientBill from './pages/ViewPatientBill';
+import ViewPatientBill from './pages/PatientsForBill';
 import Charts from './pages/Charts';
 import Prescription from './pages/Presrciption';
 import Sidebar from './components/SidebarMenu';
@@ -40,10 +40,23 @@ import AuditMaster from './pages/AuditMaster';
 import DailyEarnings from './pages/DailyEarnings';
 import OTP from './pages/OTP';
 import NotFound from './pages/PageNotFound';
+import { allowedLabelsByRole } from './utils/allowedLabels';
 
 const ProtectedRoute = ({ children }) => {
   const isAuthenticated = !!localStorage.getItem("token");
   return isAuthenticated ? children : <Navigate to="/login" replace />;
+};
+
+const RoleProtectedRoute = ({ children, label }) => {
+  const isAuthenticated = !!localStorage.getItem("token");
+  const userType = parseInt(localStorage.getItem("user_type"));
+
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
+  if (userType === 1) return children;
+  console.log(userType)
+  const allowedLabels = allowedLabelsByRole[userType] || [];
+  console.log(allowedLabels);
+  return allowedLabels.includes(label) ? children : <Navigate to="/not-found" replace />;
 };
 
 function Layout() {
@@ -70,39 +83,39 @@ function App() {
 
         <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
           <Route path="/" element={<Home />} />
-          <Route path="/user-list" element={<UserList />} />
-          <Route path="/new-user" element={<Newuser />} />
+          <Route path="/user-list" element={<RoleProtectedRoute label="User List"><UserList /></RoleProtectedRoute>} />
+          <Route path="/new-user" element={<RoleProtectedRoute label="New User"><Newuser /></RoleProtectedRoute>} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/change-password" element={<ChangePassword />} />
-          <Route path="/doctor" element={<Doctor />} />
-          <Route path="/newdoctor" element={<NewDoctorPopUp />} />
-          <Route path="/new-doctor" element={<NewDoctorPopUp />} />
-          <Route path="/patient" element={<NewPatient />} />
-          <Route path="/registration" element={<Registration />} />
-          <Route path="/test" element={<Test />} />
-          <Route path="/result" element={<Result />} />
-          <Route path="/pdf" element={<PDF />} />
-          <Route path="/doctor-wise-reg" element={<DoctorWiseRegistration />} />
-          <Route path="/patient-state-wise" element={<PatientReportStateWise />} />
-          <Route path="/dept-test-doc" element={<DeptTestDocFees />} />
-          <Route path="/dept-doc" element={<DeptDocFees />} />
-          <Route path="/referral-doc" element={<ReferralDocReport />} />
-          <Route path="/consultation" element={<DoctorConsultation />} />
-          <Route path="/medical-item" element={<MedicalItem />} />
-          <Route path="/service" element={<PatientCharge />} />
-          <Route path="/admission" element={<Admission />} />
-          <Route path="/appointment" element={<Appointment />} />
-          <Route path="/view-bills" element={<PatientsForBill />} />
-          <Route path="/payment" element={<PayBillBefore />} />
-          <Route path="/chart" element={<Charts />} />
-          <Route path="/prescription" element={<Prescription />} />
-          <Route path="/lab-test-master" element={<LabTestMaster />} />
-          <Route path="/location-master" element={<LocationMaster />} />
-          <Route path="/pharmacy-item-master" element={<PharmacyItemMaster />} />
-          <Route path="/facility-master" element={<FacilityMaster />} />
-          <Route path="/doctor-master" element={<DoctorMaster />} />
-          <Route path="/audit-master" element={<AuditMaster />} />
-          <Route path="/daily-earnings" element={<DailyEarnings />} />
+          <Route path="/doctor" element={<RoleProtectedRoute label="Doctor"><Doctor /></RoleProtectedRoute>} />
+          <Route path="/newdoctor" element={<RoleProtectedRoute label="New Doctor"><NewDoctorPopUp /></RoleProtectedRoute>} />
+          <Route path="/new-doctor" element={<RoleProtectedRoute label="New Doctor"><NewDoctorPopUp /></RoleProtectedRoute>} />
+          <Route path="/patient" element={<RoleProtectedRoute label="Patient"><NewPatient /></RoleProtectedRoute>} />
+          <Route path="/registration" element={<RoleProtectedRoute label="Registration"><Registration /></RoleProtectedRoute>} />
+          <Route path="/test" element={<RoleProtectedRoute label="Test"><Test /></RoleProtectedRoute>} />
+          <Route path="/result" element={<RoleProtectedRoute label="Test Results"><Result /></RoleProtectedRoute>} />
+          <Route path="/pdf" element={<RoleProtectedRoute label="PDF"><PDF /></RoleProtectedRoute>} />
+          <Route path="/doctor-wise-reg" element={<RoleProtectedRoute label="Doctor Wise Registration"><DoctorWiseRegistration /></RoleProtectedRoute>} />
+          <Route path="/patient-state-wise" element={<RoleProtectedRoute label="Patient State Wise"><PatientReportStateWise /></RoleProtectedRoute>} />
+          <Route path="/dept-test-doc" element={<RoleProtectedRoute label="Dept Test Doc Fees"><DeptTestDocFees /></RoleProtectedRoute>} />
+          <Route path="/dept-doc" element={<RoleProtectedRoute label="Dept Doc Fees"><DeptDocFees /></RoleProtectedRoute>} />
+          <Route path="/referral-doc" element={<RoleProtectedRoute label="Referral Doc Report"><ReferralDocReport /></RoleProtectedRoute>} />
+          <Route path="/consultation" element={<RoleProtectedRoute label="Doctor Consultations"><DoctorConsultation /></RoleProtectedRoute>} />
+          <Route path="/medical-item" element={<RoleProtectedRoute label="Medical Item"><MedicalItem /></RoleProtectedRoute>} />
+          <Route path="/service" element={<RoleProtectedRoute label="Service"><PatientCharge /></RoleProtectedRoute>} />
+          <Route path="/admission" element={<RoleProtectedRoute label="Admission"><Admission /></RoleProtectedRoute>} />
+          <Route path="/appointment" element={<RoleProtectedRoute label="Appointments"><Appointment /></RoleProtectedRoute>} />
+          <Route path="/view-bills" element={<RoleProtectedRoute label="View Bills"><PatientsForBill /></RoleProtectedRoute>} />
+          <Route path="/payment" element={<RoleProtectedRoute label="Payment"><PayBillBefore /></RoleProtectedRoute>} />
+          <Route path="/chart" element={<RoleProtectedRoute label="Charts"><Charts /></RoleProtectedRoute>} />
+          <Route path="/prescription" element={<RoleProtectedRoute label="Prescriptions"><Prescription /></RoleProtectedRoute>} />
+          <Route path="/lab-test-master" element={<RoleProtectedRoute label="Lab Test Master"><LabTestMaster /></RoleProtectedRoute>} />
+          <Route path="/location-master" element={<RoleProtectedRoute label="Location Master"><LocationMaster /></RoleProtectedRoute>} />
+          <Route path="/pharmacy-item-master" element={<RoleProtectedRoute label="Pharmacy Item Master"><PharmacyItemMaster /></RoleProtectedRoute>} />
+          <Route path="/facility-master" element={<RoleProtectedRoute label="Facility Master"><FacilityMaster /></RoleProtectedRoute>} />
+          <Route path="/doctor-master" element={<RoleProtectedRoute label="Doctor Master"><DoctorMaster /></RoleProtectedRoute>} />
+          <Route path="/audit-master" element={<RoleProtectedRoute label="Audit Master"><AuditMaster /></RoleProtectedRoute>} />
+          <Route path="/daily-earnings" element={<RoleProtectedRoute label="Daily Earnings"><DailyEarnings /></RoleProtectedRoute>} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>

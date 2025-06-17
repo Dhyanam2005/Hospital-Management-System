@@ -7,6 +7,7 @@ import API_BASE_URL from '../apiConfig';
 
 function Newuser() {
     const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirm_password, setConfirmpassword] = useState('');
     const [type, setUsertype] = useState('');
@@ -21,7 +22,7 @@ function Newuser() {
             const res = await fetch(`${API_BASE_URL}/newuser`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password, confirm_password, type }),
+                body: JSON.stringify({ username, password, confirm_password, type ,email}),
             })
 
             const data = await res.json();
@@ -56,6 +57,18 @@ function Newuser() {
                         className="p-3 w-72 border border-gray-300 rounded-2xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
+                    />
+                </div>
+
+                <div className="flex flex-col items-center space-y-2">
+                    <label htmlFor="email" className="text-gray-700 font-medium">Email</label>
+                    <input
+                        id="email"
+                        type="text"
+                        placeholder="Enter Email"
+                        className="p-3 w-72 border border-gray-300 rounded-2xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                     />
                 </div>
 

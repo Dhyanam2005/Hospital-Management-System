@@ -16,8 +16,10 @@ function OTP() {
         userId,
         otp,
       });
+      console.log("Res data is ",res.data)
       setMessage("Verified! Token: " + res.data.token);
       localStorage.setItem('token', res.data.token);
+      localStorage.setItem("user_type", res.data.user_type);
       localStorage.removeItem('userId');
       if (new Date(expiry + last_logged) > new Date()) {
         navigate("/change-password");

@@ -1,4 +1,5 @@
 export const allowedLabelsByRole = {
+  1: "ALL",
   2: [
     "Doctor Consultations",
     "Prescriptions",
