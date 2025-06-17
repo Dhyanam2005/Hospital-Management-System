@@ -11,9 +11,9 @@ const userTypeMapping = {
 };
 
 router.post("/newuser", async (req, res) => {
-    const { username, password, confirm_password, type } = req.body;
+    const { username, password, confirm_password, type,email } = req.body;
 
-    if (!username || !password || !confirm_password || !type || type === "Select Role") {
+    if (!username || !password || !confirm_password || !type || type === "Select Role" || !email) {
         return res.status(400).json({ message: 'Mandatory fields missing' });
     }
 
@@ -32,8 +32,8 @@ router.post("/newuser", async (req, res) => {
         }
         
         db.query(
-            "INSERT INTO user (user_name, password, user_type) VALUES (?, ?, ?)",
-            [username, hashedPassword, userTypeMapping[type]],
+            "INSERT INTO user (user_name, password, user_type,user_email) VALUES (?, ?, ?,?)",
+            [username, hashedPassword, userTypeMapping[type],email],
             (err, result) => {
                 if (err) {
                     return res.status(500).json({ message: "DB insert error", error: err });
