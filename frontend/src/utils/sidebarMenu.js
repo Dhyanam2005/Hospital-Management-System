@@ -22,6 +22,7 @@ const sidebarMenu = [
       { label: "Pharmacy Item Master", link: "/pharmacy-item-master" },
       { label: "Facility Master", link: "/facility-master" },
       { label: "Doctor Master", link: "/doctor-master" },
+      { label: "Import data", link: "/import-file" },
     ],
     icon : faTable
   },

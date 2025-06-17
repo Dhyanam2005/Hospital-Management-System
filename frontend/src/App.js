@@ -40,6 +40,7 @@ import AuditMaster from './pages/AuditMaster';
 import DailyEarnings from './pages/DailyEarnings';
 import OTP from './pages/OTP';
 import NotFound from './pages/PageNotFound';
+import MasterDataImport from './components/ImportFile';
 import { allowedLabelsByRole } from './utils/allowedLabels';
 
 const ProtectedRoute = ({ children }) => {
@@ -116,6 +117,7 @@ function App() {
           <Route path="/doctor-master" element={<RoleProtectedRoute label="Doctor Master"><DoctorMaster /></RoleProtectedRoute>} />
           <Route path="/audit-master" element={<RoleProtectedRoute label="Audit Master"><AuditMaster /></RoleProtectedRoute>} />
           <Route path="/daily-earnings" element={<RoleProtectedRoute label="Daily Earnings"><DailyEarnings /></RoleProtectedRoute>} />
+          <Route path="/import-file" element={<RoleProtectedRoute label="Import data"><MasterDataImport /></RoleProtectedRoute>} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>

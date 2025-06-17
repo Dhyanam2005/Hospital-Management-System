@@ -34,6 +34,8 @@ const chartRouter = require("./routes/charts");
 const prescriptionRouter = require("./routes/prescription");
 const masterDataRouter = require("./routes/masterData");
 const regStatusRouter = require("./routes/reg_status");
+const importMasterDataRouter = require("./routes/import");
+
 const app = express();
 
 const PORT = process.env.PORT || 3000;
@@ -54,6 +56,7 @@ const corsOptions = {
 app.use(cors());
 app.use(express.json());
 
+app.use("/",importMasterDataRouter);
 app.use("/",regStatusRouter);
 app.use("/",masterDataRouter);
 app.use("/",registerForHashingRouter);
