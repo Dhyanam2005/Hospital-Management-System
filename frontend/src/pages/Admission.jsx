@@ -15,7 +15,7 @@ function Admission() {
 
     const handleSearch = async () => {
         try {
-            let res = await fetch(`${API_BASE_URL}/consultationDoc?patientName=${encodeURIComponent(patientName)}`, {
+            let res = await fetch(`${API_BASE_URL}/admissionInPat?patientName=${encodeURIComponent(patientName)}`, {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' },
             });
