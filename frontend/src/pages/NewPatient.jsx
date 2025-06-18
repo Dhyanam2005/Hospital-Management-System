@@ -201,7 +201,7 @@ function NewPatient(){
               >
                 {!cityId && <option value="">Select</option>}
                 {cities.map((city) => (
-                  <option key={city.CITY_ID} value={city.CITY_ID}>
+                  <option key={city.city_id} value={city.city_id}>
                     {city.CITY_NAME}
                   </option>
                 ))}

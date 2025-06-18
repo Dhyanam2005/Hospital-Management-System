@@ -286,6 +286,59 @@ router.post("/import", upload.single('file'), async (req, res) => {
                     }
                 }
 
+                if(Specimen != "B" || Specimen != "T" || Specimen != "U" || Specimen != "S"){
+                    errors.push({ row: row.__rowNum__, message: `Specimer '${Specimen}' does not exist.` });
+                    continue;
+                }
+
+                if(ResultType != "R" || ResultType != "L" || ResultType != "P" || ResultType != "G"){
+                    errors.push({ row: row.__rowNum__, message: `Result Type '${ResultType}' does not exist.` });
+                    continue;
+                }
+
+                if(Charge != null && Charge != '' && isNaN(Number(Charge))){
+                    errors.push({ row: row.__rowNum__, message: `Test charge should be a number` });
+                    continue;
+                }
+
+                if(RefValue != null && RefValue != '' && ReisNaN(Number(RefValue))){
+                    errors.push({ row: row.__rowNum__, message: `Reference value should be a number` });
+                    continue;
+                }
+
+                if(RefFrom != null && RefFrom != '' && isNaN(Number(RefFrom))){
+                    errors.push({ row: row.__rowNum__, message: `Reference from should be a number` });
+                    continue;
+                }
+
+                if(RefTo != null && RefTo != '' && isNaN(Number(RefTo))){
+                    errors.push({ row: row.__rowNum__, message: `Reference to should be a number` });
+                    continue;
+                }
+
+                if(Specimen == "P"){
+                    if(RefValue == null && RefFrom == null && RefTo == null && Unit == null){
+                        errors.push({ row: row.__rowNum__, message: `Data to be inserted is invalid` });
+                        continue;
+                    }
+                }
+    
+
+                if(Specimen == "L" || Specimen == "G"){
+                    if(RefFrom == null && RefTo == null){
+                        errors.push({ row: row.__rowNum__, message: `Data to be inserted is invalid` });
+                        continue;
+                    }
+                }
+
+
+                if(Specimen == "R"){
+                    if(RefFrom == null && RefTo == null){
+                        errors.push({ row: row.__rowNum__, message: `Data to be inserted is invalid` });
+                        continue;
+                    }
+                }
+
                 await new Promise((resolve, reject) => {
                     db.query(
                         `INSERT INTO test (test_name, specimen_type, test_category_id, result_type, reference_value, reference_range_from, reference_range_to, test_unit, test_charge, test_long_name)
