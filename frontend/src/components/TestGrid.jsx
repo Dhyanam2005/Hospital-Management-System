@@ -15,6 +15,7 @@ function TestGrid({ regId }) {
   const [doc_id,setDoc_id] = useState('');
   const [errorMessage,setErrorMessage] = useState('');
   const [regStatus , setRegStatus] = useState('');
+  const [successMessage,setSuccessMessage] = useState('')
 
   useEffect(() => {
     const resetData = () => {
@@ -97,9 +98,12 @@ const saveData = async () => {
     const result = await response.json();
 
     if (response.ok) {
+      setSuccessMessage("Test has been submitted successfully");
+      setErrorMessage("")
       setRows([]);
     } else {
       setErrorMessage(result.message)
+      setSuccessMessage("")
     }
   } catch (err) {
     console.error("Save error:", err);
@@ -116,6 +120,11 @@ const saveData = async () => {
         </div>
       ) : (
         <div>
+            {successMessage && (
+                <div className="p-3 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded w-72 text-center mb-4 mx-auto block">
+                    {successMessage}
+                </div>
+            )}
           {errorMessage && (
             <div className="p-3 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded w-72 text-center mb-4 mx-auto block">
               {errorMessage}

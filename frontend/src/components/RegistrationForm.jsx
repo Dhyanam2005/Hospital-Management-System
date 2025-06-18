@@ -94,6 +94,7 @@ import API_BASE_URL from '../apiConfig';
 
         if (res.ok) {
           setSuccessMessage('Successfully  registered');
+          setErrorMessage("")
           setRegCharges('');
           setPatientType('');
           setDocId('');
@@ -101,6 +102,7 @@ import API_BASE_URL from '../apiConfig';
           setErrorMessage('');
         } else {
           setErrorMessage(data.message || 'Res is not ok');
+          setSuccessMessage("")
         }
       } catch (err) {
         setErrorMessage('Error is in try');

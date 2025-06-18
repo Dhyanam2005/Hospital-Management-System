@@ -6,6 +6,7 @@ function ResultGrid({ regId }){
 
     const [resultData , setResultData] = useState([]);
     const [regStatus , setRegStatus] = useState('');
+    const [successMessage,setSuccessMessage] = useState('')
 
     useEffect(() => {
         const fetchResultData = async () => {
@@ -46,6 +47,7 @@ function ResultGrid({ regId }){
             })
             let data = await res.json();
             if(res.ok){
+                setSuccessMessage("Results submitted succesfully")
                 console.log("Submmited results successfully");
             }else{
                 console.log("Error in submitting results");
@@ -67,6 +69,11 @@ function ResultGrid({ regId }){
 
     return(
         <div>
+            {successMessage && (
+                <div className="p-3 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded w-72 text-center mb-4 mx-auto block">
+                    {successMessage}
+                </div>
+            )}
             <h2 className="mx-auto text-center">Test for Registration Id : {regId}</h2>
             <table className="border border-gray-300 w-full">
                 <thead className="border border-gray-300 bg-gray-100">

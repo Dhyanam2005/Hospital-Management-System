@@ -18,6 +18,7 @@ function NewAdmission({ regId }) {
   const [admissionCharges, setAdmissionCharges] = useState("");
   const [selectedBedName, setSelectedBedName] = useState("");
   const [fetchAdmission, setFetchAdmission] = useState(false);
+  const [successMessage,setSuccessMessage] = useState('')
   const [regStatus , setRegStatus] = useState('');
 
   const navigate = useNavigate();
@@ -138,7 +139,7 @@ function NewAdmission({ regId }) {
       const data = await res.json();
 
       if (res.ok) {
-        navigate("/");
+        setSuccessMessage("Admission succesfull")
       } else {
         setErrorMessage(data.message || "Submission failed");
       }
@@ -150,6 +151,11 @@ function NewAdmission({ regId }) {
 
   return (
     <div className={styles.newPatient}>
+            {successMessage && (
+                <div className="p-3 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded w-72 text-center mb-4 mx-auto block">
+                    {successMessage}
+                </div>
+            )}
       {errorMessage && (
         <div className={styles.errorMessage}>{errorMessage}</div>
       )}

@@ -36,7 +36,9 @@ const handleUpload = async () => {
     const result = await response.json();
 
     if (response.ok) {
-      setSuccessMessage(result.message || "File uploaded successfully.");
+      setSuccessMessage("File uploaded successfully.");
+      setFile(null)
+      setEntityType('')
       console.log(result)
     } else {
       setErrorMessage(result.message || "Upload failed.");
@@ -49,6 +51,11 @@ const handleUpload = async () => {
 
     return (
         <div className="p-4 ml-[20%]">
+            {successMessage && (
+                <div className="p-3 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded w-72 text-center mb-4 mx-auto block">
+                    {successMessage}
+                </div>
+            )}
         <h2 className="text-xl font-semibold mb-4">Import Master Data</h2>
 
         <select

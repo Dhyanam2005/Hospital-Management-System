@@ -18,6 +18,7 @@ function NewPatient(){
   const[cityId,setCityId] = useState('');
   const [errorMessage,setErrorMessage] = useState('');
   const [cities,setCities] = useState([]);
+  const [successMessage,setSuccessMessage] = useState('')
   const navigate = useNavigate();
 
   useEffect(() =>{
@@ -53,9 +54,21 @@ function NewPatient(){
       });
       let data = await res.json();
       if(res.ok){
-        navigate("/");
+        setSuccessMessage("Patient has been inserted successfully")
+        setErrorMessage("")
+        setPatientName("")
+        setDob("")
+        setPhone("")
+        setAddress("")
+        setPinCode("")
+        setEmail("")
+        setNextOfKinName("")
+        setNextOfKinPhone("")
+        setGender("")
+        setCityId("")
       }else{
         setErrorMessage(data.message || " ");
+        setSuccessMessage("")
       }
     }catch(err){
       console.log("Error is",err);
@@ -66,6 +79,11 @@ function NewPatient(){
   return(
     <div>
       <div className={styles['new-patient'] + " ml-[20%] w-4/5"}>
+            {successMessage && (
+                <div className="p-3 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded w-72 text-center mb-4 mx-auto block">
+                    {successMessage}
+                </div>
+            )}
         {errorMessage && (
           <div className="p-3 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded w-72 text-center mb-4 mx-auto block">
             {errorMessage}
