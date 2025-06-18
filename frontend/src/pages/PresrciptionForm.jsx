@@ -87,7 +87,7 @@ function PrescriptionForm({ selectedDoctor, selectedDate, selectedPatientRegId }
         console.log("FormattedPresviptions is ",formattedPrescriptions)
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch("${API_BASE_URL}/prescription", {
+            const res = await fetch(`${API_BASE_URL}/prescription`, {
                 method: "POST",
                 headers: { 
                     "Content-Type": "application/json" ,
@@ -105,6 +105,7 @@ function PrescriptionForm({ selectedDoctor, selectedDate, selectedPatientRegId }
                 alert("Prescription saved successfully");
                 window.location.reload();
             } else {
+                console.log(res)
                 alert("Failed to save prescription");
             }
         } catch (error) {
