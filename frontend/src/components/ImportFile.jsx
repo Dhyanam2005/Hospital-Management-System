@@ -42,7 +42,7 @@ const handleUpload = async () => {
       setErrorMessage(result.message || "Upload failed.");
     }
   } catch (error) {
-    console.error(error);
+    console.log(error);
     setErrorMessage("Something went wrong while uploading.");
   }
 };

@@ -254,7 +254,6 @@ router.post("/import", upload.single('file'), async (req, res) => {
             return res.status(500).json({ success: false, message: "Database insert error.", error: err });
         }
     } else if(entity == "Test"){
-
         try {
             for (let row of data) {
                 const {
