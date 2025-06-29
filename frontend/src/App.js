@@ -44,14 +44,30 @@ import MasterDataImport from './components/ImportFile';
 import { allowedLabelsByRole } from './utils/allowedLabels';
 
 const FullyProtectedRoute = ({ children, label }) => {
-  console.log("Fully protected route called")
-  console.log(localStorage.getItem('token'))
-  const isAuthenticated = !!localStorage.getItem("token");
-  const userType = parseInt(localStorage.getItem("user_type"));
+  const [loading, setLoading] = React.useState(true);
+  const [isAuthenticated, setAuthenticated] = React.useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const userType = parseInt(localStorage.getItem("user_type"));
+    console.log("Fully protected route called");
+    console.log("Token:", token);
+    console.log("User type:", userType);
+
+    if (token) {
+      setAuthenticated(true);
+    } else {
+      setAuthenticated(false);
+    }
+    setLoading(false);
+  }, []);
+
+  if (loading) return null; // or a loader
 
   if (!isAuthenticated) return <Navigate to="/login" replace />;
 
   if (label) {
+    const userType = parseInt(localStorage.getItem("user_type"));
     if (userType === 1) return children;
     const allowedLabels = allowedLabelsByRole[userType] || [];
     if (!allowedLabels.includes(label)) return <Navigate to="/not-found" replace />;
@@ -61,19 +77,8 @@ const FullyProtectedRoute = ({ children, label }) => {
 };
 
 
+
 function Layout() {
-
-  useEffect(() => {
-  const handleUnload = () => {
-    localStorage.clear()
-  };
-
-  window.addEventListener("beforeunload", handleUnload);
-
-  return () => {
-    window.removeEventListener("beforeunload", handleUnload);
-  };
-}, []);
 
   console.log("App started");
   console.log("Token on app start:", localStorage.getItem("token"));  

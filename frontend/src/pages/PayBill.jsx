@@ -79,6 +79,76 @@ function PayBill({ regId }) {
         }
     };
 
+    const handleRazorpayPayment = async () => {
+    const token = localStorage.getItem("token");
+    try {
+        const res = await fetch(`${API_BASE_URL}/create-order`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+            amount: totalPayable,
+            regId
+        }),
+        });
+
+        const data = await res.json();
+
+        const options = {
+        key: "rzp_test_PBlcUpzwMmjAq5",
+        amount: data.order.amount,
+        currency: "INR",
+        name: "HMS Payment",
+        description: "Patient Bill Payment",
+        order_id: data.order.id,
+        handler: async function (response) {
+            alert("Payment Success: " + response.razorpay_payment_id);
+
+            const payRes = await fetch(`${API_BASE_URL}/verify`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+                razorpay_payment_id : response.razorpay_payment_id
+            }),
+            });
+            const data = await payRes.json()
+            if (payRes.ok) {
+                console.log(data)
+                if(data.card){
+                    setPaymentDetail("Entity:"+data.card.entity +"Last4:(" +data.card.last4 + ") CardID:" + data.card.id + " Order_ID:"+data.order_id);
+                }else if(data.bank){
+                    setPaymentDetail("Bank:"+data.bank +"Bank_Ref_No: "+ data.acquirer_data.bank_transaction_id + " Order_ID:"+data.order_id);
+                }else if(data.wallet){
+                    setPaymentDetail("Wallet:"+data.wallet + " Order_ID:"+data.order_id)
+                }else if(data.vpa){
+                    setPaymentDetail("VPA:"+data.vpa + " Order_ID:"+data.order_id)
+                }
+            }
+        },
+        prefill: {
+            name: "Patient",
+            email: "email@example.com",
+            contact: "9999999999"
+        },
+        theme: {
+            color: "#1976d2"
+        }
+        };
+
+        const rzp = new window.Razorpay(options);
+        rzp.open();
+    } catch (err) {
+        console.log("Error:", err);
+        alert("Failed to start Razorpay");
+    }
+    };
+
+
     return (
         <div>
             <form>
@@ -164,9 +234,9 @@ function PayBill({ regId }) {
                     <div   className={`
     ${styles["indiv-inp"]}
     ${paymentData
-      ? 'bg-gray-100 text-gray-500 border-dashed cursor-not-allowed'
-      : 'bg-white text-black border-solid'}
-  `}><label>Payment Detail</label><input disabled={regStatus === 'D'} type="text" value={paymentData?.PAYMENT_DETAIL || paymentDetail} onChange={(e) => setPaymentDetail(e.target.value)} readOnly={!!paymentData} /></div>
+      ? 'bg-gray-100 text-gray-500 border-dashed cursor-not-allowed w-1/3 h-32 p-2 border rounded'
+      : 'bg-white text-black border-solid w-1/3 h-32 p-2 border rounded'}
+  `}><label>Payment Detail</label><textarea disabled={regStatus === 'D'} type="text" value={paymentData?.PAYMENT_DETAIL || paymentDetail} onChange={(e) => setPaymentDetail(e.target.value)} readOnly={!!paymentData} /></div>
                     <div   className={`
     ${styles["indiv-inp"]}
     ${paymentData
@@ -177,8 +247,13 @@ function PayBill({ regId }) {
                 {!paymentData && regStatus !== "D" &&
                     <div className={styles["buttons"]}>
                         <button type="button" onClick={saveInfo} className={styles["save-btn"]}>Save</button>
+                        <br />
+                        {paymentMode == "card" && (
+                            <button type="button" onClick={handleRazorpayPayment} className={`${styles["save-btn"]} bg-green-600 hover:bg-green-700`}>Pay</button>
+                        )}
                     </div>
                 }
+
             </form>
         </div>
     );

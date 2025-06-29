@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const cors = require('cors');
 const registerForHashingRouter = require("./routes/registerForHashing");
@@ -35,6 +37,7 @@ const prescriptionRouter = require("./routes/prescription");
 const masterDataRouter = require("./routes/masterData");
 const regStatusRouter = require("./routes/reg_status");
 const importMasterDataRouter = require("./routes/import");
+const razorPayRouter = require("./routes/razorpay");
 
 const app = express();
 
@@ -56,6 +59,8 @@ const corsOptions = {
 app.use(cors());
 app.use(express.json());
 
+
+app.use("/",razorPayRouter);
 app.use("/",importMasterDataRouter);
 app.use("/",regStatusRouter);
 app.use("/",masterDataRouter);
