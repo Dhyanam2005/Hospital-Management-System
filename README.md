@@ -614,8 +614,3 @@ npm run build      # Outputs to frontend/build/
 - [ ] Mobile-responsive PWA
 - [ ] Automated test coverage for frontend components
 
----
-
-## License
-
-This project is developed for **City General Hospital** internal operations.
