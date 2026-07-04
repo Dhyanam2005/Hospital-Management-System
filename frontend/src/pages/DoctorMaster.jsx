@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import GenericMasterTableView from "../components/MasterDataTable";
-import { Container } from '@mui/material';
+import { Box } from '@mui/material';
 import API_BASE_URL from '../apiConfig';
+import { authFetch } from '../utils/authFetch';
 
 
 function DoctorMaster() {
@@ -10,7 +11,7 @@ function DoctorMaster() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                let res = await fetch(`${API_BASE_URL}/doctor`);
+                let res = await authFetch(`${API_BASE_URL}/doctor`);
                 let data = await res.json();
 
                 if (res.ok) {
@@ -28,10 +29,10 @@ function DoctorMaster() {
                     }));
                     setData(dataWithIds);
                 } else {
-                    console.log("Res is not ok");
+                    console.error("Res is not ok");
                 }
             } catch (err) {
-                console.log("Error is", err);
+                console.error("Error is", err);
             }
         };
         fetchData();
@@ -51,15 +52,13 @@ function DoctorMaster() {
     ];
 
     return (
-        <div>
-            <Container maxWidth="lg">
-                <GenericMasterTableView
-                    columns={columns}
-                    rows={data}
-                    title={"Doctor Master"}
-                />
-            </Container>
-        </div>
+        <Box>
+            <GenericMasterTableView
+                columns={columns}
+                rows={data}
+                title={"Doctor Master"}
+            />
+        </Box>
     );
 }
 

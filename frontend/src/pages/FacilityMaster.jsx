@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
 import GenericMasterTableView from "../components/MasterDataTable";
-import { Container } from "@mui/material";
+import { Box } from "@mui/material";
 import API_BASE_URL from '../apiConfig';
+import { authFetch } from '../utils/authFetch';
 
 function FacilityMaster(){
     const [data,setData] = useState([]);
     useEffect(() => {
         const fetchData = async() => {
             try{
-                let res = await fetch(`${API_BASE_URL}/facility-master`);
+                let res = await authFetch(`${API_BASE_URL}/facility-master`);
                 let data = await res.json();
 
                 if(res.ok){
@@ -40,11 +41,9 @@ function FacilityMaster(){
     ];
 
     return(
-        <div>
-            <Container maxWidth="lg">
-                {<GenericMasterTableView columns={columns} rows={data} title={"Facility Master"}/>}
-            </Container>
-        </div>
+        <Box>
+            <GenericMasterTableView columns={columns} rows={data} title={"Facility Master"}/>
+        </Box>
     )
 }
 

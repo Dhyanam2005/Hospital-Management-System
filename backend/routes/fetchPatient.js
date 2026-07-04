@@ -1,8 +1,9 @@
 const express = require('express');
 const db = require("../config/db");
 const router = express.Router();
+const { authenticateJWT } = require('./authenticateJWT');
 
-router.get("/fetchpat",(req,res) => {
+router.get("/fetchpat", authenticateJWT, (req,res) => {
     const { patientName } = req.query;
     db.query(
         "SELECT p.patient_id,p.name,DATE_FORMAT(p.date_of_birth, '%b, %c, %Y') date_of_birth,DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y') - DATE_FORMAT(p.date_of_birth,'%Y') age from patient p where name like ?;",[`%${patientName}%`],(err,result) => {
@@ -17,7 +18,7 @@ router.get("/fetchpat",(req,res) => {
     )
 })
 
-router.get("/fetchAllPatients",(req,res) => {
+router.get("/fetchAllPatients", authenticateJWT, (req,res) => {
     db.query(`SELECT * from patient`,(err,result) => {
         if(err) return res.json({ message : "Error in fetching all patients"});
         res.json(result);

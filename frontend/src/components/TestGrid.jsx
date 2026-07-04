@@ -1,226 +1,288 @@
-import React, { useEffect, useState } from "react";
-import styles from "./TestGrid.module.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faP, faPlus } from "@fortawesome/free-solid-svg-icons";
-import deleteIcon from "../images/delete-icon.png";
+import React, { useEffect, useState } from 'react';
+import {
+  Box, Paper, Typography, Button, IconButton,
+  Select, MenuItem, FormControl, TextField,
+  Alert, CircularProgress, Divider,
+} from '@mui/material';
+import { Plus, Trash2, FlaskConical, Save } from 'lucide-react';
 import API_BASE_URL from '../apiConfig';
+import { authFetch } from '../utils/authFetch';
 
 function TestGrid({ regId }) {
-  const [inHouseDoctor, setInHouseDoctor] = useState([]);
+  const [doctors, setDoctors] = useState([]);
   const [tests, setTests] = useState([]);
-  const [testDate,setTestDate] = useState([]);
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [test_id,setTest_id] = useState('');
-  const [doc_id,setDoc_id] = useState('');
-  const [errorMessage,setErrorMessage] = useState('');
-  const [regStatus , setRegStatus] = useState('');
-  const [successMessage,setSuccessMessage] = useState('')
+  const [saving, setSaving] = useState(false);
+  const [regStatus, setRegStatus] = useState('');
+  const [success, setSuccess] = useState('');
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    const resetData = () => {
-      setRows([]);
-    };
-    resetData();
-  },[regId]);
+    setRows([]);
+    setSuccess('');
+    setError('');
+  }, [regId]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const doctorRes = await fetch(`${API_BASE_URL}/fetchInHouseDoctors`);
-        const testRes = await fetch(`${API_BASE_URL}/fetchTests`);
-        const regStatusRes = await fetch(`${API_BASE_URL}/regStatus?regId=${regId}`);
-        const regData = await regStatusRes.json();
-
-        const doctors = await doctorRes.json();
-        const testsData = await testRes.json();
-
-        if (doctorRes.ok && testRes.ok) {
-          setInHouseDoctor(doctors);
-          setTests(testsData);
-          setRegStatus(regData[0].reg_status);
-          console.log(inHouseDoctor);
-          console.log(testsData);
-          console.log("Doctors and Tests fetched successfully");
-        } else {
-          console.log("Error in fetching doctors or tests");
-        }
-      } catch (err) {
-        console.error("Error fetching data:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
+    setLoading(true);
+    Promise.all([
+      authFetch(`${API_BASE_URL}/fetchInHouseDoctors`).then(r => r.json()),
+      authFetch(`${API_BASE_URL}/fetchTests`).then(r => r.json()),
+      authFetch(`${API_BASE_URL}/regStatus?regId=${regId}`).then(r => r.json()),
+    ])
+      .then(([docs, testsData, regData]) => {
+        setDoctors(docs);
+        setTests(testsData);
+        setRegStatus(regData[0]?.reg_status || '');
+      })
+      .catch(() => setError('Failed to load data.'))
+      .finally(() => setLoading(false));
   }, [regId]);
 
   const addRow = () => {
-    if (inHouseDoctor.length === 0 || tests.length === 0) {
-      alert("Data not loaded yet. Please wait...");
-      return;
+    setRows(prev => [...prev, { testDate: '', doctorId: '', testId: '' }]);
+    setSuccess('');
+    setError('');
+  };
+
+  const deleteRow = (i) => setRows(prev => prev.filter((_, idx) => idx !== i));
+
+  const updateRow = (i, field, value) => {
+    setRows(prev => prev.map((r, idx) => idx === i ? { ...r, [field]: value } : r));
+  };
+
+  const handleSave = async () => {
+    const incomplete = rows.some(r => !r.testDate || !r.doctorId || !r.testId);
+    if (incomplete) { setError('Please fill in all fields before saving.'); return; }
+
+    setSaving(true);
+    setError('');
+    setSuccess('');
+
+    const rowsForApi = rows.map(r => ({
+      testDate: r.testDate,
+      doctor: doctors.find(d => d.doc_id.toString() === r.doctorId),
+      test: tests.find(t => t.test_id.toString() === r.testId),
+    }));
+
+    try {
+      const res = await authFetch(`${API_BASE_URL}/saveTestGridData`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ regId, rows: rowsForApi, testDate: rows[0]?.testDate }),
+      });
+      const result = await res.json();
+      if (res.ok) {
+        setSuccess('Tests saved successfully.');
+        setRows([]);
+      } else {
+        setError(result.message || 'Failed to save tests.');
+      }
+    } catch {
+      setError('Network error. Please try again.');
+    } finally {
+      setSaving(false);
     }
-
-    setRows([
-      ...rows,
-      {
-        doctor: null,
-        test: null,
-      },
-    ]);
   };
 
-  const deleteRow = (index) => {
-    const updated = [...rows];
-    updated.splice(index, 1);
-    setRows(updated);
-  };
-
-  const updateRow = (index, field, value) => {
-    const updated = [...rows];
-    updated[index][field] = value;
-    setRows(updated);
-  };
-
-const saveData = async () => {
-  const token = localStorage.getItem('token');
-  console.log("Token is ",token);
-  try {
-    const response = await fetch(`${API_BASE_URL}/saveTestGridData`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`,
-      },
-      body: JSON.stringify({ regId, rows ,testDate}),
-    });
-
-    const result = await response.json();
-
-    if (response.ok) {
-      setSuccessMessage("Test has been submitted successfully");
-      setErrorMessage("")
-      setRows([]);
-    } else {
-      setErrorMessage(result.message)
-      setSuccessMessage("")
-    }
-  } catch (err) {
-    console.error("Save error:", err);
-    alert("Failed to save data. See console for details.");
+  if (loading) {
+    return (
+      <Paper elevation={0} sx={{ p: 4, border: '1px solid #e2e8f0', borderRadius: 2, textAlign: 'center' }}>
+        <CircularProgress size={28} sx={{ color: '#2563eb' }} />
+        <Typography variant="body2" color="text.secondary" mt={1}>Loading test data…</Typography>
+      </Paper>
+    );
   }
-};
 
+  if (regStatus === 'D') {
+    return (
+      <Paper elevation={0} sx={{ p: 3, border: '1px solid #fecaca', borderRadius: 2, background: '#fef2f2' }}>
+        <Typography variant="body1" fontWeight={600} color="error.main" textAlign="center">
+          Patient has been discharged — tests cannot be assigned.
+        </Typography>
+      </Paper>
+    );
+  }
 
-   return (
-    <div>
-      {regStatus === "D" ? (
-        <div>
-          <h1 className="text-center block">Patient discharged</h1>
-        </div>
-      ) : (
-        <div>
-            {successMessage && (
-                <div className="p-3 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded w-72 text-center mb-4 mx-auto block">
-                    {successMessage}
-                </div>
-            )}
-          {errorMessage && (
-            <div className="p-3 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded w-72 text-center mb-4 mx-auto block">
-              {errorMessage}
-            </div>
-          )}
+  return (
+    <Paper elevation={0} sx={{ border: '1px solid #e2e8f0', borderRadius: 2, overflow: 'hidden' }}>
+      {/* ── Header ─────────────────────────────────────────────────────── */}
+      <Box sx={{
+        px: 2.5, py: 1.5, borderBottom: '1px solid #f1f5f9',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        background: '#f8fafc',
+      }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <FlaskConical size={17} color="#2563eb" />
+          <Typography variant="subtitle2" fontWeight={700} color="text.primary">
+            Tests for Registration #{regId}
+          </Typography>
+        </Box>
+        <Button
+          size="small"
+          startIcon={<Plus size={14} />}
+          onClick={addRow}
+          variant="outlined"
+          sx={{
+            textTransform: 'none', fontWeight: 600, fontSize: 12,
+            borderColor: '#2563eb', color: '#2563eb', borderRadius: 1.5,
+            '&:hover': { backgroundColor: '#eff6ff' },
+          }}
+        >
+          Add Test
+        </Button>
+      </Box>
 
-          <div className={styles["title-icon"]}>
-            <h2 className="mx-auto bold text-center pb-4">Test for Patient Id : {regId}</h2>
-            <button>
-              <FontAwesomeIcon
-                icon={faPlus}
-                onClick={addRow}
-                disabled={loading}
-                className={styles["title-icon-i"]}
-              />
-            </button>
-          </div>
+      {/* ── Alerts ─────────────────────────────────────────────────────── */}
+      <Box sx={{ px: 2.5 }}>
+        {success && (
+          <Alert severity="success" onClose={() => setSuccess('')}
+            sx={{ mt: 1.5, borderRadius: 1.5, py: 0.5 }}>
+            {success}
+          </Alert>
+        )}
+        {error && (
+          <Alert severity="error" onClose={() => setError('')}
+            sx={{ mt: 1.5, borderRadius: 1.5, py: 0.5 }}>
+            {error}
+          </Alert>
+        )}
+      </Box>
 
-          {rows.length > 0 && (
-            <div>
-              <table border="1" cellPadding="10" style={{ borderCollapse: "collapse", width: "100%" }} className={`${styles["table"]}`}>
-                <thead className="bg-gray-100">
-                  <tr>
-                    <th>Test Date</th>
-                    <th>Doctor Name</th>
-                    <th>Test Name</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {rows.map((row, idx) => (
-                    <tr key={idx}>
-                      <td>
-                        <input
-                          type="date"
-                          value={row.testDate}
-                          onChange={(e) => updateRow(idx, "testDate", e.target.value)}
-                        />
-                      </td>
-                      <td>
-                        <select
-                          value={row.doctor?.doc_id || ""}
-                          onChange={(e) => {
-                            const selectedDoc = inHouseDoctor.find(
-                              (doc) => doc.doc_id.toString() === e.target.value
-                            );
-                            updateRow(idx, "doctor", selectedDoc);
-                          }}
-                        >
-                          <option value="" disabled hidden>Select Doctor</option>
-                          {inHouseDoctor.map((doc, i) => (
-                            <option key={i} value={doc.doc_id}>
-                              {doc.name}
-                            </option>
-                          ))}
-                        </select>
-                      </td>
-                      <td>
-                        <select
-                          value={row.test?.test_id || ""}
-                          onChange={(e) => {
-                            const selectedTest = tests.find(
-                              (t) => t.test_id.toString() === e.target.value
-                            );
-                            updateRow(idx, "test", selectedTest);
-                          }}
-                        >
-                          <option value="" disabled hidden>Select Test</option>
-                          {tests.map((t, i) => (
-                            <option key={i} value={t.test_id}>
-                              {t.test_name}
-                            </option>
-                          ))}
-                        </select>
-                      </td>
-                      <td>
-                        <button onClick={() => deleteRow(idx)} className={styles["delete-btn-test"]}>
-                          <img src={deleteIcon} alt="delete" />
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-
-              <br />
-              <div className={styles["buttons"]}>
-                <button onClick={saveData} disabled={rows.length === 0} className={styles["save-btn"]}>
-                  Save
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
+      {/* ── Empty state ─────────────────────────────────────────────────── */}
+      {rows.length === 0 && !success && (
+        <Box sx={{ py: 5, textAlign: 'center' }}>
+          <FlaskConical size={32} color="#cbd5e1" />
+          <Typography variant="body2" color="text.secondary" mt={1}>
+            No tests added yet. Click <strong>Add Test</strong> to begin.
+          </Typography>
+        </Box>
       )}
-    </div>
+
+      {/* ── Column headers ──────────────────────────────────────────────── */}
+      {rows.length > 0 && (
+        <>
+          <Box sx={{
+            display: 'grid',
+            gridTemplateColumns: '180px 1fr 1fr 48px',
+            gap: 1.5, px: 2.5, pt: 2, pb: 0.5,
+          }}>
+            {['Test Date', 'Doctor', 'Test Name', ''].map((h, i) => (
+              <Typography key={i} variant="caption" fontWeight={700} color="text.secondary"
+                sx={{ textTransform: 'uppercase', letterSpacing: '0.06em', fontSize: 10 }}>
+                {h}
+              </Typography>
+            ))}
+          </Box>
+          <Divider sx={{ mx: 2.5, borderColor: '#f1f5f9' }} />
+        </>
+      )}
+
+      {/* ── Test rows ───────────────────────────────────────────────────── */}
+      <Box sx={{ px: 2.5, pb: 2 }}>
+        {rows.map((row, i) => (
+          <Box key={i} sx={{
+            display: 'grid',
+            gridTemplateColumns: '180px 1fr 1fr 48px',
+            gap: 1.5, alignItems: 'center', mt: 1.5,
+            p: 1.5, borderRadius: 1.5,
+            border: '1px solid #f1f5f9',
+            backgroundColor: '#fafbfc',
+            '&:hover': { borderColor: '#e2e8f0', backgroundColor: '#f8fafc' },
+          }}>
+            {/* Date */}
+            <TextField
+              type="date"
+              size="small"
+              value={row.testDate}
+              onChange={e => updateRow(i, 'testDate', e.target.value)}
+              inputProps={{ max: new Date().toISOString().split('T')[0] }}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  fontSize: 13, borderRadius: 1.5,
+                  '&:hover fieldset': { borderColor: '#2563eb' },
+                  '&.Mui-focused fieldset': { borderColor: '#2563eb' },
+                },
+              }}
+            />
+
+            {/* Doctor */}
+            <FormControl size="small" fullWidth>
+              <Select
+                value={row.doctorId}
+                displayEmpty
+                onChange={e => updateRow(i, 'doctorId', e.target.value)}
+                sx={{
+                  fontSize: 13, borderRadius: 1.5,
+                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: '#2563eb' },
+                  '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#2563eb' },
+                }}
+              >
+                <MenuItem value="" disabled><em style={{ color: '#94a3b8' }}>Select Doctor</em></MenuItem>
+                {doctors.map(d => (
+                  <MenuItem key={d.doc_id} value={d.doc_id.toString()}>{d.name}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            {/* Test */}
+            <FormControl size="small" fullWidth>
+              <Select
+                value={row.testId}
+                displayEmpty
+                onChange={e => updateRow(i, 'testId', e.target.value)}
+                sx={{
+                  fontSize: 13, borderRadius: 1.5,
+                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: '#2563eb' },
+                  '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#2563eb' },
+                }}
+              >
+                <MenuItem value="" disabled><em style={{ color: '#94a3b8' }}>Select Test</em></MenuItem>
+                {tests.map(t => (
+                  <MenuItem key={t.test_id} value={t.test_id.toString()}>{t.test_name}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            {/* Delete */}
+            <IconButton
+              size="small"
+              onClick={() => deleteRow(i)}
+              sx={{
+                color: '#ef4444', borderRadius: 1.5,
+                '&:hover': { backgroundColor: '#fef2f2' },
+              }}
+            >
+              <Trash2 size={16} />
+            </IconButton>
+          </Box>
+        ))}
+      </Box>
+
+      {/* ── Footer / Save ───────────────────────────────────────────────── */}
+      {rows.length > 0 && (
+        <>
+          <Divider sx={{ borderColor: '#f1f5f9' }} />
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', p: 2 }}>
+            <Button
+              variant="contained"
+              startIcon={saving ? <CircularProgress size={14} color="inherit" /> : <Save size={15} />}
+              onClick={handleSave}
+              disabled={saving}
+              sx={{
+                textTransform: 'none', fontWeight: 700, borderRadius: 2, px: 3,
+                background: 'linear-gradient(135deg,#059669,#047857)',
+                boxShadow: '0 4px 12px rgba(5,150,105,0.30)',
+                '&:hover': { boxShadow: '0 6px 18px rgba(5,150,105,0.40)' },
+              }}
+            >
+              {saving ? 'Saving…' : 'Save Tests'}
+            </Button>
+          </Box>
+        </>
+      )}
+    </Paper>
   );
 }
 

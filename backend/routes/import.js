@@ -3,10 +3,11 @@ const db = require("../config/db");
 const router = express.Router();
 const multer = require('multer');
 const xlsx = require('xlsx');
+const { authenticateJWT } = require('./authenticateJWT');
 
 const upload = multer({ storage: multer.memoryStorage() });
 
-router.post("/import", upload.single('file'), async (req, res) => {
+router.post("/import", authenticateJWT, upload.single('file'), async (req, res) => {
     const fileBuffer = req.file.buffer;
     const workbook = xlsx.read(fileBuffer, { type: "buffer" });
     const entity = req.body.entityType;

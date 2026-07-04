@@ -2,8 +2,9 @@ const express = require('express')
 const router = express.Router();
 const db = require('../config/db');
 const { format } = require("date-fns");
+const { authenticateJWT } = require('./authenticateJWT');
 
-router.get("/patientReportStateWise",(req,res) => {
+router.get("/patientReportStateWise", authenticateJWT, (req,res) => {
     console.log(req.query);
     const {startDate , endDate } = req.query;
     const startDateFormatted = format(new Date(startDate), "yyyy-MM-dd") + " 00:00:00";
@@ -27,7 +28,7 @@ router.get("/patientReportStateWise",(req,res) => {
     )
 })
 
-router.get("/doctorWiseRegistrationFees",(req,res) => {
+router.get("/doctorWiseRegistrationFees", authenticateJWT, (req,res) => {
     const {startDate , endDate } = req.query;
     const startDateFormatted = format(new Date(startDate), "yyyy-MM-dd") + " 00:00:00";
     const endDateFormatted = format(new Date(endDate), "yyyy-MM-dd") + " 23:59:59";
@@ -49,7 +50,7 @@ router.get("/doctorWiseRegistrationFees",(req,res) => {
     )
 })
 
-router.get("/deptTestDocFees",(req,res) => {
+router.get("/deptTestDocFees", authenticateJWT, (req,res) => {
     const {startDate , endDate } = req.query;
     const startDateFormatted = format(new Date(startDate), "yyyy-MM-dd") + " 00:00:00";
     const endDateFormatted = format(new Date(endDate), "yyyy-MM-dd") + " 23:59:59";
@@ -72,7 +73,7 @@ router.get("/deptTestDocFees",(req,res) => {
     )
 })
 
-router.get("/deptDocFees",(req,res) => {
+router.get("/deptDocFees", authenticateJWT, (req,res) => {
     const {startDate , endDate } = req.query;
     const startDateFormatted = format(new Date(startDate), "yyyy-MM-dd") + " 00:00:00";
     const endDateFormatted = format(new Date(endDate), "yyyy-MM-dd") + " 23:59:59";
@@ -95,7 +96,7 @@ router.get("/deptDocFees",(req,res) => {
     )
 })
 
-router.get("/referralDoc",(req,res) => {
+router.get("/referralDoc", authenticateJWT, (req,res) => {
     const {startDate , endDate } = req.query;
     const startDateFormatted = format(new Date(startDate), "yyyy-MM-dd") + " 00:00:00";
     const endDateFormatted = format(new Date(endDate), "yyyy-MM-dd") + " 23:59:59";

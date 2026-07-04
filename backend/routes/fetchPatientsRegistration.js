@@ -1,8 +1,9 @@
 const express = require('express');
 const db = require("../config/db");
 const router = express.Router();
+const { authenticateJWT } = require('./authenticateJWT');
 
-router.get("/fetchpatreg",(req,res) => {
+router.get("/fetchpatreg", authenticateJWT, (req,res) => {
     const { patientName } = req.query;
     console.log(patientName);
     db.query(

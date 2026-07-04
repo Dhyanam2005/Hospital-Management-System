@@ -4,6 +4,7 @@ import deleteIcon from "../images/delete-icon.png";
 import { faP, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import API_BASE_URL from '../apiConfig';
+import { authFetch } from '../utils/authFetch';
 
 function PatientChargeForm({ regId}){
 
@@ -11,16 +12,15 @@ function PatientChargeForm({ regId}){
     const [doctors,setDoctors] = useState([]);
     const [rows, setRows] = useState([]);
     const [errorMessage,setErrorMessage] = useState('');
-    const token = localStorage.getItem('token');
     const [regStatus , setRegStatus] = useState('');
 
     useEffect(() => {
 
         const fetchData = async () => {
           try {
-            const servicesRes = await fetch(`${API_BASE_URL}/fetchServices`);    
-            const doctorRes = await fetch(`${API_BASE_URL}/doctor`);
-            const regStatusRes = await fetch(`${API_BASE_URL}/regStatus?regId=${regId}`);
+            const servicesRes = await authFetch(`${API_BASE_URL}/fetchServices`);
+            const doctorRes = await authFetch(`${API_BASE_URL}/doctor`);
+            const regStatusRes = await authFetch(`${API_BASE_URL}/regStatus?regId=${regId}`);
             const regData = await regStatusRes.json();
             const services = await servicesRes.json();
             const doctors = await doctorRes.json();
@@ -49,7 +49,7 @@ function PatientChargeForm({ regId}){
 
         const fetchPatientCharges = async () => {
           try{
-              let res = await fetch(`${API_BASE_URL}/fetchPatientCharges?regId=${encodeURIComponent(regId)}`);
+              let res = await authFetch(`${API_BASE_URL}/fetchPatientCharges?regId=${encodeURIComponent(regId)}`);
               let data = await res.json();
               if(res.ok){
                 console.log("Length of data is ",data);
@@ -85,14 +85,12 @@ function PatientChargeForm({ regId}){
       }
 
       const savePatientCharges = async(e) => {
-        const token = localStorage.getItem('token');
         e.preventDefault();
         try{
-          let res = await fetch(`${API_BASE_URL}/patientCharges`,{
+          let res = await authFetch(`${API_BASE_URL}/patientCharges`,{
             method: "POST",
-            headers: { 
+            headers: {
               "Content-Type": "application/json",
-              "Authorization": `Bearer ${token}`,
              },
             body: JSON.stringify({ regId , patientCharges : rows })
           });
@@ -118,16 +116,14 @@ function PatientChargeForm({ regId}){
           setRows(updatedRows);
           return;
         }
-        const token = localStorage.getItem('token');
         const confirmed = window.confirm("Are you sure you want to delete this record?");
         if(!confirmed) return;
         console.log("Delete Rows is called and id is ",id);
         try{
-          let res = await fetch(`${API_BASE_URL}/patientcharge/${id}`,{
+          let res = await authFetch(`${API_BASE_URL}/patientcharge/${id}`,{
             method: "DELETE",
-            headers: { 
+            headers: {
               "Content-Type": "application/json",
-              "Authorization": `Bearer ${token}`,
              },
           });
 

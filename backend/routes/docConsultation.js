@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const db = require("../config/db");
+const { authenticateJWT } = require('./authenticateJWT');
 
-router.get("/consultationDoc",(req,res) => {
+router.get("/consultationDoc", authenticateJWT, (req,res) => {
     let { patientName } = req.query;
     db.query(
         `SELECT p.patient_id,p.name,r.reg_id,DATE_FORMAT(p.date_of_birth, '%b, %c, %Y') date_of_birth,DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y') - DATE_FORMAT(p.date_of_birth,'%Y') age from patient p,registration r where name like ? and p.patient_id = r.patient_id;`,[`%${patientName}%`],(err,result) =>{
@@ -17,7 +18,7 @@ router.get("/consultationDoc",(req,res) => {
     )
 })
 
-router.get("/admissionInPat",(req,res) => {
+router.get("/admissionInPat", authenticateJWT, (req,res) => {
     let { patientName } = req.query;
     db.query(
         `SELECT p.patient_id,p.name,r.reg_id,DATE_FORMAT(p.date_of_birth, '%b, %c, %Y') date_of_birth,DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y') - DATE_FORMAT(p.date_of_birth,'%Y') age from patient p,registration r where name like ? and p.patient_id = r.patient_id and r.patient_type = ?;`,[`%${patientName}%`,'I'],(err,result) =>{

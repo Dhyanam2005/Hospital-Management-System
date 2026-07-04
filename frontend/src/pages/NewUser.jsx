@@ -1,134 +1,248 @@
 import React, { useState } from 'react';
-import "./NewUser.css"
+import {
+  Box, Paper, Typography, TextField, Button,
+  Alert, InputAdornment, IconButton, Grid, Divider,
+  CircularProgress,
+} from '@mui/material';
+import { User, Mail, Lock, ShieldCheck, Eye, EyeOff, UserPlus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import Navbar from '../components/SidebarMenu';
 import API_BASE_URL from '../apiConfig';
 
-
 function Newuser() {
-    const [username, setUsername] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirm_password, setConfirmpassword] = useState('');
-    const [type, setUsertype] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
-    const [successMessage,setSuccessMessage] = useState('')
+  const [username, setUsername]           = useState('');
+  const [email, setEmail]                 = useState('');
+  const [password, setPassword]           = useState('');
+  const [confirm_password, setConfirm]    = useState('');
+  const [showPass, setShowPass]           = useState(false);
+  const [showConfirm, setShowConfirm]     = useState(false);
+  const [error, setError]                 = useState('');
+  const [success, setSuccess]             = useState('');
+  const [saving, setSaving]               = useState(false);
+  const navigate = useNavigate();
 
-    const navigate = useNavigate();
+  const fieldSx = {
+    '& .MuiOutlinedInput-root': {
+      borderRadius: 1.5,
+      backgroundColor: '#f8fafc',
+      '&:hover fieldset': { borderColor: '#2563eb' },
+      '&.Mui-focused fieldset': { borderColor: '#2563eb' },
+      '&.Mui-focused': { backgroundColor: '#fff' },
+    },
+  };
 
-    const handleSubmitNewUser = async (e) => {
-        e.preventDefault();
-
-        try {
-            const res = await fetch(`${API_BASE_URL}/newuser`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password, confirm_password, type ,email}),
-            })
-
-            const data = await res.json();
-
-            if (res.ok) {
-                setSuccessMessage("User has been created successfully");
-                setErrorMessage("")
-                setUsername("")
-                setEmail("")
-                setPassword("")
-                setConfirmpassword("");
-                setUsertype("")
-            } else {
-                setErrorMessage(data.message);
-                setSuccessMessage("")
-            }
-        } catch (err) {
-            setErrorMessage('Service Error');
-        }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSaving(true); setError(''); setSuccess('');
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch(`${API_BASE_URL}/newuser`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({ username, password, confirm_password, email }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setSuccess('User created successfully. They can now log in.');
+        setUsername(''); setEmail(''); setPassword(''); setConfirm('');
+      } else {
+        setError(data.message || 'Failed to create user.');
+      }
+    } catch {
+      setError('Service error. Please try again.');
+    } finally {
+      setSaving(false);
     }
+  };
 
-    return (
-        <div className='ml-[20%]'>
-            <div className='newuser'>
-            {successMessage && (
-                <div className="p-3 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded w-72 text-center mb-4 mx-auto block">
-                    {successMessage}
-                </div>
+  return (
+    <Box sx={{ maxWidth: 820, mx: 'auto' }}>
+      {/* Page header */}
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 3 }}>
+        <Box sx={{
+          width: 40, height: 40, borderRadius: 2, display: 'flex',
+          alignItems: 'center', justifyContent: 'center',
+          background: 'linear-gradient(135deg,#2563eb,#0891b2)',
+          boxShadow: '0 4px 12px rgba(37,99,235,0.25)',
+        }}>
+          <UserPlus size={20} color="#fff" />
+        </Box>
+        <Box>
+          <Typography variant="h5" fontWeight={700} color="text.primary">
+            Create New User
+          </Typography>
+          <Typography variant="caption" color="text.secondary">
+            Add a staff member account to the system
+          </Typography>
+        </Box>
+      </Box>
+
+      <Paper elevation={0} sx={{ border: '1px solid #e2e8f0', borderRadius: 2, overflow: 'hidden' }}>
+        {/* Card header strip */}
+        <Box sx={{
+          px: 2.5, py: 1.5, borderBottom: '1px solid #f1f5f9',
+          background: '#f8fafc', display: 'flex', alignItems: 'center', gap: 1,
+        }}>
+          <ShieldCheck size={16} color="#2563eb" />
+          <Typography variant="subtitle2" fontWeight={700} color="text.primary">
+            Account Details
+          </Typography>
+        </Box>
+
+        {/* Alerts */}
+        {(success || error) && (
+          <Box sx={{ px: 2.5, pt: 2 }}>
+            {success && (
+              <Alert severity="success" onClose={() => setSuccess('')}
+                sx={{ borderRadius: 1.5, py: 0.5 }}>
+                {success}
+              </Alert>
             )}
-            {errorMessage && (
-                <div className="p-3 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded w-72 text-center mb-4 mx-auto block">
-                    {errorMessage}
-                </div>
+            {error && (
+              <Alert severity="error" onClose={() => setError('')}
+                sx={{ borderRadius: 1.5, py: 0.5 }}>
+                {error}
+              </Alert>
             )}
+          </Box>
+        )}
 
-            <h1 className="text-2xl font-bold mb-4 block text-center">Create a New User</h1>
-            <form onSubmit={handleSubmitNewUser} className="flex flex-col items-center space-y-4 mt-6" >
-                <div className="flex flex-col items-center space-y-2">
-                    <label htmlFor="username" className="text-gray-700 font-medium">Username</label>
-                    <input
-                        id="username"
-                        type="text"
-                        placeholder="Enter Username"
-                        className="p-3 w-72 border border-gray-300 rounded-2xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                    />
-                </div>
+        {/* Form */}
+        <Box component="form" onSubmit={handleSubmit} sx={{ p: 2.5 }}>
+          <Grid container spacing={2}>
+            {/* Username */}
+            <Grid item xs={12} sm={6}>
+              <Typography variant="caption" fontWeight={700} color="text.secondary"
+                sx={{ textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: 10, mb: 0.5, display: 'block' }}>
+                Username
+              </Typography>
+              <TextField
+                fullWidth size="small" placeholder="e.g. dr.sharma"
+                value={username} onChange={e => setUsername(e.target.value)}
+                required autoComplete="off"
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start"><User size={15} color="#94a3b8" /></InputAdornment>
+                  ),
+                }}
+                sx={fieldSx}
+              />
+            </Grid>
 
-                <div className="flex flex-col items-center space-y-2">
-                    <label htmlFor="email" className="text-gray-700 font-medium">Email</label>
-                    <input
-                        id="email"
-                        type="text"
-                        placeholder="Enter Email"
-                        className="p-3 w-72 border border-gray-300 rounded-2xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
-                </div>
+            {/* Email */}
+            <Grid item xs={12} sm={6}>
+              <Typography variant="caption" fontWeight={700} color="text.secondary"
+                sx={{ textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: 10, mb: 0.5, display: 'block' }}>
+                Email Address
+              </Typography>
+              <TextField
+                fullWidth size="small" type="email" placeholder="e.g. dr.sharma@hospital.com"
+                value={email} onChange={e => setEmail(e.target.value)}
+                required autoComplete="off"
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start"><Mail size={15} color="#94a3b8" /></InputAdornment>
+                  ),
+                }}
+                sx={fieldSx}
+              />
+            </Grid>
 
-                <div className="flex flex-col items-center space-y-2">
-                    <label htmlFor="password" className="text-gray-700 font-medium">Password</label>
-                    <input
-                        id="password"
-                        type="password"
-                        placeholder="Enter Password"
-                        className="p-3 w-72 border border-gray-300 rounded-2xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                </div>
+            {/* Password */}
+            <Grid item xs={12} sm={6}>
+              <Typography variant="caption" fontWeight={700} color="text.secondary"
+                sx={{ textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: 10, mb: 0.5, display: 'block' }}>
+                Password
+              </Typography>
+              <TextField
+                fullWidth size="small" placeholder="Enter password"
+                type={showPass ? 'text' : 'password'}
+                value={password} onChange={e => setPassword(e.target.value)}
+                required autoComplete="new-password"
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start"><Lock size={15} color="#94a3b8" /></InputAdornment>
+                  ),
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton size="small" onClick={() => setShowPass(p => !p)} edge="end">
+                        {showPass ? <EyeOff size={15} color="#94a3b8" /> : <Eye size={15} color="#94a3b8" />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+                sx={fieldSx}
+              />
+            </Grid>
 
-                <div className="flex flex-col items-center space-y-2">
-                    <label htmlFor="confirm_password" className="text-gray-700 font-medium">Confirm Password</label>
-                    <input
-                        id="confirm_password"
-                        type="password"
-                        placeholder="Confirm Password"
-                        className="p-3 w-72 border border-gray-300 rounded-2xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
-                        value={confirm_password}
-                        onChange={(e) => setConfirmpassword(e.target.value)}
-                    />
-                </div>
+            {/* Confirm Password */}
+            <Grid item xs={12} sm={6}>
+              <Typography variant="caption" fontWeight={700} color="text.secondary"
+                sx={{ textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: 10, mb: 0.5, display: 'block' }}>
+                Confirm Password
+              </Typography>
+              <TextField
+                fullWidth size="small" placeholder="Re-enter password"
+                type={showConfirm ? 'text' : 'password'}
+                value={confirm_password} onChange={e => setConfirm(e.target.value)}
+                required autoComplete="new-password"
+                error={confirm_password.length > 0 && confirm_password !== password}
+                helperText={
+                  confirm_password.length > 0 && confirm_password !== password
+                    ? 'Passwords do not match'
+                    : ''
+                }
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start"><Lock size={15} color="#94a3b8" /></InputAdornment>
+                  ),
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton size="small" onClick={() => setShowConfirm(p => !p)} edge="end">
+                        {showConfirm ? <EyeOff size={15} color="#94a3b8" /> : <Eye size={15} color="#94a3b8" />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+                sx={fieldSx}
+              />
+            </Grid>
 
-                <div className="flex flex-col items-center space-y-2">
-                    <label htmlFor="type" className="text-gray-700 font-medium">Select type</label>
-                    <select
-                        id="type"
-                        className="w-36 rounded-lg p-3 mb-2"
-                        value={type}
-                        onChange={(e) => setUsertype(e.target.value)}
-                    >
-                        <option value="" disabled hidden>Select Role</option>
-                        <option value="admin">Admin</option>
-                        <option value="doctor">Doctor</option>
-                        <option value="operator">Operator</option>
-                    </select>
-                </div>
+          </Grid>
+        </Box>
 
-                <button type="submit" className="mt-7 mx-auto block login-button">Create</button>
-            </form>
-        </div>
-        </div>
-    )
+        <Divider sx={{ borderColor: '#f1f5f9' }} />
+
+        {/* Footer */}
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1.5, p: 2 }}>
+          <Button
+            variant="outlined" onClick={() => navigate(-1)}
+            sx={{ textTransform: 'none', fontWeight: 600, borderRadius: 2, px: 2.5 }}
+          >
+            Cancel
+          </Button>
+          <Button
+            type="submit" form="newUserForm" variant="contained"
+            disabled={saving || (confirm_password.length > 0 && confirm_password !== password)}
+            onClick={handleSubmit}
+            startIcon={saving
+              ? <CircularProgress size={14} color="inherit" />
+              : <UserPlus size={15} />}
+            sx={{
+              textTransform: 'none', fontWeight: 700, borderRadius: 2, px: 3,
+              background: 'linear-gradient(135deg,#2563eb,#1d4ed8)',
+              boxShadow: '0 4px 12px rgba(37,99,235,0.30)',
+              '&:hover': { boxShadow: '0 6px 18px rgba(37,99,235,0.40)' },
+            }}
+          >
+            {saving ? 'Creating…' : 'Create User'}
+          </Button>
+        </Box>
+      </Paper>
+    </Box>
+  );
 }
 
 export default Newuser;

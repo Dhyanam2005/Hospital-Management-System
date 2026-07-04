@@ -1,6 +1,7 @@
 import React , { useEffect, useState} from "react";
 import styles from "./ResultGrid.module.css";
 import API_BASE_URL from '../apiConfig';
+import { authFetch } from '../utils/authFetch';
 
 function ResultGrid({ regId }){
 
@@ -11,8 +12,8 @@ function ResultGrid({ regId }){
     useEffect(() => {
         const fetchResultData = async () => {
             try{
-                let res = await fetch(`${API_BASE_URL}/resultData?regId=${regId}`);
-                const regStatusRes = await fetch(`${API_BASE_URL}/regStatus?regId=${regId}`);
+                let res = await authFetch(`${API_BASE_URL}/resultData?regId=${regId}`);
+                const regStatusRes = await authFetch(`${API_BASE_URL}/regStatus?regId=${regId}`);
                 const regData = await regStatusRes.json();
                 let data = await res.json();
                 if(res.ok){
@@ -32,13 +33,11 @@ function ResultGrid({ regId }){
     },[regId]);
 
     const submitResults = async () => {
-        const token = localStorage.getItem('token');
         try{
-            let res = await fetch(`${API_BASE_URL}/result`,{
+            let res = await authFetch(`${API_BASE_URL}/result`,{
                 method: 'POST',
-                headers: { 
+                headers: {
                     'Content-Type': 'application/json',
-                    "Authorization": `Bearer ${token}`,
                 },
                 body:JSON.stringify({
                     regId,

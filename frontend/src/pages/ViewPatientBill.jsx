@@ -1,7 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useReactToPrint } from "react-to-print";
-import NavBar from "../components/SidebarMenu";
+import { Box, Button } from "@mui/material";
+import { Printer } from "lucide-react";
 import API_BASE_URL from '../apiConfig';
+import { authFetch } from '../utils/authFetch';
 
 function PrintableBill({ patientInfo, bill }) {
   const totalAmount = bill.reduce(
@@ -83,8 +85,8 @@ function ViewPatientBill({ regId }) {
     const fetchPatAndBillDetails = async () => {
       console.log("regId received:", regId);
       try {
-        const res1 = await fetch(`${API_BASE_URL}/patientpdf?regId=${regId}`);
-        const res2 = await fetch(`${API_BASE_URL}/patientBill?regId=${regId}`);
+        const res1 = await authFetch(`${API_BASE_URL}/patientpdf?regId=${regId}`);
+        const res2 = await authFetch(`${API_BASE_URL}/patientBill?regId=${regId}`);
         const data = await res1.json();
         const data2 = await res2.json();
         if (res1.ok && data.length > 0 && res2.ok) {
@@ -99,16 +101,29 @@ function ViewPatientBill({ regId }) {
   }, [regId]);
 
   return (
-    <div className="view-patient-bill" style={{ padding: 20 }}>
+    <Box sx={{ p: 2.5 }}>
       {Object.keys(patientInfo).length > 0 && bill.length > 0 && (
         <>
-
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
+            <Button
+              variant="contained"
+              startIcon={<Printer size={16} />}
+              onClick={handlePrint}
+              sx={{
+                textTransform: 'none', fontWeight: 700, borderRadius: 2,
+                background: 'linear-gradient(135deg,#2563eb,#1d4ed8)',
+                boxShadow: '0 4px 12px rgba(37,99,235,0.30)',
+              }}
+            >
+              Print Bill
+            </Button>
+          </Box>
           <div ref={componentRef}>
             <PrintableBill patientInfo={patientInfo} bill={bill} />
           </div>
         </>
       )}
-    </div>
+    </Box>
   );
 }
 

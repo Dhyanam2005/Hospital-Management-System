@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import GenericMasterTableView from "../components/MasterDataTable";
-import { Container } from '@mui/material';
+import { Box } from '@mui/material';
 import API_BASE_URL from '../apiConfig';
+import { authFetch } from '../utils/authFetch';
 
 
 function LocationMaster(){
@@ -9,7 +10,7 @@ function LocationMaster(){
     useEffect(() => {
         const fetchData = async() => {
             try{
-                let res = await fetch(`${API_BASE_URL}/location-master`);
+                let res = await authFetch(`${API_BASE_URL}/location-master`);
                 let data = await res.json();
 
                 if(res.ok){
@@ -38,11 +39,9 @@ function LocationMaster(){
     ];
 
     return(
-        <div>
-            <Container maxWidth="lg">
-                {<GenericMasterTableView columns={columns} rows={data} title={"Location Master"}/>}
-            </Container>
-        </div>
+        <Box>
+            <GenericMasterTableView columns={columns} rows={data} title={"Location Master"}/>
+        </Box>
     )
 }
 

@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const db = require("../config/db");
+const { authenticateJWT } = require('./authenticateJWT');
 
-router.get("/patientBill",(req,res) => {
+router.get("/patientBill", authenticateJWT, (req,res) => {
     let regId = req.query.regId;
     db.query(
         `SELECT * from v_patient_bill where regId = ?`,[regId],(err,result) => {

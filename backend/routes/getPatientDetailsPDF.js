@@ -1,8 +1,9 @@
 const express = require('express')
 const router = express.Router();
 const db = require('../config/db');
+const { authenticateJWT } = require('./authenticateJWT');
 
-router.get("/patientpdf",(req,res) => {
+router.get("/patientpdf", authenticateJWT, (req,res) => {
     let regId = req.query.regId;
     console.log(req.query); 
     db.query(

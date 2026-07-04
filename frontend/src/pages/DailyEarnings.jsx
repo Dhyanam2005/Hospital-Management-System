@@ -3,6 +3,7 @@ import GenericMasterTableView from "../components/MasterDataTable";
 import { Container } from '@mui/material';
 import { format } from "date-fns";
 import API_BASE_URL from '../apiConfig';
+import { authFetch } from '../utils/authFetch';
 
 function DailyEarnings() {
     const [data, setData] = useState([]);
@@ -10,7 +11,7 @@ function DailyEarnings() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                let res = await fetch(`${API_BASE_URL}/daily-earnings`);
+                let res = await authFetch(`${API_BASE_URL}/daily-earnings`);
                 let data = await res.json();
 
                 if (res.ok) {

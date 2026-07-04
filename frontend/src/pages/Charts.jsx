@@ -1,221 +1,203 @@
 import { useEffect, useState } from 'react';
+import { Box, Typography } from '@mui/material';
 import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  PieChart, Pie, Cell,
 } from 'recharts';
-import Navbar from '../components/SidebarMenu';
+import { BarChart3 } from 'lucide-react';
+import API_BASE_URL from '../apiConfig';
+import { authFetch } from '../utils/authFetch';
 
 function Charts() {
-  const [firstInfo, setFirstInfo] = useState([]);
+  const [firstInfo, setFirstInfo]   = useState([]);
   const [secondInfo, setSecondInfo] = useState([]);
-  const [thirdInfo, setThirdInfo] = useState([]);
+  const [thirdInfo, setThirdInfo]   = useState([]);
   const [fourthInfo, setFourthInfo] = useState([]);
-  const [fifthInfo,setFifthInfo] = useState([]);
-  const [date,setDate] = useState([]);
-  const [seventhInfo,setSeventhInfo] = useState([]);
-  const [eighthInfo,setEighthInfo] = useState([]);
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+  const [fifthInfo, setFifthInfo]   = useState([]);
+  const [date, setDate]             = useState([]);
+  const [seventhInfo, setSeventhInfo] = useState([]);
+  const [eighthInfo, setEighthInfo]   = useState([]);
+  const COLORS = ['#2563eb', '#059669', '#d97706', '#dc2626'];
 
-  const renderCustomizedLabel = ({ name, percent }) => {
-  return `${name}: ${(percent * 100).toFixed(0)}%`;
-};
+  const renderCustomizedLabel = ({ name, percent }) =>
+    `${name}: ${(percent * 100).toFixed(0)}%`;
 
-const setAdmittedAndDischarged = (admitted,discharged) =>{
-  const dataMap = {};
-  admitted.forEach(({date,admission_count}) => {
-    if(!dataMap[date]) dataMap[date] = { date , admission_count : 0 , discharge_count : 0};
-    dataMap[date].admission_count = admission_count;
-  })
-  discharged.forEach(({date,discharge_count}) => {
-    if(date !== 'Pending'){
-      if(!dataMap[date]) dataMap[date] = { date , admission_count : 0 , discharge_count : 0};
-      dataMap[date].discharge_count = discharge_count;
-    }
-  })
-  return Object.values(dataMap).sort((a, b) => new Date(a.date) - new Date(b.date));
-}
-
+  const setAdmittedAndDischarged = (admitted, discharged) => {
+    const dataMap = {};
+    admitted.forEach(({ date, admission_count }) => {
+      if (!dataMap[date]) dataMap[date] = { date, admission_count: 0, discharge_count: 0 };
+      dataMap[date].admission_count = admission_count;
+    });
+    discharged.forEach(({ date, discharge_count }) => {
+      if (date !== 'Pending') {
+        if (!dataMap[date]) dataMap[date] = { date, admission_count: 0, discharge_count: 0 };
+        dataMap[date].discharge_count = discharge_count;
+      }
+    });
+    return Object.values(dataMap).sort((a, b) => new Date(a.date) - new Date(b.date));
+  };
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const res1 = await fetch('http://localhost:3000/firstChart');
-        const res2 = await fetch('http://localhost:3000/secondChart');
-        const res3 = await fetch('http://localhost:3000/thirdChart');
-        const res4 = await fetch('http://localhost:3000/fourthChart');
-        const res5 = await fetch('http://localhost:3000/fifthChart');
-        const res6 = await fetch('http://localhost:3000/sixthChart');
-        const res7 = await fetch('http://localhost:3000/seventhChart');
-        const res8 = await fetch(`http://localhost:3000/eighthChart`);
+        const [res1, res2, res3, res4, res5, res6, res7, res8] = await Promise.all([
+          authFetch(`${API_BASE_URL}/firstChart`),
+          authFetch(`${API_BASE_URL}/secondChart`),
+          authFetch(`${API_BASE_URL}/thirdChart`),
+          authFetch(`${API_BASE_URL}/fourthChart`),
+          authFetch(`${API_BASE_URL}/fifthChart`),
+          authFetch(`${API_BASE_URL}/sixthChart`),
+          authFetch(`${API_BASE_URL}/seventhChart`),
+          authFetch(`${API_BASE_URL}/eighthChart`),
+        ]);
         if (res1.ok && res2.ok && res3.ok && res4.ok && res5.ok && res6.ok && res7.ok && res8.ok) {
-          const data1 = await res1.json();
-          const data2 = await res2.json();
-          const data3 = await res3.json();
-          const data4 = await res4.json();
-          const data5 = await res5.json();
-          const data6 = await res6.json();
-          const data7 = await res7.json();
-          const data8 = await res8.json();
-          const parsedData4 = data4.map((d) => ({
-            ...d,
-            total_fee: Number(d.total_fee),
-          }));
-
+          const [data1, data2, data3, data4, data5, data6, data7, data8] = await Promise.all([
+            res1.json(), res2.json(), res3.json(), res4.json(),
+            res5.json(), res6.json(), res7.json(), res8.json(),
+          ]);
+          const parsedData4 = data4.map(d => ({ ...d, total_fee: Number(d.total_fee) }));
           setFirstInfo(data1);
           setSecondInfo(data2);
           setThirdInfo(data3);
           setFourthInfo(parsedData4);
           setFifthInfo(data5);
-          const admittedData = data6[0];
-          const dischargedData = data6[1];
-          const merged = setAdmittedAndDischarged(admittedData, dischargedData);
-          setDate(merged);
+          setDate(setAdmittedAndDischarged(data6[0], data6[1]));
           setSeventhInfo(data7);
           setEighthInfo(data8);
-        } else {
-          console.log('One or more responses are not OK');
         }
       } catch (err) {
-        console.error('Error is ', err);
+        console.error('Charts fetch error:', err);
       }
     }
     fetchData();
-    console.log("Seventh info is ",seventhInfo)
   }, []);
 
+  const chartCardSx = {
+    mb: 4, p: 2,
+    border: '1px solid #e2e8f0', borderRadius: 2,
+    backgroundColor: '#fff',
+  };
+
+  const SectionTitle = ({ children }) => (
+    <Typography variant="subtitle1" fontWeight={700} color="text.primary" mb={2}>
+      {children}
+    </Typography>
+  );
+
   return (
-    <div>
-      <div className='charts ml-[20%]'>
-      <div>
-        <h2 className="text-xl font-bold mb-4">Top 5 Tests By Count</h2>
-        <ResponsiveContainer width="100%" height={350}>
-          <BarChart
-            data={firstInfo}
-            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-            key="firstChart"
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="test_name" />
-            <YAxis />
-            <Tooltip />
-            <Bar dataKey="count" fill="#8884d8" />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
+    <Box>
+      {/* Page header */}
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 3 }}>
+        <Box sx={{
+          width: 40, height: 40, borderRadius: 2, display: 'flex',
+          alignItems: 'center', justifyContent: 'center',
+          background: 'linear-gradient(135deg,#2563eb,#0891b2)',
+          boxShadow: '0 4px 12px rgba(37,99,235,0.25)',
+        }}>
+          <BarChart3 size={20} color="#fff" />
+        </Box>
+        <Box>
+          <Typography variant="h5" fontWeight={700} color="text.primary">Analytics Dashboard</Typography>
+          <Typography variant="caption" color="text.secondary">Hospital performance charts and statistics</Typography>
+        </Box>
+      </Box>
 
-      <div>
-        <h2 className="text-xl font-bold mb-4">Top 5 Tests By Revenue</h2>
-        <ResponsiveContainer width="100%" height={350}>
-          <BarChart
-            data={secondInfo}
-            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-            key="secondChart"
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="test_name" />
-            <YAxis />
+      <Box sx={chartCardSx}>
+        <SectionTitle>Top 5 Tests By Count</SectionTitle>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={firstInfo} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+            <XAxis dataKey="test_name" tick={{ fontSize: 12 }} />
+            <YAxis tick={{ fontSize: 12 }} />
             <Tooltip />
-            <Bar dataKey="sum" fill="#82ca9d" />
+            <Bar dataKey="count" fill="#2563eb" radius={[3, 3, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
-      </div>
+      </Box>
 
-      <div>
-        <h2 className="text-xl font-bold mb-4">Top 5 Medical Items By Revenue</h2>
-        <ResponsiveContainer width="100%" height={350}>
-          <BarChart
-            data={thirdInfo}
-            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-            key="thirdChart"
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="drug_name" />
-            <YAxis domain={[0, 2500]} />
+      <Box sx={chartCardSx}>
+        <SectionTitle>Top 5 Tests By Revenue</SectionTitle>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={secondInfo} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+            <XAxis dataKey="test_name" tick={{ fontSize: 12 }} />
+            <YAxis tick={{ fontSize: 12 }} />
             <Tooltip />
-            <Bar dataKey="sum" fill="#ffc658" />
+            <Bar dataKey="sum" fill="#059669" radius={[3, 3, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
-      </div>
+      </Box>
 
-      <div>
-        <h2 className="text-xl font-bold mb-4">Top Doctors By Revenue</h2>
-        <ResponsiveContainer width="100%" height={350}>
-          <BarChart
-            data={fourthInfo}
-            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-            key="fourthChart"
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="DoctorName" />
-            <YAxis />
+      <Box sx={chartCardSx}>
+        <SectionTitle>Top 5 Medical Items By Revenue</SectionTitle>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={thirdInfo} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+            <XAxis dataKey="drug_name" tick={{ fontSize: 12 }} />
+            <YAxis domain={[0, 2500]} tick={{ fontSize: 12 }} />
             <Tooltip />
-            <Bar dataKey="total_fee" fill="#ff7300" />
+            <Bar dataKey="sum" fill="#d97706" radius={[3, 3, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
-      </div>
-  <div>
-  <h2 className="text-xl font-bold mb-4">Gender Patient Distribution</h2>
-  <ResponsiveContainer width="100%" height={350}>
-    <PieChart>
-      <Pie
-        data={fifthInfo}
-        dataKey="s_count"
-        nameKey="sex"
-        cx="50%"
-        cy="50%"
-        outerRadius={100}
-        fill="#8884d8"
-        label={renderCustomizedLabel}
-      >
-        {fifthInfo.map((entry, index) => (
-          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-        ))}
-      </Pie>
-    </PieChart>
-  </ResponsiveContainer>
-</div>
-      <div>
-        <h2 className="text-xl font-bold mb-4">Daily Patient Census Dashboard</h2>
-        <ResponsiveContainer width="100%" height={350}>
-          <BarChart
-            data={seventhInfo}
-            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-            key="seventhChart"
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="city_name" />
-            <YAxis />
+      </Box>
+
+      <Box sx={chartCardSx}>
+        <SectionTitle>Top Doctors By Revenue</SectionTitle>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={fourthInfo} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+            <XAxis dataKey="DoctorName" tick={{ fontSize: 12 }} />
+            <YAxis tick={{ fontSize: 12 }} />
             <Tooltip />
-            <Bar dataKey="count" name="Count" fill="#ff7300" />
+            <Bar dataKey="total_fee" fill="#7c3aed" radius={[3, 3, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
-      </div>
-      <div>
-        <h2 className="text-xl font-bold mb-4">Daily Patient Census Dashboard</h2>
-        <ResponsiveContainer width="100%" height={350}>
-          <BarChart
-            data={eighthInfo}
-            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-            key="eightChart"
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="age_group" />
-            <YAxis />
+      </Box>
+
+      <Box sx={chartCardSx}>
+        <SectionTitle>Gender Patient Distribution</SectionTitle>
+        <ResponsiveContainer width="100%" height={300}>
+          <PieChart>
+            <Pie
+              data={fifthInfo} dataKey="s_count" nameKey="sex"
+              cx="50%" cy="50%" outerRadius={110}
+              label={renderCustomizedLabel}
+            >
+              {fifthInfo.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+              ))}
+            </Pie>
             <Tooltip />
-            <Bar dataKey="count" name="Count" fill="#ff7300" />
+          </PieChart>
+        </ResponsiveContainer>
+      </Box>
+
+      <Box sx={chartCardSx}>
+        <SectionTitle>Patients by City</SectionTitle>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={seventhInfo} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+            <XAxis dataKey="city_name" tick={{ fontSize: 12 }} />
+            <YAxis tick={{ fontSize: 12 }} />
+            <Tooltip />
+            <Bar dataKey="count" name="Count" fill="#0891b2" radius={[3, 3, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
-      </div>
-      </div>
-    </div>
+      </Box>
+
+      <Box sx={chartCardSx}>
+        <SectionTitle>Patients by Age Group</SectionTitle>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={eighthInfo} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+            <XAxis dataKey="age_group" tick={{ fontSize: 12 }} />
+            <YAxis tick={{ fontSize: 12 }} />
+            <Tooltip />
+            <Bar dataKey="count" name="Count" fill="#dc2626" radius={[3, 3, 0, 0]} />
+          </BarChart>
+        </ResponsiveContainer>
+      </Box>
+    </Box>
   );
 }
 

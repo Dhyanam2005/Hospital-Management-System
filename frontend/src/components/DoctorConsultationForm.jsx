@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faP, faPlus } from "@fortawesome/free-solid-svg-icons";
 import deleteIcon from "../images/delete-icon.png";
 import API_BASE_URL from '../apiConfig';
+import { authFetch } from '../utils/authFetch';
 
 
 function DoctorConsultationForm({ regId}){
@@ -12,7 +13,6 @@ function DoctorConsultationForm({ regId}){
     const [rows, setRows] = useState([]);
     const [errorMessage,setErrorMessage] = useState('');
     const [regStatus , setRegStatus] = useState('');
-    const token = localStorage.getItem('token');
 
   useEffect(() => {
     const resetData = () => {
@@ -24,9 +24,9 @@ function DoctorConsultationForm({ regId}){
     useEffect(() => {
         const fetchData = async () => {
           try {
-            const doctorRes = await fetch(`${API_BASE_URL}/fetchInHouseDoctors`);    
+            const doctorRes = await authFetch(`${API_BASE_URL}/fetchInHouseDoctors`);
             const doctors = await doctorRes.json();
-            const regStatusRes = await fetch(`${API_BASE_URL}/regStatus?regId=${regId}`);
+            const regStatusRes = await authFetch(`${API_BASE_URL}/regStatus?regId=${regId}`);
             const regData = await regStatusRes.json();
     
             if (doctorRes.ok && regStatusRes.ok) {
@@ -52,7 +52,7 @@ function DoctorConsultationForm({ regId}){
 
         const fetchConsultations = async () => {
           try{
-              let res = await fetch(`${API_BASE_URL}/fetchConsultations?regId=${encodeURIComponent(regId)}`);
+              let res = await authFetch(`${API_BASE_URL}/fetchConsultations?regId=${encodeURIComponent(regId)}`);
               let data = await res.json();
               if(res.ok){
                 console.log("Length of data is ",data.length);
@@ -85,11 +85,10 @@ function DoctorConsultationForm({ regId}){
 
       const saveConsultations = async() => {
         try{
-          let res = await fetch(`${API_BASE_URL}/docConsultation`,{
+          let res = await authFetch(`${API_BASE_URL}/docConsultation`,{
             method: "POST",
-            headers: { 
+            headers: {
               "Content-Type": "application/json",
-              "Authorization": `Bearer ${token}`,
              },
             body: JSON.stringify({ regId , consultation : rows })
           });
@@ -119,9 +118,9 @@ function DoctorConsultationForm({ regId}){
 
         console.log("DeleteRows is called and id is ",id);
         try{
-          let res = await fetch(`${API_BASE_URL}/docConsultation/${id}`,{
+          let res = await authFetch(`${API_BASE_URL}/docConsultation/${id}`,{
             method: "DELETE",
-            headers: { 
+            headers: {
               "Content-Type": "application/json",
              },
           });

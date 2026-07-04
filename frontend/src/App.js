@@ -1,5 +1,5 @@
 import React , { useEffect} from 'react';
-import { BrowserRouter as Router, Route, Routes, Outlet, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Outlet, Navigate, useLocation } from 'react-router-dom';
 import Login from './pages/LoginPage';
 import Home from "./pages/HomePage";
 import UserList from './pages/UserList';
@@ -41,36 +41,48 @@ import DailyEarnings from './pages/DailyEarnings';
 import OTP from './pages/OTP';
 import NotFound from './pages/PageNotFound';
 import MasterDataImport from './components/ImportFile';
-import { allowedLabelsByRole } from './utils/allowedLabels';
+import PatientDocuments from './pages/PatientDocuments';
+import DocumentMasterPage from './pages/DocumentMasterPage';
+import PatientTimeline from './pages/PatientTimeline';
+import MedicalCertificatePage from './pages/MedicalCertificatePage';
+import QueueManagement from './pages/QueueManagement';
+import RoleManagement from './pages/RoleManagement';
+import RolePermissions from './pages/RolePermissions';
+import UserRoleMapping from './pages/UserRoleMapping';
+import LoginAudit from './pages/LoginAudit';
+import { MenuProvider, useMenu } from './context/MenuContext';
+import NotificationBell from './components/NotificationBell';
+
+function collectMenuUrls(nodes, out = new Set()) {
+  nodes.forEach(n => {
+    if (n.MENU_URL) out.add(n.MENU_URL);
+    if (n.children?.length) collectMenuUrls(n.children, out);
+  });
+  return out;
+}
 
 const FullyProtectedRoute = ({ children, label }) => {
-  const [loading, setLoading] = React.useState(true);
-  const [isAuthenticated, setAuthenticated] = React.useState(false);
+  const [loading, setLoading]         = React.useState(true);
+  const [isAuthenticated, setAuth]    = React.useState(false);
+  const { menuTree, loading: menuLoading } = useMenu();
+  const location = useLocation();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const userType = parseInt(localStorage.getItem("user_type"));
-    console.log("Fully protected route called");
-    console.log("Token:", token);
-    console.log("User type:", userType);
-
-    if (token) {
-      setAuthenticated(true);
-    } else {
-      setAuthenticated(false);
-    }
+    const token = localStorage.getItem('token');
+    setAuth(!!token);
     setLoading(false);
   }, []);
 
-  if (loading) return null; // or a loader
-
+  if (loading || menuLoading) return null;
   if (!isAuthenticated) return <Navigate to="/login" replace />;
 
-  if (label) {
-    const userType = parseInt(localStorage.getItem("user_type"));
-    if (userType === 1) return children;
-    const allowedLabels = allowedLabelsByRole[userType] || [];
-    if (!allowedLabels.includes(label)) return <Navigate to="/not-found" replace />;
+  // Route-level permission check: only for labeled routes and non-superadmin users
+  const isSuperAdmin = localStorage.getItem('isSuperAdmin') === 'true';
+  if (label && !isSuperAdmin && menuTree.length > 0) {
+    const allowedUrls = collectMenuUrls(menuTree);
+    if (!allowedUrls.has(location.pathname)) {
+      return <Navigate to="/not-found" replace />;
+    }
   }
 
   return children;
@@ -79,18 +91,29 @@ const FullyProtectedRoute = ({ children, label }) => {
 
 
 function Layout() {
-
-  console.log("App started");
-  console.log("Token on app start:", localStorage.getItem("token"));  
   return (
     <div className="flex">
       <Sidebar />
-      <div className="flex-1 p-4">
-        <div className='flex items-center justify-between'>
+      <div className="flex-1 ml-[20%]" style={{ minHeight: '100vh', backgroundColor: '#f0f4f8' }}>
+        {/* Top header bar */}
+        <div style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          padding: '0 24px', height: 56,
+          backgroundColor: '#ffffff',
+          borderBottom: '1px solid #e2e8f0',
+          boxShadow: '0 1px 4px rgba(15,23,42,0.06)',
+          position: 'sticky', top: 0, zIndex: 99,
+        }}>
           <Breadcrumb />
-          <ProfileButton />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+            <NotificationBell />
+            <ProfileButton />
+          </div>
         </div>
-        <Outlet />
+        {/* Page content */}
+        <div style={{ padding: '24px' }}>
+          <Outlet />
+        </div>
       </div>
     </div>
   );
@@ -98,6 +121,7 @@ function Layout() {
 
 function App() {
   return (
+    <MenuProvider>
     <Router>
       <Routes>
         <Route path="/login" element={<Login />} />
@@ -138,10 +162,20 @@ function App() {
           <Route path="/audit-master" element={<FullyProtectedRoute label="Audit Master"><AuditMaster /></FullyProtectedRoute>} />
           <Route path="/daily-earnings" element={<FullyProtectedRoute label="Daily Earnings"><DailyEarnings /></FullyProtectedRoute>} />
           <Route path="/import-file" element={<FullyProtectedRoute label="Import data"><MasterDataImport /></FullyProtectedRoute>} />
+          <Route path="/patient-documents" element={<FullyProtectedRoute label="Patient Documents"><PatientDocuments /></FullyProtectedRoute>} />
+          <Route path="/document-master" element={<FullyProtectedRoute label="Document Master"><DocumentMasterPage /></FullyProtectedRoute>} />
+          <Route path="/patient-timeline" element={<FullyProtectedRoute label="Patient Timeline"><PatientTimeline /></FullyProtectedRoute>} />
+          <Route path="/medical-certificates" element={<FullyProtectedRoute label="Medical Certificates"><MedicalCertificatePage /></FullyProtectedRoute>} />
+          <Route path="/queue-management" element={<FullyProtectedRoute label="Queue Management"><QueueManagement /></FullyProtectedRoute>} />
+          <Route path="/role" element={<FullyProtectedRoute label="Role"><RoleManagement /></FullyProtectedRoute>} />
+          <Route path="/role-permission" element={<FullyProtectedRoute label="Role Permissions"><RolePermissions /></FullyProtectedRoute>} />
+          <Route path="/user-role-mapping" element={<FullyProtectedRoute label="User Role Mapping"><UserRoleMapping /></FullyProtectedRoute>} />
+          <Route path="/reports/login-audit" element={<FullyProtectedRoute label="Login Audit"><LoginAudit /></FullyProtectedRoute>} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
     </Router>
+    </MenuProvider>
   );
 }
 

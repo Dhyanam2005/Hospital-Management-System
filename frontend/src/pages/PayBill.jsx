@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styles from "./PayBill.module.css";
 import API_BASE_URL from '../apiConfig';
+import { authFetch } from '../utils/authFetch';
 
 function PayBill({ regId }) {
     const [billInfo, setBillInfo] = useState({});
@@ -20,8 +21,8 @@ function PayBill({ regId }) {
             setBillInfo("");
             setPaymentData("");
             try {
-                let res = await fetch(`${API_BASE_URL}/payBill?regId=${regId}`);
-                const regStatusRes = await fetch(`${API_BASE_URL}/regStatus?regId=${regId}`);
+                let res = await authFetch(`${API_BASE_URL}/payBill?regId=${regId}`);
+                const regStatusRes = await authFetch(`${API_BASE_URL}/regStatus?regId=${regId}`);
                 const regData = await regStatusRes.json();
                 let data = await res.json();
                 if (res.ok && regStatusRes.ok) {
@@ -51,13 +52,11 @@ function PayBill({ regId }) {
     const totalPayable = totalCharges - (Number(discount) || Number(paymentData?.DISCOUNT) || 0);
 
     const saveInfo = async () => {
-        const token = localStorage.getItem('token');
         try {
-            let res = await fetch(`${API_BASE_URL}/payBill?regId=${regId}`, {
+            let res = await authFetch(`${API_BASE_URL}/payBill?regId=${regId}`, {
                 method: "POST",
-                headers: { 
+                headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
                 },
                 body: JSON.stringify({
                     billInfo,
@@ -80,13 +79,11 @@ function PayBill({ regId }) {
     };
 
     const handleRazorpayPayment = async () => {
-    const token = localStorage.getItem("token");
     try {
-        const res = await fetch(`${API_BASE_URL}/create-order`, {
+        const res = await authFetch(`${API_BASE_URL}/create-order`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
             amount: totalPayable,
@@ -106,11 +103,10 @@ function PayBill({ regId }) {
         handler: async function (response) {
             alert("Payment Success: " + response.razorpay_payment_id);
 
-            const payRes = await fetch(`${API_BASE_URL}/verify`, {
+            const payRes = await authFetch(`${API_BASE_URL}/verify`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify({
                 razorpay_payment_id : response.razorpay_payment_id

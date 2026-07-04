@@ -16,7 +16,7 @@ function authenticateJWT(req, res, next) {
     return res.status(401).json({ message: 'Access Denied: No token provided' });
   }
 
-  jwt.verify(token, "your-secret-key", (err, user) => {
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
     if (err) {
       console.log("JWT verification failed:", err.message);
       return res.status(403).json({ message: 'Access Denied: Invalid token' });

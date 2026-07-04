@@ -1,25 +1,12 @@
 const express = require('express');
-const jwt = require('jsonwebtoken');
 const db = require('../config/db');
+const { authenticateJWT } = require('./authenticateJWT');
 const router = express.Router();
-
-function authenticateJWT(req, res, next) {
-    const token = req.header('Authorization')?.split(' ')[1];
-    if (!token) {
-        return res.status(401).json({ message: 'Access Denied: No token provided' });
-    }
-
-    jwt.verify(token, "your-secret-key", (err, user) => {
-        if (err) return res.status(403).json({ message: 'Access Denied: Invalid token' });
-        req.user = user;
-        next();
-    });
-}
 
 router.get("/user", authenticateJWT, (req, res) => {
     const userId = req.user.id;
 
-    db.query('SELECT * FROM user WHERE user_id = ?', [userId], (err, results) => {
+    db.query('SELECT user_id, user_name, user_email, created_at FROM user WHERE user_id = ?', [userId], (err, results) => {
         if (err) {
             return res.status(500).send('Database error');
         } else if (results.length === 0) {
@@ -35,8 +22,6 @@ router.post("/doctor", authenticateJWT, (req, res) => {
     userId = parseInt(userId);
 
     let { doctorName, email, phone, address, qualification, specialization, licenseNumber , docType } = req.body;
-console.log({doctorName,email,phone,address,qualification,specialization,licenseNumber,userId});
-
     if (!doctorName || !email || !phone || !address || !qualification || !specialization || !licenseNumber || !docType) {
         return res.status(400).json({ message: "Invalid credentials" });
     }

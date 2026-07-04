@@ -3,7 +3,7 @@ import { DataGrid } from '@mui/x-data-grid';
 
 const GenericMasterTableViewForRegistration = ({ columns, rows }) => {
   return (
-    <div style={{ padding: '1rem', marginLeft: '20%' }}>
+    <div style={{ padding: '0' }}>
       <div
         style={{
           width: '100%',

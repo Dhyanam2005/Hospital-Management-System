@@ -1,21 +1,10 @@
 const express = require('express')
 const router = express.Router()
 const db = require('../config/db')
-const jwt = require('jsonwebtoken')
 const { insertIntoAuditLog } = require('./auditLog');
+const { authenticateJWT } = require('./authenticateJWT');
 
-function authenticateJWT(req, res, next) {
-  const token = req.header('Authorization')?.split(' ')[1]
-  if (!token) return res.status(401).json({ message: 'You are not logged in yet' })
-
-  jwt.verify(token, "your-secret-key", (err, user) => {
-    if (err) return res.status(403).json({ message: 'Access Denied: Invalid token' })
-    req.user = user
-    next()
-  })
-}
-
-router.get("/beds", (req, res) => {
+router.get("/beds", authenticateJWT, (req, res) => {
   db.query(
     `select b.bed_id, concat(w.ward_name, ?, r.room_number, ?, b.bed_number) as bed
      from ward w, ward_room r, ward_room_bed b
@@ -30,7 +19,7 @@ router.get("/beds", (req, res) => {
   )
 })
 
-router.get("/fetchAdmission", (req, res) => {
+router.get("/fetchAdmission", authenticateJWT, (req, res) => {
   const { regId } = req.query
   db.query(
     `SELECT d.name, DATE_FORMAT(a.admission_date, '%Y-%m-%d') AS admission_date,
@@ -66,7 +55,7 @@ router.post("/admission", authenticateJWT, (req, res) => {
   const userId = req.user.id
 
   db.query(`SELECT * FROM admission WHERE reg_id = ?`, [regId], (err, rows) => {
-    if (err) return res.status(500).json({ message: "Fetch old admission failed", error: err })
+    if (err) return res.status(500).json({ message: "Fetch old admission failed", error: 'Internal server error' })
 
     const isUpdate = rows.length > 0
     const oldDataRaw = isUpdate ? rows[0] : null
@@ -117,7 +106,7 @@ router.post("/admission", authenticateJWT, (req, res) => {
     `
 
     db.query(query, admissionData, (err, result) => {
-      if (err) return res.status(500).json({ message: "Insert/Update failed", error: err })
+      if (err) return res.status(500).json({ message: "Insert/Update failed", error: 'Internal server error' })
 
       let newDataChanged = {}
       if (oldDataRaw) {
@@ -161,14 +150,14 @@ router.post("/admission", authenticateJWT, (req, res) => {
       }, err => {
         if (err) {
           console.error(err)
-          return res.status(500).json({ message: "Audit log failed", error: err })
+          return res.status(500).json({ message: "Audit log failed", error: 'Internal server error' })
         }
 
         db.query(`UPDATE ward_room_bed SET bed_status = "O" WHERE bed_id = ?`, [selectedBed], err => {
-          if (err) return res.status(500).json({ message: "Bed update failed", error: err })
+          if (err) return res.status(500).json({ message: "Bed update failed", error: 'Internal server error' })
 
           db.query(`UPDATE registration SET reg_status = "A" WHERE reg_id = ?`, [regId], err => {
-            if (err) return res.status(500).json({ message: "Registration update failed", error: err })
+            if (err) return res.status(500).json({ message: "Registration update failed", error: 'Internal server error' })
 
             res.json({ message: "Admission Inserted/Updated with audit log" })
           })

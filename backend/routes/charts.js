@@ -1,8 +1,9 @@
 const express = require('express');
 const db = require("../config/db");
 const router = express.Router();
+const { authenticateJWT } = require('./authenticateJWT');
 
-router.get("/firstChart",(req,res) => {
+router.get("/firstChart", authenticateJWT, (req,res) => {
     db.query(
         `SELECT t.test_name, COUNT(td.test_id) AS count
          FROM test_detail td , test t
@@ -16,7 +17,7 @@ router.get("/firstChart",(req,res) => {
     )
 })
 
-router.get("/secondChart",(req,res) => {
+router.get("/secondChart", authenticateJWT, (req,res) => {
     db.query(
         `SELECT t.test_name, SUM(t.test_charge) AS sum
          FROM test_detail td , test t
@@ -30,7 +31,7 @@ router.get("/secondChart",(req,res) => {
     )
 })
 
-router.get("/thirdChart",(req,res) => {
+router.get("/thirdChart", authenticateJWT, (req,res) => {
     db.query(
         `select d.drug_name , sum(m.item_value) as sum
         from medical_item m,drug_master d
@@ -44,7 +45,7 @@ router.get("/thirdChart",(req,res) => {
     )
 })
 
-router.get("/fourthChart",(req,res) => {
+router.get("/fourthChart", authenticateJWT, (req,res) => {
     db.query(
         `SELECT 
     d.name AS DoctorName,
@@ -77,7 +78,7 @@ LIMIT 5;
     )
 })
 
-router.get("/fifthChart",(req,res) => {
+router.get("/fifthChart", authenticateJWT, (req,res) => {
     db.query(
         `select case
 when sex = "M" then "Male"
@@ -93,7 +94,7 @@ GROUP By sex;`,(err,result) => {
     )
 })
 
-router.get("/sixthChart",(req,res) => {
+router.get("/sixthChart", authenticateJWT, (req,res) => {
     db.query(
         `select
         count(*) as admission_count,
@@ -116,7 +117,7 @@ router.get("/sixthChart",(req,res) => {
     )
 })
 
-router.get("/seventhChart",(req,res) => {
+router.get("/seventhChart", authenticateJWT, (req,res) => {
     db.query(
         `select c.city_name,count(*) as count
 from city c,patient p,state s
@@ -129,7 +130,7 @@ group by c.city_name;`,(err,result) => {
     )
 })
 
-router.get("/eighthChart",(req,res) => {
+router.get("/eighthChart", authenticateJWT, (req,res) => {
     db.query(
         `SELECT 
         CASE 

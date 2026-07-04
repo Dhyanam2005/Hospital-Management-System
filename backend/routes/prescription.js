@@ -4,7 +4,7 @@ const db = require("../config/db");
 const { insertIntoAuditLog } = require('./auditLog');
 const { authenticateJWT } = require("./authenticateJWT");
 
-router.get("/fetchLatestRegPatient",(req,res) => {
+router.get("/fetchLatestRegPatient", authenticateJWT, (req,res) => {
     db.query(
         `select r.patient_id , MAX(r.reg_id) as reg_id , p.name
         from registration r,patient p
@@ -16,7 +16,7 @@ router.get("/fetchLatestRegPatient",(req,res) => {
     )
 })
 
-router.get("/fetch-prescription",(req,res) => {
+router.get("/fetch-prescription", authenticateJWT, (req,res) => {
     const { date, doc, reg } = req.query;
     console.log(req.query);
 
@@ -48,7 +48,7 @@ WHERE
     )
 })
 
-router.post("/prescription", async (req, res) => {
+router.post("/prescription", authenticateJWT, async (req, res) => {
   const { prescriptions, selectedDate, selectedDoctor, selectedPatientRegId } = req.body;
   console.log(req.body);
   if (!prescriptions || !Array.isArray(prescriptions) || prescriptions.length === 0) {
@@ -124,7 +124,7 @@ router.post("/prescription", async (req, res) => {
 
 
 
-router.delete("/prescription/:id", (req, res) =>{
+router.delete("/prescription/:id", authenticateJWT, (req, res) =>{
   let prescription_detail_id = req.params.id;
   db.query(`DELETE FROM prescription_detail where prescription_detail_id = ?`,[prescription_detail_id],(err,result) => {
     if(err){

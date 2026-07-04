@@ -1,19 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const jwt = require('jsonwebtoken');
 const db = require('../config/db');
 const { insertIntoAuditLog } = require('./auditLog');
-
-function authenticateJWT(req, res, next) {
-    const token = req.header('Authorization')?.split(' ')[1];
-    if (!token) return res.status(401).json({ message: 'Access Denied: No token provided' });
-
-    jwt.verify(token, "your-secret-key", (err, user) => {
-        if (err) return res.status(403).json({ message: 'Access Denied: Invalid token' });
-        req.user = user;
-        next();
-    });
-}
+const { authenticateJWT } = require('./authenticateJWT');
 
 function calculateAge(dob) {
     const [day, month, year] = dob.split('-').map(Number);

@@ -38,6 +38,18 @@ const masterDataRouter = require("./routes/masterData");
 const regStatusRouter = require("./routes/reg_status");
 const importMasterDataRouter = require("./routes/import");
 const razorPayRouter = require("./routes/razorpay");
+const documentMasterRouter = require("./routes/documentMaster");
+const patientDocumentsRouter = require("./routes/patientDocuments");
+const menuRouter = require("./routes/menu");
+const roleManagementRouter = require("./routes/roleManagement");
+const rolePermissionsRouter = require("./routes/rolePermissions");
+const userRoleMappingRouter = require("./routes/userRoleMapping");
+const loginAuditRouter = require("./routes/loginAudit");
+const chatbotRouter = require("./routes/chatbot");
+const patientTimelineRouter = require("./routes/patientTimeline");
+const medicalCertificateRouter = require("./routes/medicalCertificate");
+const queueRouter = require("./routes/queue");
+const notificationsRouter = require("./routes/notifications");
 
 const app = express();
 
@@ -56,11 +68,24 @@ const corsOptions = {
   }
 };
 
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 
 
+
 app.use("/",razorPayRouter);
+app.use("/",menuRouter);
+app.use("/",roleManagementRouter);
+app.use("/",rolePermissionsRouter);
+app.use("/",userRoleMappingRouter);
+app.use("/",loginAuditRouter);
+app.use("/",chatbotRouter);
+app.use("/",patientTimelineRouter);
+app.use("/",medicalCertificateRouter);
+app.use("/",queueRouter);
+app.use("/",notificationsRouter);
+app.use("/",documentMasterRouter);
+app.use("/",patientDocumentsRouter);
 app.use("/",importMasterDataRouter);
 app.use("/",regStatusRouter);
 app.use("/",masterDataRouter);

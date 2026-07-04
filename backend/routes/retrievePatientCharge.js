@@ -1,25 +1,11 @@
 const express = require('express');
-const jwt = require('jsonwebtoken');
 const router = express.Router();
 const db = require("../config/db");
 const { insertIntoAuditLog }= require("./auditLog");
 const { use } = require('react');
+const { authenticateJWT } = require('./authenticateJWT');
 
-function authenticateJWT(req, res, next) {
-    const token = req.header('Authorization')?.split(' ')[1];
-    if (!token) {
-        console.log("No token")
-        return res.status(401).json({ message: 'Access Denied: No token provided' });
-    }
-
-    jwt.verify(token, "your-secret-key", (err, user) => {
-        if (err) return res.status(403).json({ message: 'Access Denied: Invalid token' });
-        req.user = user;
-        next();
-    });
-}
-
-router.get("/fetchServices",(req,res) => {
+router.get("/fetchServices", authenticateJWT, (req,res) => {
     db.query(
         `SELECT * from service`,(err,result) => {
             if(err) return res.json({ message : "Error"});
@@ -28,7 +14,7 @@ router.get("/fetchServices",(req,res) => {
     )
 })
 
-router.get("/fetchPatientCharges",(req,res) => {
+router.get("/fetchPatientCharges", authenticateJWT, (req,res) => {
     let { regId } = req.query;
     db.query(
         `SELECT s.service_name,p.service_id,DATE_FORMAT(p.service_date, '%Y-%m-%d') as service_date,p.service_amt,p.reg_id,p.doc_id,d.name,"No" as update_flag,p.charge_id

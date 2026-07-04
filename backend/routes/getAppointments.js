@@ -7,8 +7,8 @@ const { authenticateJWT } = require("./authenticateJWT");
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'jdhyanam@gmail.com',
-    pass: 'ansy kflc ibwc zlqm'
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_PASS
   }
 });
 
@@ -35,7 +35,7 @@ async function sendDeleteMail(toEmail, doctorName, appointmentTime, appointmentD
 }
 
 
-router.get("/appointmentlist",(req,res) => {
+router.get("/appointmentlist", authenticateJWT, (req,res) => {
     let {doc_id,appointment_date} = req.query;
     console.log("Doc id is ",doc_id," Appointment id is",appointment_date);
     db.query(
@@ -147,7 +147,7 @@ router.post("/appointment", authenticateJWT, async (req, res) => {
 });
 
 
-router.delete("/appointment/:id",(req,res) => {
+router.delete("/appointment/:id", authenticateJWT, (req,res) => {
     let id = req.params.id;
     console.log(id);
     if(id !== null){

@@ -1,24 +1,10 @@
 const express = require('express');
-const jwt = require('jsonwebtoken');
 const router = express.Router();
 const db = require("../config/db");
 const { insertIntoAuditLog } = require('./auditLog');
+const { authenticateJWT } = require('./authenticateJWT');
 
-function authenticateJWT(req, res, next) {
-    const token = req.header('Authorization')?.split(' ')[1];
-    if (!token) {
-        console.log("No token")
-        return res.status(401).json({ message: 'Access Denied: No token provided' });
-    }
-
-    jwt.verify(token, "your-secret-key", (err, user) => {
-        if (err) return res.status(403).json({ message: 'Access Denied: Invalid token' });
-        req.user = user;
-        next();
-    });
-}
-
-router.get("/fetchMedicines",(req,res) => {
+router.get("/fetchMedicines", authenticateJWT, (req,res) => {
     db.query(
         `SELECT * from drug_master`,(err,result) => {
             if(err) return res.json({ message : "Error"});
@@ -27,7 +13,7 @@ router.get("/fetchMedicines",(req,res) => {
     )
 })
 
-router.get("/fetchMedicalItems  ",(req,res) => {
+router.get("/fetchMedicalItems  ", authenticateJWT, (req,res) => {
     let { regId } = req.query;
     db.query(
         `select m.medical_item_id , m.drug_id,d.drug_name as medicineName , DATE_FORMAT(m.issue_date, '%Y-%m-%d') as date , m.item_qty,m.item_price,m.item_value, "No" as update_flag

@@ -8,6 +8,7 @@ import {
 } from "@react-pdf/renderer";
 import styles from "./pdfStyles";
 import API_BASE_URL from '../apiConfig';
+import { authFetch } from '../utils/authFetch';
 
 
 const MyDoc = ({ patientInfo, testDetails}) => {
@@ -150,7 +151,7 @@ function PDF() {
   useEffect(() => {
     const fetchPatDetails = async () => {
       try {
-        const res = await fetch(`${API_BASE_URL}/patientpdf`);
+        const res = await authFetch(`${API_BASE_URL}/patientpdf`);
         const data = await res.json();
         if (res.ok && data.length > 0) {
           setPatientInfo(data[0]);
@@ -165,7 +166,7 @@ function PDF() {
   useEffect(() => {
     const fetchPatTestDetails = async () => {
       try {
-        const res = await fetch(`${API_BASE_URL}/testpdf`);
+        const res = await authFetch(`${API_BASE_URL}/testpdf`);
         const data = await res.json();
         if (res.ok) {
           setTestDetails(data);

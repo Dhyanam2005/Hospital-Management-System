@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./AdmissionForm.module.css";
 import API_BASE_URL from '../apiConfig';
+import { authFetch } from '../utils/authFetch';
 
 
 function NewAdmission({ regId }) {
@@ -26,7 +27,7 @@ function NewAdmission({ regId }) {
   useEffect(() => {
     async function fetchDoctors() {
       try {
-        const res = await fetch(`${API_BASE_URL}/fetchInHouseDoctors`);
+        const res = await authFetch(`${API_BASE_URL}/fetchInHouseDoctors`);
         const data = await res.json();
         if (res.ok) {
           setDoctors(data);
@@ -55,12 +56,12 @@ function NewAdmission({ regId }) {
     setFetchAdmission(false);
     setErrorMessage("");
       try {
-        const res = await fetch(
+        const res = await authFetch(
           `${API_BASE_URL}/fetchAdmission?regId=${encodeURIComponent(
             regId
           )}`
         );
-        const regStatusRes = await fetch(`${API_BASE_URL}/regStatus?regId=${regId}`);
+        const regStatusRes = await authFetch(`${API_BASE_URL}/regStatus?regId=${regId}`);
         const regData = await regStatusRes.json();
         const data = await res.json();
 
@@ -94,7 +95,7 @@ function NewAdmission({ regId }) {
   useEffect(() => {
     async function fetchBeds() {
       try {
-        const res = await fetch(`${API_BASE_URL}/beds`);
+        const res = await authFetch(`${API_BASE_URL}/beds`);
         const data = await res.json();
         if (res.ok) {
           setVacantBeds(data);
@@ -118,11 +119,10 @@ function NewAdmission({ regId }) {
     }
 
     try {
-      const res = await fetch(`${API_BASE_URL}/admission`, {
+      const res = await authFetch(`${API_BASE_URL}/admission`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           doctor,

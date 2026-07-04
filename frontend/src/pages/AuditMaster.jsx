@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import GenericMasterTableView from "../components/MasterDataTable";
 import { Container } from '@mui/material';
 import API_BASE_URL from '../apiConfig';
+import { authFetch } from '../utils/authFetch';
 
 
 function AuditMaster() {
@@ -10,7 +11,7 @@ function AuditMaster() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                let res = await fetch(`${API_BASE_URL}/audit-master`);
+                let res = await authFetch(`${API_BASE_URL}/audit-master`);
                 console.log(`${API_BASE_URL}/audit-master`);
                 let data = await res.json();
 

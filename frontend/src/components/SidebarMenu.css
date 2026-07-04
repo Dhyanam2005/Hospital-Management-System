@@ -1,14 +1,147 @@
-.sidebar-menu{
-    width: 20%;
-    position: fixed;
-    z-index: 100;
+.sidebar-menu {
+  width: 20%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  z-index: 100;
+  background-color: #0f2044;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #1e3a5f #0f2044;
 }
 
-.submenu-link{
-    margin-left: 10%;
-    font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+/* ── Brand strip ─────────────────────────────────────────────────────────── */
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 16px 14px;
+  border-bottom: 1px solid #1e3a5f;
+  margin-bottom: 6px;
+  flex-shrink: 0;
+}
+.sidebar-brand-icon {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, #2563eb, #0891b2);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(37,99,235,0.4);
+}
+.sidebar-brand-text {
+  line-height: 1.2;
+}
+.sidebar-brand-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.01em;
+}
+.sidebar-brand-sub {
+  font-size: 10px;
+  color: #64748b;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
-.icon{
-    margin-right: 20px;
+/* ── Top-level menu item ──────────────────────────────────────────────────── */
+.menu-top-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  padding: 9px 14px;
+  border-radius: 8px;
+  margin: 2px 8px;
+  color: #94a3b8;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  transition: background 0.15s, color 0.15s;
 }
+.menu-top-item:hover {
+  background-color: #1a3a6c;
+  color: #e2e8f0;
+}
+.menu-top-item.open {
+  background-color: #132d5e;
+  color: #ffffff;
+}
+
+.menu-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ── Icon ─────────────────────────────────────────────────────────────────── */
+.icon {
+  width: 16px;
+  text-align: center;
+  color: #64748b;
+  flex-shrink: 0;
+  transition: color 0.15s;
+}
+.menu-top-item:hover .icon,
+.menu-top-item.open  .icon { color: #60a5fa; }
+
+/* ── Submenu list ─────────────────────────────────────────────────────────── */
+.submenu-link {
+  list-style: none;
+  margin: 2px 8px 4px 14px;
+  padding: 0;
+  border-left: 2px solid #1e3a5f;
+}
+
+/* ── Leaf link (depth 1) ──────────────────────────────────────────────────── */
+.submenu-link li a.your-link-styles,
+.submenu-leaf-link {
+  display: block;
+  padding: 7px 14px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #94a3b8;
+  border-radius: 0 6px 6px 0;
+  text-decoration: none;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+  border-left: 2px solid transparent;
+  margin-left: -2px;
+}
+.submenu-link li a.your-link-styles:hover,
+.submenu-leaf-link:hover {
+  background-color: #132d5e;
+  color: #e2e8f0;
+  border-left-color: #2563eb;
+}
+
+/* ── Depth ≥ 2 hover ──────────────────────────────────────────────────────── */
+.submenu-link .hover\:text-white:hover {
+  color: #ffffff !important;
+  background-color: #132d5e;
+  padding: 5px 12px;
+  border-radius: 6px;
+  display: block;
+}
+
+/* ── Nested group title (depth 1 with children) ───────────────────────────── */
+.submenu-group-title {
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 8px 14px 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+.submenu-group-title:hover { color: #94a3b8; }

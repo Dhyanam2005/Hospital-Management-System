@@ -1,22 +1,9 @@
 const express = require('express');
-const jwt = require('jsonwebtoken');
 const db = require("../config/db");
 const { findUserById } = require("../models/userIdModel");
 const bcrypt = require('bcryptjs');
+const { authenticateJWT } = require('./authenticateJWT');
 const router = express.Router();
-
-function authenticateJWT(req, res, next) {
-    const token = req.header('Authorization')?.split(' ')[1];
-    if (!token) {
-        return res.status(401).json({ message: 'You are not logged in yet' });
-    }
-
-    jwt.verify(token, "your-secret-key", (err, user) => {
-        if (err) return res.status(403).json({ message: 'Access Denied: Invalid token' });
-        req.user = user;
-        next();
-    });
-}
 
 router.post("/changepassword", authenticateJWT, async (req, res) => {
     const userId = req.user.id;
@@ -40,8 +27,6 @@ router.post("/changepassword", authenticateJWT, async (req, res) => {
         }
 
         if (newPassword !== confirmPassword) {
-            console.log("Submitted old password:", oldPassword);
-            console.log("Stored password in DB:", user.password);
             return res.status(400).json({ message: 'New and confirm password do not match' });
         }
 

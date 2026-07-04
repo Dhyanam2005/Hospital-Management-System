@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { data } from 'react-router-dom';
 
 function MasterDataImport(){
@@ -50,7 +50,7 @@ const handleUpload = async () => {
 };
 
     return (
-        <div className="p-4 ml-[20%]">
+        <div className="p-4">
             {successMessage && (
                 <div className="p-3 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded w-72 text-center mb-4 mx-auto block">
                     {successMessage}
@@ -90,3 +90,4 @@ const handleUpload = async () => {
 }
 
 export default MasterDataImport;
+

@@ -1,18 +1,137 @@
-.login-form{
-    background-color: white;
-    padding: 1.5rem;
-    max-width: 400px;
-    border-radius: 0.5rem;
-    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    margin-top: 7rem;
+/* ── Login page shell ────────────────────────────────────────────────────── */
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0f2044 0%, #1a3a6c 40%, #1d4ed8 100%);
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
 }
 
-.login-button{
-    background-color: rgb(26, 255, 212);
-    border-radius: 0.5rem;
-    width: 10rem;
-    height: 2rem;
-    text-align: center;
-    margin-top: 2rem;
+/* decorative blurred circles */
+.container::before,
+.container::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.08;
+  background: #ffffff;
+  pointer-events: none;
+}
+.container::before {
+  width: 500px; height: 500px;
+  top: -150px; left: -150px;
+}
+.container::after {
+  width: 400px; height: 400px;
+  bottom: -100px; right: -100px;
+}
+
+/* ── Hospital branding above the card ────────────────────────────────────── */
+.login-brand {
+  text-align: center;
+  margin-bottom: 24px;
+  position: relative;
+  z-index: 1;
+}
+.login-brand-icon {
+  font-size: 48px;
+  line-height: 1;
+  margin-bottom: 8px;
+  filter: drop-shadow(0 4px 12px rgba(255,255,255,0.2));
+}
+.login-brand-name {
+  font-size: 22px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 0.02em;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+.login-brand-tagline {
+  font-size: 12px;
+  color: #93c5fd;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+/* ── Card ────────────────────────────────────────────────────────────────── */
+.login-form {
+  background-color: #ffffff;
+  padding: 36px 32px 28px;
+  max-width: 400px;
+  width: 100%;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  position: relative;
+  z-index: 1;
+}
+
+.login-form h1 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 4px;
+}
+
+/* ── Input fields ─────────────────────────────────────────────────────────── */
+.login-form input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #0f172a;
+  background: #f8fafc;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+  margin-top: 6px;
+}
+.login-form input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  background: #ffffff;
+}
+
+/* ── Submit button ────────────────────────────────────────────────────────── */
+.login-button {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  width: 100%;
+  height: 44px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+  transition: box-shadow 0.2s, transform 0.1s;
+  margin-top: 24px;
+}
+.login-button:hover {
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.45);
+  transform: translateY(-1px);
+}
+.login-button:active { transform: translateY(0); }
+
+/* ── Divider ──────────────────────────────────────────────────────────────── */
+.login-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 20px 0 16px;
+  color: #94a3b8;
+  font-size: 12px;
+}
+.login-divider::before,
+.login-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #e2e8f0;
 }

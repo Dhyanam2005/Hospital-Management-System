@@ -4,7 +4,7 @@ const db = require("../config/db");
 const { insertIntoAuditLog } = require('./auditLog');
 const { authenticateJWT } = require("./authenticateJWT");
 
-router.get("/payBill", (req, res) => {
+router.get("/payBill", authenticateJWT, (req, res) => {
     const { regId } = req.query;
 
     db.query(

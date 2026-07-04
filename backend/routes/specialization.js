@@ -1,8 +1,9 @@
 const express = require('express');
 const db = require('../config/db');
-const router = express.Router(); 
+const router = express.Router();
+const { authenticateJWT } = require('./authenticateJWT');
 
-router.get("/specializations", (req, res) => {
+router.get("/specializations", authenticateJWT, (req, res) => {
   db.query("SELECT * FROM doctor_specialization", (err, results) => {
     if (err) return res.status(500).json({ message: "DB Error" });
     return res.json(results);

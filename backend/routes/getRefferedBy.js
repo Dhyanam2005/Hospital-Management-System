@@ -1,8 +1,9 @@
 const db = require('../config/db');
 const express = require('express');
 const router = express.Router();
+const { authenticateJWT } = require('./authenticateJWT');
 
-router.get("/refferedby",(req,res) => {
+router.get("/refferedby", authenticateJWT, (req,res) => {
     const value = 'R';
     db.query(
         'SELECT * from doctor where doc_type = ?',[value],(err,result) => {
