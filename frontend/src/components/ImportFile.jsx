@@ -1,5 +1,6 @@
 ﻿import React, { useState } from 'react';
 import { data } from 'react-router-dom';
+import API_BASE_URL from '../apiConfig';
 
 function MasterDataImport(){
     const [file, setFile] = useState(null);
@@ -28,7 +29,7 @@ const handleUpload = async () => {
     for (let [key, value] of formData.entries()) {
         console.log(`${key}:`, value);
     }
-    const response = await fetch("http://localhost:3000/import", {
+    const response = await fetch(`${API_BASE_URL}/import`, {
       method: "POST",
       body: formData,
     });

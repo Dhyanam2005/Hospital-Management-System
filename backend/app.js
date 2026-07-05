@@ -54,8 +54,11 @@ const notificationsRouter = require("./routes/notifications");
 const app = express();
 
 const PORT = process.env.PORT || 3000;
-const allowedOrigins = ['https://hospital-management-system-ten-pi.vercel.app',  'http://localhost:3000',
-  'http://localhost:3001','https://hospital-management-system-filp.vercel.app','https://hospital-management-system-filp-50gjztevk.vercel.app'];
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  ...(process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : []),
+];
 
 const corsOptions = {
   origin: function (origin, callback) {
