@@ -94,7 +94,7 @@ function PayBill({ regId }) {
         const data = await res.json();
 
         const options = {
-        key: "rzp_test_PBlcUpzwMmjAq5",
+        key: process.env.REACT_APP_RAZORPAY_KEY_ID,
         amount: data.order.amount,
         currency: "INR",
         name: "HMS Payment",
