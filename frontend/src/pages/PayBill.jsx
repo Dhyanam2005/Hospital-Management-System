@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
-import styles from "./PayBill.module.css";
+import {
+    Box, TextField, MenuItem, Button, Paper, Typography
+} from '@mui/material';
 import API_BASE_URL from '../apiConfig';
 import { authFetch } from '../utils/authFetch';
 
@@ -8,7 +10,7 @@ function PayBill({ regId }) {
     const [discount, setDiscount] = useState('');
     const [paymentMode, setPaymentMode] = useState('');
     const [paymentDetail, setPaymentDetail] = useState('');
-    const [paymentDate, setPaymentDate] = useState('');
+    const [paymentDate, setPaymentDate] = useState(new Date().toISOString().split('T')[0]);
     const [paymentData, setPaymentData] = useState(null);
     const [regStatus , setRegStatus] = useState('');
 
@@ -17,7 +19,7 @@ function PayBill({ regId }) {
             setDiscount("");
             setPaymentMode("");
             setPaymentDetail("");
-            setPaymentDate("");
+            setPaymentDate(new Date().toISOString().split('T')[0]);
             setBillInfo("");
             setPaymentData("");
             try {
@@ -145,113 +147,123 @@ function PayBill({ regId }) {
     };
 
 
+    const readOnly = !!paymentData;
+    const discharged = regStatus === 'D';
+
+    const fieldSx = { flex: 1, minWidth: 180 };
+
     return (
-        <div>
-            <form>
-                <div className={styles["form-group"]}>
-                    <div   className={`
-    ${styles["indiv-inp"]}
-    ${paymentData
-      ? 'bg-gray-100 text-gray-500 border-dashed cursor-not-allowed'
-      : 'bg-white text-black border-solid'}
-  `}><label>Registration Charges</label><input type="text" value={paymentData?.REGN_CHARGES || billInfo.reg_charges || ''} readOnly /></div>
-                    <div   className={`
-    ${styles["indiv-inp"]}
-    ${paymentData
-      ? 'bg-gray-100 text-gray-500 border-dashed cursor-not-allowed'
-      : 'bg-white text-black border-solid'}
-  `}><label>Admission Charges</label><input type="text" value={paymentData?.ADMISSION_CHARGES || billInfo.admission_charges || ''} readOnly /></div>
-                    <div   className={`
-    ${styles["indiv-inp"]}
-    ${paymentData
-      ? 'bg-gray-100 text-gray-500 border-dashed cursor-not-allowed'
-      : 'bg-white text-black border-solid'}
-  `}><label>Test Charges</label><input type="text" value={paymentData?.TEST_FEE || billInfo.test_charges || ''} readOnly /></div>
-                    <div   className={`
-    ${styles["indiv-inp"]}
-    ${paymentData
-      ? 'bg-gray-100 text-gray-500 border-dashed cursor-not-allowed'
-      : 'bg-white text-black border-solid'}
-  `}><label>Service Charges</label><input type="text" value={paymentData?.SERVICE_CHARGES || billInfo.services_charges || ''} readOnly /></div>
+        <Paper elevation={0} sx={{ p: 3, border: '1px solid #e2e8f0', borderRadius: 2 }}>
+            <Box component="form" noValidate>
 
-                </div>
-                <div className={styles["form-group"]}>
-                    <div   className={`
-    ${styles["indiv-inp"]}
-    ${paymentData
-      ? 'bg-gray-100 text-gray-500 border-dashed cursor-not-allowed'
-      : 'bg-white text-black border-solid'}
-  `}><label>Consultation Charges</label><input type="text" value={billInfo.consultation_charges || ''} readOnly /></div>
-                    <div   className={`
-    ${styles["indiv-inp"]}
-    ${paymentData
-      ? 'bg-gray-100 text-gray-500 border-dashed cursor-not-allowed'
-      : 'bg-white text-black border-solid'}
-  `}><label>Medical Charges</label><input type="text" value={paymentData?.DOC_FEE || billInfo.medical_charges || ''} readOnly /></div>
-                    <div   className={`
-    ${styles["indiv-inp"]}
-    ${paymentData
-      ? 'bg-gray-100 text-gray-500 border-dashed cursor-not-allowed'
-      : 'bg-white text-black border-solid'}
-  `}><label>Ward Charges</label><input type="text" value={paymentData?.WARD_CHARGES || billInfo.ward_charges || ''} readOnly /></div>
-                    <div   className={`
-    ${styles["indiv-inp"]}
-    ${paymentData
-      ? 'bg-gray-100 text-gray-500 border-dashed cursor-not-allowed'
-      : 'bg-white text-black border-solid'}
-  `}><label>Total Charges</label><input disabled={regStatus === 'D'} type="text" value={totalCharges} readOnly /></div>
-                </div>
-                <div className={styles["form-group"]}>
-                    <div   className={`
-    ${styles["indiv-inp"]}
-    ${paymentData
-      ? 'bg-gray-100 text-gray-500 border-dashed cursor-not-allowed'
-      : 'bg-white text-black border-solid'}
-  `}><label>Discount</label><input disabled={regStatus === 'D'} type="text" placeholder="Enter discount" value={paymentData?.DISCOUNT || discount} onChange={(e) => setDiscount(e.target.value)} readOnly={!!paymentData} /></div>
-                    <div   className={`
-    ${styles["indiv-inp"]}
-    ${paymentData
-      ? 'bg-gray-100 text-gray-500 border-dashed cursor-not-allowed'
-      : 'bg-white text-black border-solid'}
-  `}><label>Total Payable</label><input type="text" value={paymentData?.AMT_TO_PAY || totalPayable} readOnly /></div>
-                </div>
-                <div className={styles["form-group"]}>
-                </div>
-                <div className={styles["form-group"]}>
-                    <div className={styles["indiv-inp-select"]}>
-                        <label>Mode of Payment</label>
-                        <select value={paymentData?.PAYMENT_MODE || paymentMode} onChange={(e) => setPaymentMode(e.target.value) } disabled={!!paymentData || regStatus === 'D'}>
-                            <option value="" disabled>Select Mode of Payment</option>
-                            <option value="cash">Cash</option>
-                            <option value="cheque">Cheque</option>
-                            <option value="card">Card</option>
-                        </select>
-                    </div>
-                    <div   className={`
-    ${styles["indiv-inp"]}
-    ${paymentData
-      ? 'bg-gray-100 text-gray-500 border-dashed cursor-not-allowed w-1/3 h-32 p-2 border rounded'
-      : 'bg-white text-black border-solid w-1/3 h-32 p-2 border rounded'}
-  `}><label>Payment Detail</label><textarea disabled={regStatus === 'D'} type="text" value={paymentData?.PAYMENT_DETAIL || paymentDetail} onChange={(e) => setPaymentDetail(e.target.value)} readOnly={!!paymentData} /></div>
-                    <div   className={`
-    ${styles["indiv-inp"]}
-    ${paymentData
-      ? 'bg-gray-100 text-gray-500 border-dashed cursor-not-allowed'
-      : 'bg-white text-black border-solid'}
-  `}><label>Payment Date</label><input disabled={regStatus === 'D'} type="date" value={paymentData?.PAYMENT_DATE ? new Date(paymentData.PAYMENT_DATE).toISOString().split('T')[0] : paymentDate} onChange={(e) => setPaymentDate(e.target.value)} readOnly={!!paymentData} /></div>
-                </div>
-                {!paymentData && regStatus !== "D" &&
-                    <div className={styles["buttons"]}>
-                        <button type="button" onClick={saveInfo} className={styles["save-btn"]}>Save</button>
-                        <br />
-                        {paymentMode == "card" && (
-                            <button type="button" onClick={handleRazorpayPayment} className={`${styles["save-btn"]} bg-green-600 hover:bg-green-700`}>Pay</button>
+                {/* Row 1 — charge summary */}
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 2 }}>
+                    <TextField size="small" label="Registration Charges" sx={fieldSx}
+                        value={paymentData?.REGN_CHARGES || billInfo.reg_charges || ''}
+                        InputProps={{ readOnly: true }} />
+                    <TextField size="small" label="Admission Charges" sx={fieldSx}
+                        value={paymentData?.ADMISSION_CHARGES || billInfo.admission_charges || ''}
+                        InputProps={{ readOnly: true }} />
+                    <TextField size="small" label="Test Charges" sx={fieldSx}
+                        value={paymentData?.TEST_FEE || billInfo.test_charges || ''}
+                        InputProps={{ readOnly: true }} />
+                    <TextField size="small" label="Service Charges" sx={fieldSx}
+                        value={paymentData?.SERVICE_CHARGES || billInfo.services_charges || ''}
+                        InputProps={{ readOnly: true }} />
+                </Box>
+
+                {/* Row 2 */}
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 2 }}>
+                    <TextField size="small" label="Consultation Charges" sx={fieldSx}
+                        value={billInfo.consultation_charges || ''}
+                        InputProps={{ readOnly: true }} />
+                    <TextField size="small" label="Medical Charges" sx={fieldSx}
+                        value={paymentData?.DOC_FEE || billInfo.medical_charges || ''}
+                        InputProps={{ readOnly: true }} />
+                    <TextField size="small" label="Ward Charges" sx={fieldSx}
+                        value={paymentData?.WARD_CHARGES || billInfo.ward_charges || ''}
+                        InputProps={{ readOnly: true }} />
+                    <TextField size="small" label="Total Charges" sx={fieldSx}
+                        value={totalCharges}
+                        InputProps={{ readOnly: true }} />
+                </Box>
+
+                {/* Row 3 — discount + total payable */}
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 2 }}>
+                    <TextField size="small" label="Discount" sx={fieldSx}
+                        placeholder="Enter discount"
+                        value={paymentData?.DISCOUNT || discount}
+                        onChange={(e) => setDiscount(e.target.value)}
+                        disabled={discharged}
+                        InputProps={{ readOnly }} />
+                    <TextField size="small" label="Total Payable" sx={fieldSx}
+                        value={paymentData?.AMT_TO_PAY || totalPayable}
+                        InputProps={{ readOnly: true }} />
+                </Box>
+
+                {/* Row 4 — payment details */}
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 3 }}>
+                    <TextField
+                        select size="small" label="Mode of Payment" sx={fieldSx}
+                        value={paymentData?.PAYMENT_MODE || paymentMode}
+                        onChange={(e) => setPaymentMode(e.target.value)}
+                        disabled={readOnly || discharged}
+                    >
+                        <MenuItem value="" disabled>Select Mode of Payment</MenuItem>
+                        <MenuItem value="cash">Cash</MenuItem>
+                        <MenuItem value="cheque">Cheque</MenuItem>
+                        <MenuItem value="card">Card</MenuItem>
+                    </TextField>
+                    <TextField size="small" label="Payment Detail" sx={{ flex: 2, minWidth: 240 }}
+                        multiline rows={3}
+                        value={paymentData?.PAYMENT_DETAIL || paymentDetail}
+                        onChange={(e) => setPaymentDetail(e.target.value)}
+                        disabled={discharged}
+                        InputProps={{ readOnly }} />
+                    <TextField size="small" label="Payment Date" sx={fieldSx}
+                        type="date"
+                        value={paymentData?.PAYMENT_DATE
+                            ? new Date(paymentData.PAYMENT_DATE).toISOString().split('T')[0]
+                            : paymentDate}
+                        onChange={(e) => setPaymentDate(e.target.value)}
+                        disabled={discharged}
+                        InputProps={{ readOnly }}
+                        InputLabelProps={{ shrink: true }} />
+                </Box>
+
+                {/* Action buttons */}
+                {!readOnly && !discharged && (
+                    <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1.5 }}>
+                        <Button
+                            variant="contained" size="medium"
+                            onClick={saveInfo}
+                            sx={{
+                                textTransform: 'none', fontWeight: 600, px: 3,
+                                background: 'linear-gradient(135deg,#2563eb,#0891b2)',
+                                boxShadow: 'none',
+                                '&:hover': { boxShadow: 'none', opacity: 0.9 },
+                            }}
+                        >
+                            Save
+                        </Button>
+                        {paymentMode === 'card' && (
+                            <Button
+                                variant="contained" size="medium"
+                                onClick={handleRazorpayPayment}
+                                sx={{
+                                    textTransform: 'none', fontWeight: 600, px: 3,
+                                    background: 'linear-gradient(135deg,#16a34a,#15803d)',
+                                    boxShadow: 'none',
+                                    '&:hover': { boxShadow: 'none', opacity: 0.9 },
+                                }}
+                            >
+                                Pay via Razorpay
+                            </Button>
                         )}
-                    </div>
-                }
-
-            </form>
-        </div>
+                    </Box>
+                )}
+            </Box>
+        </Paper>
     );
 }
 
